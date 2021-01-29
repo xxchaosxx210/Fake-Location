@@ -1,36 +1,48 @@
+__title__ = "Fake Location"
+__author__ = "Paul Millar"
+__version__ = "0.1"
+__description__ = "A Fake GPS app for android"
+
 from kivymd.app import MDApp
 from kivy.logger import Logger
 from kivy.clock import mainthread
-import pydroid
+from kivy.utils import platform
+
 import time
 
-provider = None
+is_android = platform == "android"
+
+# If android then load the Android classes
+if is_android:
+    from location import GpsListener
 
 class MainApp(MDApp):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.theme_cls.primary_palette = "Blue"
-        if pydroid.is_android():
-            self.provider = pydroid.GpsListener(self.on_gps_update)
+        if is_android:
+            self.provider = GpsListener(self.on_gps_update)
         else:
             self.provider = None
     
     def on_stop(self):
-        if pydroid.is_android():
-            self.provider.stop()
+        if is_android:
+            self.provider.stop_gps_updates()
     
     def on_start(self):
-        if pydroid.is_android():
-            Logger.info("FakeGPS: Requesting Permissions")
+        if is_android:
             from android.permissions import request_permissions
             from android.permissions import Permission
             request_permissions([Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION])
             time.sleep(3)
-            self.provider.start()
+            self.provider.start_gps_updates(3000, 10)
     
     @mainthread
     def on_gps_update(self, provider, event, *args):
+        """
+        any changes to location provider will be sent here
+        """
         if event == 'location':
             location = args[0]
             lat = location.getLatitude()

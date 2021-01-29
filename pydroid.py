@@ -384,6 +384,7 @@ class GpsListener(PythonJavaClass):
 		)
 	
 	def stop(self):
+		print("Stop method started")
 		self.location_manager.removeUpdates()
 	
 	@java_method('()I')

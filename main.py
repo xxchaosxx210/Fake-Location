@@ -18,8 +18,7 @@ class MainApp(MDApp):
     
     def on_stop(self):
         if pydroid.is_android():
-            if self.provider:
-                self.provider.stop()
+            self.provider.stop()
     
     def on_start(self):
         if pydroid.is_android():

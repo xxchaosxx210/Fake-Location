@@ -75,10 +75,6 @@ if is_android():
 	LocationManager = autoclass("android.location.LocationManager")
 	LocationProvider = autoclass("android.location.LocationProvider")
 	
-	## Custom Classes
-	Gps = autoclass("Gps")
-	Contact = autoclass("Contact")
-	
 	CURRENT_CONTEXT = PythonActivity.mActivity.getApplicationContext()
 
 else:

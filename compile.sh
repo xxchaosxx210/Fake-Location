@@ -1,4 +1,4 @@
-git clone https://github.com/xxchaosxx210/fake-location.git
+git clone -b mock_location_pydroid https://github.com/xxchaosxx210/fake-location.git
 mv -f ./fake-location/*.* ./
 rm -rf ./fake-location
 echo Compiling APK...

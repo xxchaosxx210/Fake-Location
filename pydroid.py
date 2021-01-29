@@ -13,7 +13,7 @@ a better understanding for python-4-android check this link out - https://github
 
 I spent quite a few days working a lot of undocumented python4android code out lost many hair strands in the process!!"""
 
-__version__ = "0.1.3"
+__version__ = "0.2"
 __author__ = "Paul Millar"
 
 import threading
@@ -34,6 +34,8 @@ if is_android():
 
 	from jnius import autoclass
 	from jnius import cast
+	from jnius import PythonJavaClass
+	from jnius import java_method
 	from android import activity
 
 	## Java STD classes
@@ -51,6 +53,9 @@ if is_android():
 	## android SPEECH api
 	
 	RecognizerIntent = autoclass('android.speech.RecognizerIntent')
+
+	## Android Threading
+	Looper = autoclass("android.os.Looper")
 	
 	## Android networking
 	Uri = autoclass("android.net.Uri")
@@ -65,10 +70,10 @@ if is_android():
 	## Use the logging object to show output on logcat
 	Log = autoclass("android.util.Log")
 	TAG = "python"
-	
-	## Custom Classes
-	Gps = autoclass("Gps")
-	Contact = autoclass("Contact")
+
+	## Location Classes
+	LocationManager = autoclass("android.location.LocationManager")
+	LocationProvider = autoclass("android.location.LocationProvider")
 	
 	CURRENT_CONTEXT = PythonActivity.mActivity.getApplicationContext()
 
@@ -78,6 +83,10 @@ else:
 		def wrapper(*args):
 			return False
 		return wrapper
+
+
+def mock_location():
+	pass
 
 
 def navigate_google_maps(uri):
@@ -346,6 +355,45 @@ class TextSpeak:
 			return True
 		else:
 			return False
+
+class GpsListener(PythonJavaClass):
+
+	__javainterfaces__ = ['android/location/LocationListener']
+
+	def __init__(self, callback):
+		super(GpsListener, self).__init__()
+		self.callback = callback
+		self.location_manager = PythonActivity.mActivity.getSystemService(
+			Context.LOCATION_SERVICE
+		)
+	
+	def start(self):
+		self.location_manager.requestLocationUpdates(
+			LocationManager.GPS_PROVIDER,
+			10000,
+			10,
+			self,
+			Looper.getMainLooper()
+		)
+	
+	def stop(self):
+		self.location_manager.removeUpdates()
+	
+	@java_method('()I')
+	def hashCode(self):
+		return id(self)
+	
+	@java_method('(Landroid/location/Location;)V')
+	def onLocationChanged(self, location):
+		self.callback(self, 'location', location)
+	
+	@java_method('(Ljava/lang/String;)V')
+    def onProviderDisabled(self, status):
+		self.callback(self, 'provider-disabled', status)
+	
+	@java_method('(Ljava/lang/Object;)Z')
+	def equals(self, obj):
+		return obj.hashCode() == self.hashCode()
 
 class LogCatReader(threading.Thread):
 

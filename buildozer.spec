@@ -148,7 +148,7 @@ android.permissions = INTERNET,ACCESS_FINE_LOCATION,ACCESS_MOCK_LOCATION,ACCESS_
 
 # (list) List of Java files to add to the android project (can be java or a
 # directory containing the files)
-android.add_src = Gps.java,Contact.java
+#android.add_src =
 
 # (list) Android AAR archives to add (currently works only with sdl2_gradle
 # bootstrap)

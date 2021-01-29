@@ -33,14 +33,13 @@ class MainApp(MDApp):
     @mainthread
     def on_gps_update(self, provider, event, *args):
         if event == 'location':
-            for item in dir(args):
-                Logger.info(item)
-            location = args[0].location
-            lat = location.getLatitude()
-            lng = location.getLongitude()
-            if len(self.root.ids["mock_status"].text) > 500:
-                self.root.ids["mock_status"].text = ""
-            self.root.ids["mock_location"].text += f"\n Lat: {lat}, Lng: {lng}"
+            print(args)
+            #location = args[0].location
+            #lat = location.getLatitude()
+            #lng = location.getLongitude()
+            #if len(self.root.ids["mock_status"].text) > 500:
+            #    self.root.ids["mock_status"].text = ""
+            #self.root.ids["mock_location"].text += f"\n Lat: {lat}, Lng: {lng}"
 
 def main():
     MainApp().run()

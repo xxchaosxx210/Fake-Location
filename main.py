@@ -34,13 +34,11 @@ class MainApp(MDApp):
     def on_gps_update(self, provider, event, *args):
         if event == 'location':
             location = args[0]
-            for item in dir(location):
-                print(item)
             lat = location.getLatitude()
             lng = location.getLongitude()
             if len(self.root.ids["mock_status"].text) > 500:
                 self.root.ids["mock_status"].text = ""
-            self.root.ids["mock_location"].text += f"\n Lat: {lat}, Lng: {lng}"
+            self.root.ids["mock_status"].text += f"\n Lat: {lat}, Lng: {lng}"
 
 def main():
     MainApp().run()

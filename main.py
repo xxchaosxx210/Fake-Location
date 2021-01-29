@@ -33,7 +33,9 @@ class MainApp(MDApp):
     @mainthread
     def on_gps_update(self, provider, event, *args):
         if event == 'location':
-            print(args)
+            l = args[0]
+            print(l)
+            print(type(l))
             #location = args[0].location
             #lat = location.getLatitude()
             #lng = location.getLongitude()

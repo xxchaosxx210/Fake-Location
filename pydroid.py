@@ -75,6 +75,10 @@ if is_android():
 	LocationManager = autoclass("android.location.LocationManager")
 	LocationProvider = autoclass("android.location.LocationProvider")
 	
+	## Custom Classes
+	Gps = autoclass("Gps")
+	Contact = autoclass("Contact")
+	
 	CURRENT_CONTEXT = PythonActivity.mActivity.getApplicationContext()
 
 else:
@@ -83,11 +87,14 @@ else:
 		def wrapper(*args):
 			return False
 		return wrapper
+	
+	def java_method(func):
+		def wrapper(*args):
+			return False
+		return wrapper
 
-
-def mock_location():
-	pass
-
+	class PythonJavaClass:
+		pass
 
 def navigate_google_maps(uri):
 	if is_android():
@@ -382,14 +389,14 @@ class GpsListener(PythonJavaClass):
 	@java_method('()I')
 	def hashCode(self):
 		return id(self)
-	
+
 	@java_method('(Landroid/location/Location;)V')
 	def onLocationChanged(self, location):
-		self.callback(self, 'location', location)
+		self.callback(self, "location", location)
 	
 	@java_method('(Ljava/lang/String;)V')
-    def onProviderDisabled(self, status):
-		self.callback(self, 'provider-disabled', status)
+	def onProviderDisabled(self, status):
+		self.callback(self, "provider-disabled", status)
 	
 	@java_method('(Ljava/lang/Object;)Z')
 	def equals(self, obj):

@@ -1,22 +1,43 @@
 from kivymd.app import MDApp
 from kivy.logger import Logger
+from kivy.clock import mainthread
 import pydroid
 
+provider = None
 
 class MainApp(MDApp):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.theme_cls.primary_palette = "Blue"
+        if pydroid.is_android():
+            self.provider = pydroid.GpsListener(self.on_gps_update)
+        else:
+            self.provider = None
+    
+    def on_stop(self):
+        if pydroid.is_android():
+            if self.provider:
+                self.provider.stop()
     
     def on_start(self):
-        self.root.ids["mock_status"].text = "AaaaaBBBBbbbbbbbCCCccxxc\n" * 100
         if pydroid.is_android():
             Logger.info("FakeGPS: Requesting Permissions")
             from android.permissions import request_permissions
             from android.permissions import Permission
-            result = request_permissions([Permission.ACCESS_FINE_LOCATION])
+            result = request_permissions([Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION])
             Logger.info(f"FakeGPS: request_permissions returned {result}")
+            self.provider.start()
+    
+    @mainthread
+    def on_gps_update(self, provider, event, *args):
+        if event == 'location':
+            location = args[0].location
+            lat = location.getLatitude()
+            lng = location.getLongitude()
+            if len(self.root.ids["mock_status"].text) > 500:
+                self.root.ids["mock_status"].text = ""
+            self.root.ids["mock_location"].text += f"\n Lat: {lat}, Lng: {lng}"
 
 def main():
     MainApp().run()

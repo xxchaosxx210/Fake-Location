@@ -375,7 +375,6 @@ class GpsListener(PythonJavaClass):
 		)
 	
 	def start(self):
-		print("start called")
 		self.location_manager.requestLocationUpdates(
 			LocationManager.GPS_PROVIDER,
 			10000,
@@ -389,24 +388,25 @@ class GpsListener(PythonJavaClass):
 	
 	@java_method('()I')
 	def hashCode(self):
-		print("hashCode started")
-		i = id(self)
-		return 1
+		# return id(self)
+		return 1 
 
 	@java_method('(Landroid/location/Location;)V')
 	def onLocationChanged(self, location):
-		print("onLocationChanged started")
 		self.callback(self, "location", location)
 	
 	@java_method('(Ljava/lang/String;)V')
 	def onProviderDisabled(self, status):
-		print("onProviderDisabled started")
 		self.callback(self, "provider-disabled", status)
+	
+	@java_method('(Ljava/lang/String;)V')
+	def onProviderEnabled(self, provider):
+		self.callback(self, "provider-enabled", provider)
 	
 	@java_method('(Ljava/lang/Object;)Z')
 	def equals(self, obj):
-		print("equals started")
 		return obj.hashCode() == self.hashCode()
+
 
 class LogCatReader(threading.Thread):
 

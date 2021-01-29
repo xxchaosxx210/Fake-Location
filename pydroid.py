@@ -390,7 +390,8 @@ class GpsListener(PythonJavaClass):
 	@java_method('()I')
 	def hashCode(self):
 		print("hashCode started")
-		return id(self)
+		i = id(self)
+		print(i)
 
 	@java_method('(Landroid/location/Location;)V')
 	def onLocationChanged(self, location):

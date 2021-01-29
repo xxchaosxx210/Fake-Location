@@ -25,7 +25,8 @@ class MainApp(MDApp):
             Logger.info("FakeGPS: Requesting Permissions")
             from android.permissions import request_permissions
             from android.permissions import Permission
-            request_permissions([Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION])
+            request_permissions([Permission.ACCESS_FINE_LOCATION])
+            request_permissions([Permission.ACCESS_COARSE_LOCATION])
             self.provider.start()
     
     @mainthread

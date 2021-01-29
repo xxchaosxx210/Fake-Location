@@ -2,6 +2,7 @@ from kivymd.app import MDApp
 from kivy.logger import Logger
 from kivy.clock import mainthread
 import pydroid
+import time
 
 provider = None
 
@@ -25,13 +26,15 @@ class MainApp(MDApp):
             Logger.info("FakeGPS: Requesting Permissions")
             from android.permissions import request_permissions
             from android.permissions import Permission
-            request_permissions([Permission.ACCESS_FINE_LOCATION])
-            request_permissions([Permission.ACCESS_COARSE_LOCATION])
+            request_permissions([Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION])
+            time.sleep(3)
             self.provider.start()
     
     @mainthread
     def on_gps_update(self, provider, event, *args):
         if event == 'location':
+            for item in dir(args):
+                print item
             location = args[0].location
             lat = location.getLatitude()
             lng = location.getLongitude()

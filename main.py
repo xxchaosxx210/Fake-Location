@@ -15,7 +15,7 @@ is_android = platform == "android"
 # If android then load the Android classes
 if is_android:
     from location import GpsTesting
-    from location import GpsGpsListener
+    from location import GpsListener
     from location import require_location_permissions
 
 class MainApp(MDApp):

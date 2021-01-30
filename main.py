@@ -80,6 +80,7 @@ class MainApp(MDApp):
     def on_stop_mock(self):
         if is_android:
             self._location_manager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, False)
+            self._location_manager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, True)
     
     def add_status(self, textline):
         self.root.ids["mock_status"].text += f"\n {textline}"

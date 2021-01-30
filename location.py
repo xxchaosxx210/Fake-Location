@@ -15,6 +15,10 @@ from jnius import autoclass
 from jnius import PythonJavaClass
 from jnius import java_method
 
+# android request classess
+from android.permissions import request_permissions
+from android.permissions import Permission
+
 # reflect our Android classes from the Android SDK
 
 LocationManager = autoclass("android.location.LocationManager")
@@ -28,11 +32,35 @@ class GpsListener(PythonJavaClass):
     __javainterfaces__ = ["android/location/LocationListener"]
 
     def __init__(self, func_callback, **kwargs):
+        """
+        func_callback(GpsListener, event, object)
+        """
         super().__init__(**kwargs)
         self.func_callback = func_callback
         self.location_manager = PythonActivity.mActivity.getSystemService(
             Context.LOCATION_SERVICE
         )
+        # Get Permission Request to start using listener
+        request_permissions(
+            [Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION], 
+            self.on_request_result
+        )
+    
+    def on_request_result(self, permissions, grant_results):
+        """
+        get the request results
+        """
+        access_fine_ok = False
+        access_coarse_ok = False
+        for index, permission in enumerate(permissions):
+            if permission == Permission.ACCESS_FINE_LOCATION:
+                access_fine_ok = grant_results[index]
+            if permission == Permission.ACCESS_COARSE_LOCATION:
+                access_coarse_ok = grant_results[index]
+        if access_coarse_ok == True and access_fine_ok == True:
+            self.func_callback(self, "permissions-result", [True])
+        else:
+            self.func_callback(self, "permissions-result", [False])
     
     def start_gps_updates(self, time_interval, min_dist):
         """

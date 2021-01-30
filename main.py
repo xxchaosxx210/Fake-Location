@@ -15,18 +15,12 @@ is_android = platform == "android"
 # If android then load the Android classes
 if is_android:
     from location import GpsListener
-    from android.permissions import request_permissions
-    from android.permissions import Permission
 
 class MainApp(MDApp):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.theme_cls.primary_palette = "Blue"
-        if is_android:
-            self.provider = GpsListener(self.on_gps_update)
-        else:
-            self.provider = None
     
     def on_stop(self):
         if is_android:
@@ -34,18 +28,8 @@ class MainApp(MDApp):
     
     def on_start(self):
         if is_android:
-            request_permissions([Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION], self.on_request_result)
-    
-    def on_request_result(self, permissions, grant_results):
-        """
-        get the request results
-        """
-        for index, permission in enumerate(permissions):
-            if permission == Permission.ACCESS_FINE_LOCATION:
-                if grant_results[index]:
-                    Logger.info("APP: ACCESS_FINE_LOCATION has been accepted")
-                    self.provider.start_gps_updates(3000, 10)
-    
+            self.provider = GpsListener(self.on_gps_update)
+            
     @mainthread
     def on_gps_update(self, provider, event, *args):
         """
@@ -58,6 +42,13 @@ class MainApp(MDApp):
             if len(self.root.ids["mock_status"].text) > 500:
                 self.root.ids["mock_status"].text = ""
             self.root.ids["mock_status"].text += f"\n Lat: {lat}, Lng: {lng}"
+        
+        elif event == 'permissions-result':
+            if args[0] == True:
+                Logger.info("APP: ACCESS_FINE_LOCATION has been accepted")
+                self.provider.start_gps_updates(3000, 10)
+            else:
+                Logger.info("APP: ACCESS_FINE_LOCATION has been rejected")
 
 def main():
     MainApp().run()

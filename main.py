@@ -52,9 +52,11 @@ class MainApp(MDApp):
             loc = args[0]
             self.add_status(f"Latitude: {loc.getLatitude()}, Longitutde: {loc.getLongitude()}")
         elif event == "provider_enabled":
-            self.add_status(f"{provider.getName()} Provider enabled")
+            prov = args[0]
+            self.add_status(f"{prov} Provider enabled")
         elif event == "provider_disabled":
-            self.add_status(f"{provider.getName()} Provider disabled")
+            prov = args[0]
+            self.add_status(f"{prov} Provider disabled")
     
     def on_get_location(self):
         if is_android:

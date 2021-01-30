@@ -14,8 +14,7 @@ is_android = platform == "android"
 
 # If android then load the Android classes
 if is_android:
-    from location import GpsTester
-    from location import GpsListener
+    from location import Gps
     from location import require_location_permissions
 
 class MainApp(MDApp):
@@ -25,13 +24,12 @@ class MainApp(MDApp):
         self.theme_cls.primary_palette = "Blue"
     
     def on_stop(self):
-        self.gps_tester.close()
+        self.gps.stop_gps_updates()
     
     def on_start(self):
         if is_android:
             require_location_permissions(self.on_gps_update)
-            self.gps_tester = GpsTester()
-            self.gps_location = GpsListener(self.on_gps_update)
+            self.gps = Gps(self.on_gps_update)
             
     @mainthread
     def on_gps_update(self, provider, event, *args):
@@ -42,11 +40,13 @@ class MainApp(MDApp):
             print(args[0])
             print(type(args[0]))
             if args[0] == True:
-                self.gps_tester.init_mock_locations()
-                self.gps_tester.enable_mock_locations()
+                # setup locations
+                self.gps.start_gps_updates(3, 10)
                 Logger.info("APP: Location Permission requests have been accepted")
             else:
                 Logger.info("APP: Location Permission requests have been rejected")
+        elif event == "location":
+            print(args[0])
     
     def on_get_location(self):
         Logger.info("APP: Refresh Pressed")
@@ -55,13 +55,16 @@ class MainApp(MDApp):
             loc = self.gps_location.get_location()
             Logger.info(f"APP: location = {loc}")
             if loc:
-                self.root.ids["mock_status"].text += f"\n lat = {loc.getLatitude()}, lng = {loc.getLongitude()}"
+                self.add_status(f"\n {loc.getLatitude()}, lng = {loc.getLongitude()}")
     
     def on_start_fake_location(self):
-        self.gps_tester.set_mock_locations(51.507351, -0.127758, 0)
+        print("Fake Location pressed")
 
     def on_stop_fake_location(self):
-        self.gps_tester.disable_mock_locations()
+        print("mskdmdk")
+    
+    def add_status(self, textline):
+        self.root.ids["mock_status"].text += f"\n {textline}"
 
 
 

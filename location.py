@@ -56,7 +56,7 @@ class GpsManager(PythonJavaClass):
                 [Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION], 
                 self.on_request_result
             )
-        providers = self.location_manager.getProviders(False):
+        providers = self.location_manager.getProviders(False)
         print(f"Providers: {providers}")
         self.best_provider = LocationManager.GPS_PROVIDER
         try:

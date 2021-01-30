@@ -45,7 +45,7 @@ class MainApp(MDApp):
             if args[0] == True:
                 # setup locations
                 try:
-                    self.init_mock_provider()
+                    self.gps.init_mock_provider()
                 except Exception as err:
                     self.add_status(f"Error: {str(err)}")
 

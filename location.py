@@ -137,8 +137,8 @@ def startup_testprovider(location_manager, provider_name):
     try:
         location_manager.addTestProvider(
             provider_name,
-            False,
-            False,
+            True,
+            True,
             False,
             False,
             False,

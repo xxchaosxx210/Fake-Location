@@ -38,6 +38,8 @@ class MainApp(MDApp):
             self.gps_listener.stop_gps_updates()
             remove_test_provider(self._location_manager, LocationManager.GPS_PROVIDER)
             startup_testprovider(self._location_manager, LocationManager.GPS_PROVIDER)
+            remove_test_provider(self._location_manager, LocationManager.NETWORK_PROVIDER)
+            startup_testprovider(self._location_manager, LocationManager.NETWORK_PROVIDER)
     
     def on_start(self):
         if is_android:
@@ -57,6 +59,9 @@ class MainApp(MDApp):
                 remove_test_provider(self._location_manager, LocationManager.GPS_PROVIDER)
                 startup_testprovider(self._location_manager, LocationManager.GPS_PROVIDER)
                 set_provider_enabled(self._location_manager, LocationManager.GPS_PROVIDER, True)
+                remove_test_provider(self._location_manager, LocationManager.NETWORK_PROVIDER)
+                startup_testprovider(self._location_manager, LocationManager.NETWORK_PROVIDER)
+                set_provider_enabled(self._location_manager, LocationManager.NETWORK_PROVIDER, True)
             else:
                 toast("Request to use Locations rejected. Please enable Locations in App Permissions")
         elif event == "location":
@@ -81,11 +86,15 @@ class MainApp(MDApp):
             longitude = float(self.root.ids["longitude"].text)
             set_provider_location(self._location_manager, LocationManager.GPS_PROVIDER,
                                  latitude, longitude)
+            set_provider_location(self._location_manager, LocationManager.NETWORK_PROVIDER,
+                                 latitude, longitude)
     
     def on_stop_mock(self):
         if is_android:
             set_provider_enabled(self._location_manager, LocationManager.GPS_PROVIDER, False)
             set_provider_enabled(self._location_manager, LocationManager.GPS_PROVIDER, True)
+            set_provider_enabled(self._location_manager, LocationManager.NETWORK_PROVIDER, False)
+            set_provider_enabled(self._location_manager, LocationManager.NETWORK_PROVIDER, True)
     
     def add_status(self, textline):
         self.root.ids["mock_status"].text += f"\n {textline}"

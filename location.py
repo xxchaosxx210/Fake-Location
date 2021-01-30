@@ -101,21 +101,19 @@ class Gps(PythonJavaClass):
             self.provider_name,  mockloc)
     
     def start_mock_provider(self):
-        for provider in self._location_manager.getProviders(False):
-            print(provider)
+        print(self._location_manager.getProviders(False))
         try:
             self._location_manager.setTestProviderEnabled(self.provider_name, True)
         except Exception:
             pass
 
     def stop_mock_provider(self):
-        for provider in self._location_manager.getProviders(True):
-            print(provider)
+        print(self._location_manager.getProviders(True))
         try:
             self._location_manager.setTestProviderEnabled(self.provider_name, False)
         except Exception:
             pass
-        
+
     def start_gps_updates(self, time_interval, min_dist):
         """
         time_interval - int

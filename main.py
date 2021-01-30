@@ -47,7 +47,6 @@ class MainApp(MDApp):
             print(args[0])
             print(type(args[0]))
             if args[0] == True:
-                Logger.info("APP: ACCESS_FINE_LOCATION has been accepted")
                 self.provider.start_gps_updates(3000, 10)
             else:
                 Logger.info("APP: ACCESS_FINE_LOCATION has been rejected")

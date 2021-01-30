@@ -69,12 +69,12 @@ class GpsManager(PythonJavaClass):
             0,
             5
         )
-        self.location_manager.setTestProvider(
+        self.location_manager.setTestProviderEnabled(
             LocationManager.GPS_PROVIDER, True
         )
     
     def disable_mock_locations(self):
-        self.location_manager.setTestProvider(
+        self.location_manager.setTestProviderEnabled(
             LocationManager.GPS_PROVIDER, False
         )
     

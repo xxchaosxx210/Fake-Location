@@ -14,7 +14,7 @@ is_android = platform == "android"
 
 # If android then load the Android classes
 if is_android:
-    from location import GpsListener
+    from location import GpsManager
 
 class MainApp(MDApp):
 
@@ -28,7 +28,7 @@ class MainApp(MDApp):
     
     def on_start(self):
         if is_android:
-            self.provider = GpsListener(self.on_gps_update)
+            self.provider = GpsManager(self.on_gps_update)
             
     @mainthread
     def on_gps_update(self, provider, event, *args):
@@ -50,6 +50,12 @@ class MainApp(MDApp):
                 self.provider.start_gps_updates(3000, 10)
             else:
                 Logger.info("APP: ACCESS_FINE_LOCATION has been rejected")
+    
+    def on_get_location(self):
+        if is_android:
+            loc = self.provider.get_location()
+            print(f"lat = {loc.getLatitude()}, lng = {loc.getLongitude()}")
+            
 
 def main():
     MainApp().run()

@@ -30,7 +30,7 @@ Context = autoclass("android.content.Context")
 VERSION = autoclass("android.os.Build$VERSION")
 
 
-class GpsListener(PythonJavaClass):
+class GpsManager(PythonJavaClass):
 
     __javainterfaces__ = ["android/location/LocationListener"]
 
@@ -44,11 +44,12 @@ class GpsListener(PythonJavaClass):
         self.location_manager = PythonActivity.mActivity.getSystemService(
             Context.LOCATION_SERVICE
         )
-        # Get Permission Request to start using listener
-        request_permissions(
-            [Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION], 
-            self.on_request_result
-        )
+        # Get Permission Request to start using GPSlistener
+        if VERSION.SDK_INT >= 23:
+            request_permissions(
+                [Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION], 
+                self.on_request_result
+            )
     
     def on_request_result(self, permissions, grant_results):
         """
@@ -86,6 +87,9 @@ class GpsListener(PythonJavaClass):
         stop listening for GPS updates
         """
         self.location_manager.removeUpdates(self)
+    
+    def get_location(self):
+        return self.location_manager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
     
     @java_method('()I')
     def hashCode(self):

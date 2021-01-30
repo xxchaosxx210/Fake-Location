@@ -99,7 +99,7 @@ class Gps(PythonJavaClass):
         loc.setLongitude(longitude)
         if VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1:
             loc.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
-        self.location_manager.setTestProviderLocation(
+        self._location_manager.setTestProviderLocation(
             self.provider_name,
             loc)
 

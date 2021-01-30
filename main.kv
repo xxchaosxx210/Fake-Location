@@ -35,6 +35,12 @@ MDBoxLayout:
             id: longitude
             text: "19.590709"
         MockToolBarButton:
+            icon: "crosshairs-gps"
+            opposite_colors: True
+            elevation: 8
+            md_bg_color: app.theme_cls.primary_color
+            on_release: app.on_get_location()
+        MockToolBarButton:
             icon: "stop-circle"
             opposite_colors: True
             elevation: 8

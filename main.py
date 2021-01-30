@@ -50,6 +50,8 @@ class MainApp(MDApp):
             if args[0] == True:
                 # Permission accepted start the LocationListener update
                 self.gps_listener.start_gps_updates(3, 10)
+                startup_testprovider(self._location_manager, LocationManager.GPS_LOCATION)
+                self._location_manager.setTestProviderEnabled(LocationManager.GPS_LOCATION, True)
             else:
                 toast("Request to use Locations rejected. Please enable Locations in App Permissions")
         elif event == "location":
@@ -70,11 +72,14 @@ class MainApp(MDApp):
     
     def on_start_mock(self, lat, lng):
         if is_android:
-            pass
+            latitude = float(self.root.ids["latitude"].text)
+            longitude = float(self.root.ids["longitude"].text)
+            set_provider_location(self._location_manager, LocationManager.GPS_PROVIDER,
+                                 latitude, longitude)
     
     def on_stop_mock(self):
         if is_android:
-            pass
+            self._location_manager.setTestProviderEnabled(LocationManager.GPS_LOCATION, False)
     
     def add_status(self, textline):
         self.root.ids["mock_status"].text += f"\n {textline}"

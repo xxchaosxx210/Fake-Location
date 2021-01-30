@@ -58,9 +58,9 @@ class GpsListener(PythonJavaClass):
             if permission == Permission.ACCESS_COARSE_LOCATION:
                 access_coarse_ok = grant_results[index]
         if access_coarse_ok == True and access_fine_ok == True:
-            self.func_callback(self, "permissions-result", [True])
+            self.func_callback(self, "permissions-result", True)
         else:
-            self.func_callback(self, "permissions-result", [False])
+            self.func_callback(self, "permissions-result", False)
     
     def start_gps_updates(self, time_interval, min_dist):
         """

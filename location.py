@@ -35,7 +35,7 @@ SystemClock = autoclass("android.os.SystemClock")
 
 # Nested class requires $
 VERSION = autoclass("android.os.Build$VERSION")
-BUILD_CODES = autoclass("android.os.Build$BUILD_CODES")
+VERSION_CODES = autoclass("android.os.Build$VERSION_CODES")
 
 class GpsManager(PythonJavaClass):
 
@@ -97,7 +97,7 @@ class GpsManager(PythonJavaClass):
         loc.setAccuracy(1)
         loc.setLatitude(latitude)
         loc.setLongitude(longitude)
-        if VERSION.SDK_INT >= BUILD_CODES.JELLY_BEAN_MR1:
+        if VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1:
             print("setting elapsedrealtimenanos")
             loc.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
         self.location_manager.setTestProviderLocation(

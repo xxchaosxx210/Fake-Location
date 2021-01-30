@@ -58,7 +58,7 @@ class GpsManager(PythonJavaClass):
             )
         criteria = Criteria()
         criteria.setAccuracy(Criteria.ACCURACY_FINE)
-        self.best_provider = self.location_manager.getBestProvider(criteria, True)
+        self.best_provider = "test"#self.location_manager.getBestProvider(criteria, True)
         if not self.best_provider:
             print("No best provider found")
         else:

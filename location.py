@@ -25,6 +25,7 @@ LocationManager = autoclass("android.location.LocationManager")
 Looper = autoclass("android.os.Looper")
 PythonActivity = autoclass('org.kivy.android.PythonActivity')
 Context = autoclass("android.content.Context")
+Version = autoclass("android.os.Build.VERSION")
 
 
 class GpsListener(PythonJavaClass):
@@ -35,6 +36,7 @@ class GpsListener(PythonJavaClass):
         """
         func_callback(GpsListener, event, object)
         """
+        print(f"API Version: {Version.SDK_INT}")
         super().__init__(**kwargs)
         self.func_callback = func_callback
         self.location_manager = PythonActivity.mActivity.getSystemService(

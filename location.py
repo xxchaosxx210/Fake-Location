@@ -37,7 +37,7 @@ class GpsListener(PythonJavaClass):
         func_callback(GpsListener, event, object)
         """
         for item in dir(Build):
-            print(Build)
+            print(item)
         #print(f"API Version: {Build.VERSION.SDK_INT}")
         super().__init__(**kwargs)
         self.func_callback = func_callback

@@ -98,10 +98,11 @@ class Gps(PythonJavaClass):
             mockloc.setElapsedRealtimeNanos(
                 SystemClock.elapsedRealtimeNanos())
         try:
+            self.init_mock_provider()
             self._location_manager.setTestProviderLocation(LocationManager.GPS_PROVIDER,  mockloc)
         except Exception as err:
             print(f"ERROR: {str(err)}")
-            
+
     def start_mock_provider(self):
         for provider in self._location_manager.getProviders(False).toArray():
             print(provider)

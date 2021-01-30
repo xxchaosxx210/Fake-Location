@@ -49,11 +49,11 @@ class MainApp(MDApp):
             loc = args[0]
             self.add_status(f"Latitude: {loc.getLatitude()}, Longitutde: {loc.getLongitude()}")
         elif event == "provider_enabled":
-            prov = args[0]
-            self.add_status(f"{prov.getName()} Provider enabled")
+            provider = args[0]
+            self.add_status(f"{provider} Provider enabled")
         elif event == "provider_disabled":
-            prov = args[0]
-            self.add_status(f"{prov.getName()} Provider disabled")
+            provider = args[0]
+            self.add_status(f"{provider} Provider disabled")
     
     def on_get_location(self):
         Logger.info("APP: Refresh Pressed")

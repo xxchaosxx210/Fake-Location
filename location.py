@@ -95,7 +95,7 @@ class GpsTester:
             loc = Location(provider)
             loc.setAltitude(altitude)
             loc.setTime(System.currentTimeMillis())
-            loc.setAccuracy(5)
+            loc.setAccuracy(100.0)
             loc.setLatitude(latitude)
             loc.setLongitude(longitude)
             if VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1:

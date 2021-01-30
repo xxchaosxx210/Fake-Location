@@ -25,12 +25,12 @@ class MainApp(MDApp):
         self.theme_cls.primary_palette = "Blue"
     
     def on_stop(self):
-        self.gps_tester.close()
+        pass#self.gps_tester.close()
     
     def on_start(self):
         if is_android:
             require_location_permissions(self.on_gps_update)
-            self.gps_tester = GpsTester()
+            #self.gps_tester = GpsTester()
             self.gps_location = GpsListener(self.on_gps_update)
             
     @mainthread
@@ -42,8 +42,8 @@ class MainApp(MDApp):
             print(args[0])
             print(type(args[0]))
             if args[0] == True:
-                self.gps_tester.init_mock_locations()
-                self.gps_tester.enable_mock_locations()
+                #self.gps_tester.init_mock_locations()
+                #self.gps_tester.enable_mock_locations()
                 Logger.info("APP: Location Permission requests have been accepted")
             else:
                 Logger.info("APP: Location Permission requests have been rejected")

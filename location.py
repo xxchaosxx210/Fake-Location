@@ -139,15 +139,15 @@ class Gps(PythonJavaClass):
     
     @java_method('(Landroid/location/Location;)V')
     def onLocationChanged(self, location):
-        self.func_callback(self, "location", location)
+        self._func_callback(self, "location", location)
     
     @java_method('(Ljava/lang/String;)V')
     def onProviderEnabled(self, provider):
-        self.func_callback(self, "provider_enabled", provider)
+        self._func_callback(self, "provider_enabled", provider)
     
     @java_method('(Ljava/lang/String;)V')
     def onProviderDisabled(self, provider):
-        self.func_callback(self, "provider_disabled", provider)
+        self._func_callback(self, "provider_disabled", provider)
     
     @java_method('(Ljava/lang/Object;)Z')
     def equals(self, obj):

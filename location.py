@@ -31,10 +31,11 @@ PythonActivity = autoclass('org.kivy.android.PythonActivity')
 Context = autoclass("android.content.Context")
 System = autoclass("java.lang.System")
 Criteria = autoclass("android.location.Criteria")
+SystemClock = autoclass("android.os.SystemClock")
 
 # Nested class requires $
 VERSION = autoclass("android.os.Build$VERSION")
-
+BUILD_CODES = autoclass("android.os.Build$BUILD_CODES")
 
 class GpsManager(PythonJavaClass):
 
@@ -58,7 +59,7 @@ class GpsManager(PythonJavaClass):
             )
         criteria = Criteria()
         criteria.setAccuracy(Criteria.ACCURACY_FINE)
-        self.best_provider = "test"#self.location_manager.getBestProvider(criteria, True)
+        self.best_provider = LocationManager.GPS_PROVIDER#self.location_manager.getBestProvider(criteria, True)
         try:
             self.remove_test_provider()
         except:
@@ -90,15 +91,15 @@ class GpsManager(PythonJavaClass):
         self.location_manager.removeTestProvider(self.best_provider)
     
     def set_mock_location(self, latitude, longitude, altitude):
-        # loc = Location(self.best_provider)
-        # loc.setAltitude(altitude)
-        # loc.setTime(System.currentTimeMillis())
-        # loc.setAccuracy(5)
-        # loc.setSpeed(0.0)
-        # loc.setProvider(self.best_provider)
-        loc = self.get_location()
+        loc = Location(self.best_provider)
+        loc.setAltitude(altitude)
+        loc.setTime(System.currentTimeMillis())
+        loc.setAccuracy(1)
         loc.setLatitude(latitude)
         loc.setLongitude(longitude)
+        if VERSION.SDK_INT >= BUILD_CODES.JELLY_BEAN_MR1:
+            print("setting elapsedrealtimenanos")
+            loc.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
         self.location_manager.setTestProviderLocation(
             self.best_provider,
             loc

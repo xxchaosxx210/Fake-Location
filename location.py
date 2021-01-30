@@ -56,7 +56,9 @@ def require_location_permissions(func_callback):
         request_permissions(
             [Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION], on_request_result)
 
-class Gps:
+class Gps(PythonJavaClass):
+
+    __javainterfaces__ = ["android/location/LocationListener"]
 
     def __init__(self, func_callback):
         self._location_manager = PythonActivity.mActivity.getSystemService(Context.LOCATION_SERVICE)
@@ -99,21 +101,6 @@ class Gps:
     
     def stop_mock_provider(self):
         self._location_manager.setTestProviderEnabled(self.provider_name, False)
-        
-
-class GpsListener(PythonJavaClass):
-
-    __javainterfaces__ = ["android/location/LocationListener"]
-
-    def __init__(self, func_callback, **kwargs):
-        """
-        func_callback(GpsListener, event, object)
-        """
-        super().__init__(**kwargs)
-        self.func_callback = func_callback
-        self.location_manager = PythonActivity.mActivity.getSystemService(
-            Context.LOCATION_SERVICE
-        )
     
     def start_gps_updates(self, time_interval, min_dist):
         """
@@ -122,7 +109,7 @@ class GpsListener(PythonJavaClass):
         min_dist - float
             minimum distance between location updates in meters
         """
-        self.location_manager.requestLocationUpdates(
+        self._location_manager.requestLocationUpdates(
             LocationManager.GPS_PROVIDER,
             time_interval,
             min_dist,
@@ -134,13 +121,13 @@ class GpsListener(PythonJavaClass):
         """
         stop listening for GPS updates
         """
-        self.location_manager.removeUpdates(self)
+        self._location_manager.removeUpdates(self)
     
     def get_location(self):
         """
         returns Location object or None if no GPS availible
         """
-        return self.location_manager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        return self._location_manager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
     
     @java_method('()I')
     def hashCode(self):
@@ -156,7 +143,7 @@ class GpsListener(PythonJavaClass):
     
     @java_method('(Ljava/lang/String;)V')
     def onProviderEnabled(self, provider):
-        self.func_callback(self, "provider_disabled", provider)
+        self.func_callback(self, "provider_enabled", provider)
     
     @java_method('(Ljava/lang/String;)V')
     def onProviderDisabled(self, provider):
@@ -165,3 +152,4 @@ class GpsListener(PythonJavaClass):
     @java_method('(Ljava/lang/Object;)Z')
     def equals(self, obj):
         return obj.hashCode() == self.hashCode()
+    

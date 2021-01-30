@@ -50,6 +50,7 @@ class MainApp(MDApp):
             if args[0] == True:
                 # Permission accepted start the LocationListener update
                 self.gps_listener.start_gps_updates(3, 10)
+                self._location_manager.removeTestProvider(LocationManager.GPS_PROVIDER)
                 startup_testprovider(self._location_manager, LocationManager.GPS_PROVIDER)
                 self._location_manager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, True)
             else:
@@ -74,14 +75,12 @@ class MainApp(MDApp):
         if is_android:
             latitude = float(self.root.ids["latitude"].text)
             longitude = float(self.root.ids["longitude"].text)
-            startup_testprovider(self._location_manager, LocationManager.GPS_PROVIDER)
             self._location_manager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, True)
             set_provider_location(self._location_manager, LocationManager.GPS_PROVIDER,
                                  latitude, longitude)
     
     def on_stop_mock(self):
         if is_android:
-            startup_testprovider(self._location_manager, LocationManager.GPS_PROVIDER)
             self._location_manager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, True)
     
     def add_status(self, textline):

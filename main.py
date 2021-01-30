@@ -52,7 +52,8 @@ class MainApp(MDApp):
             if args[0] == True:
                 # Permission accepted start the LocationListener update
                 self.gps_listener.start_gps_updates(3, 10)
-                self._location_manager.removeTestProvider(LocationManager.GPS_PROVIDER)
+                if self._location_manager.getProvider(LocationManager.GPS_PROVIDER):
+                    self._location_manager.removeTestProvider(LocationManager.GPS_PROVIDER)
                 startup_testprovider(self._location_manager, LocationManager.GPS_PROVIDER)
                 self._location_manager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, True)
             else:

@@ -50,7 +50,7 @@ class MainApp(MDApp):
                 self.root.ids["mock_status"].text += f"\n lat = {loc.getLatitude()}, lng = {loc.getLongitude()}"
     
     def on_start_fake_location(self):
-        self.provider.set_mock_location(23.9292, 1.233445, 0)
+        self.provider.set_mock_location(51.507351, -0.127758, 0)
 
     def on_stop_fake_location(self):
         self.provider.disable_mock_locations()

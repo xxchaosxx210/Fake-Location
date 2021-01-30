@@ -22,6 +22,9 @@ class MainApp(MDApp):
         super().__init__(**kwargs)
         self.theme_cls.primary_palette = "Blue"
     
+    def on_stop(self):
+        self.provider.remove_test_provider()
+    
     def on_start(self):
         if is_android:
             self.provider = GpsManager(self.on_gps_update)
@@ -35,6 +38,7 @@ class MainApp(MDApp):
             print(args[0])
             print(type(args[0]))
             if args[0] == True:
+                self.provider.enable_mock_locations()
                 Logger.info("APP: Location Permission requests have been accepted")
             else:
                 Logger.info("APP: Location Permission requests have been rejected")
@@ -42,7 +46,14 @@ class MainApp(MDApp):
     def on_get_location(self):
         if is_android:
             loc = self.provider.get_location()
-            self.root.ids["mock_status"].text += f"\n lat = {loc.getLatitude()}, lng = {loc.getLongitude()}"
+            if loc:
+                self.root.ids["mock_status"].text += f"\n lat = {loc.getLatitude()}, lng = {loc.getLongitude()}"
+    
+    def on_start_fake_location(self):
+        self.provider.set_mock_location(23.9292, 1.233445, 0)
+
+    def on_stop_fake_location(self):
+        self.provider.disable_mock_locations()
 
 
 def main():

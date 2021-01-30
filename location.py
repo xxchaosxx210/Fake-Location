@@ -25,9 +25,11 @@ from android.permissions import Permission
 # reflect our Android classes from the Android SDK
 
 LocationManager = autoclass("android.location.LocationManager")
+Location = autoclass("android.location.Location")
 Looper = autoclass("android.os.Looper")
 PythonActivity = autoclass('org.kivy.android.PythonActivity')
 Context = autoclass("android.content.Context")
+System = autoclass("java.lang.System")
 
 # Nested class requires $
 VERSION = autoclass("android.os.Build$VERSION")
@@ -53,6 +55,42 @@ class GpsManager(PythonJavaClass):
                 [Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION], 
                 self.on_request_result
             )
+    
+    def enable_mock_locations(self):
+        self.location_manager.addTestProvider(
+            LocationManager.GPS_PROVIDER, 
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            0,
+            5
+        )
+        self.location_manager.setTestProvider(
+            LocationManager.GPS_PROVIDER, True
+        )
+    
+    def disable_mock_locations(self):
+        self.location_manager.setTestProvider(
+            LocationManager.GPS_PROVIDER, False
+        )
+    
+    def remove_test_provider(self):
+        self.location_manager.removeTestProvider(LocationManager.GPS_PROVIDER)
+    
+    def set_mock_location(self, latitude, longitude, altitude):
+        loc = Location(LocationManager.GPS_PROVIDER)
+        loc.setLatitude(latitude)
+        loc.setLongitude(longitude)
+        loc.setAltitude(altitude)
+        loc.setTime(System.currentTimeMillis())
+        self.location_manager.setTestProviderLocation(
+            LocationManager.GPS_PROVIDER,
+            loc
+        )
     
     def on_request_result(self, permissions, grant_results):
         """
@@ -92,6 +130,9 @@ class GpsManager(PythonJavaClass):
         self.location_manager.removeUpdates(self)
     
     def get_location(self):
+        """
+        returns Location object or None if no GPS availible
+        """
         return self.location_manager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
     
     @java_method('()I')

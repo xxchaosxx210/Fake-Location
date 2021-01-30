@@ -9,6 +9,9 @@ Contains functions and classes for dealing with Androids Location API
  Features include:
 
  GPSListener - A class for retrieving GPS location data
+
+In order to get location updates- call start_gps_updates
+if just want location right away the call get_location
 """
 
 from jnius import autoclass

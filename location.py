@@ -91,8 +91,10 @@ class Gps(PythonJavaClass):
         self._location_manager.removeTestProvider(self.provider_name)
     
     def set_mock_location(self, latitude, longitude):
-        for item in self._location_manager.getProviders(True).toArray():
+        array = self._location_manager.getProviders(True).toArray()
+        for item in array:
             print(f"Provider: {item}")
+        print(f"Array[1] = {array[1]}")
         # loc = Location(self.provider_name)
         # loc.setAltitude(1)
         # loc.setTime(System.currentTimeMillis())

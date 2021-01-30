@@ -1,10 +1,18 @@
+<MockToolBarTextField@MDTextField>:
+    spacing: "20dp"
+    padding: "20dp"
+<MockToolBarButton@MDFloatingActionButton>:
+    spacing: "20dp"
+    padding: "20dp"
+
 MDBoxLayout:
     orientation: "vertical"
+    padding: "10dp"
     ScrollView:
-        size_hint: 1, .4
+        size_hint: 1, .8
         canvas.before:
             Color:
-                rgba: .7, .7, .7, 1
+                rgba: .8, .8, .9, 1
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -16,28 +24,26 @@ MDBoxLayout:
                 id: mock_status
                 size_hint_y: None
                 height: self.texture_size[1]
-    MDBoxLayout:
-        orientation: "horizontal"
-        size_hint: 1, .6
-        spacing: "40dp"
-        MDFloatingActionButton:
-            pos_hint: {"center_x": .5, "center_y": .5}
-            icon: "stop-circle-outline"
+    MDGridLayout:
+        rows: 1
+        size_hint: 1, .2
+        padding: "20dp"
+        MockToolBarTextField:
+            id: latitude
+            text: "-6.664608"
+        MockToolBarTextField:
+            id: longitude
+            text: "19.590709"
+        MockToolBarButton:
+            icon: "stop-circle"
             opposite_colors: True
             elevation: 8
             md_bg_color: app.theme_cls.primary_color
-            on_release: app.on_stop_fake_location()
-        MDFloatingActionButton:
-            pos_hint: {"center_x": .5, "center_y": .5}
-            icon: "restart"
+            on_release: app.on_stop_mock()
+        MockToolBarButton:
+            icon: "check"
             opposite_colors: True
             elevation: 8
             md_bg_color: app.theme_cls.primary_color
-            on_release: app.on_get_location()
-        MDFloatingActionButton:
-            pos_hint: {"center_x": .5, "center_y": .5}
-            icon: "restart"
-            opposite_colors: True
-            elevation: 8
-            md_bg_color: app.theme_cls.primary_color
-            on_release: app.on_start_fake_location()
+            on_release: app.on_start_mock(float(root.ids["latitude"].text), float(root.ids["longitude"].text))
+        

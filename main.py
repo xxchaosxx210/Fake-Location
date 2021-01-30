@@ -24,7 +24,10 @@ class MainApp(MDApp):
         self.theme_cls.primary_palette = "Blue"
     
     def on_stop(self):
-        self.gps.stop_gps_updates()
+        if is_android:
+            self.gps.stop_gps_updates()
+            self.gps.stop_mock_provider()
+            self.gps.start_mock_provider()
     
     def on_start(self):
         if is_android:
@@ -49,26 +52,26 @@ class MainApp(MDApp):
             loc = args[0]
             self.add_status(f"Latitude: {loc.getLatitude()}, Longitutde: {loc.getLongitude()}")
         elif event == "provider_enabled":
-            provider = args[0]
-            self.add_status(f"{provider} Provider enabled")
+            self.add_status(f"{provider.getName()} Provider enabled")
         elif event == "provider_disabled":
-            provider = args[0]
-            self.add_status(f"{provider} Provider disabled")
+            self.add_status(f"{provider.getName()} Provider disabled")
     
     def on_get_location(self):
-        Logger.info("APP: Refresh Pressed")
         if is_android:
-            Logger.info("APP: Is android\nRetrieving locations")
             loc = self.gps_location.get_location()
-            Logger.info(f"APP: location = {loc}")
             if loc:
                 self.add_status(f"\n {loc.getLatitude()}, lng = {loc.getLongitude()}")
     
-    def on_start_fake_location(self):
-        print("Fake Location pressed")
-
-    def on_stop_fake_location(self):
-        print("mskdmdk")
+    def on_start_mock(self, lat, lng):
+        if is_android:
+            self.gps.stop_mock_provider()
+            self.gps.start_mock_provider()
+            self.gps.set_mock_location(lat, lng)
+        #self.add_status(f"APP: {lat}, {lng}")
+    
+    def on_stop_mock(self):
+        if is_android:
+            self.gps.stop_mock_provider()
     
     def add_status(self, textline):
         self.root.ids["mock_status"].text += f"\n {textline}"

@@ -58,9 +58,13 @@ def require_location_permissions(func_callback):
             func_callback(None, "permissions-result", False)
     if VERSION.SDK_INT >= 23:
         request_permissions(
-            [Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION, Permission.ACCESS_MOCK_LOCATION], on_request_result)
+            [Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION], on_request_result)
 
 class GPSListener(PythonJavaClass):
+
+    """
+    sets up a callback listener for location updates and changes to providers
+    """
 
     __javainterfaces__ = ["android/location/LocationListener"]
 
@@ -121,9 +125,15 @@ class GPSListener(PythonJavaClass):
 
 
 def get_location_manager():
+    """
+    returns a LocationManager object from Android system
+    """
     return PythonActivity.mActivity.getSystemService(Context.LOCATION_SERVICE)
 
 def startup_testprovider(location_manager, provider_name):
+    """
+    adds test provider for testing
+    """
     try:
         location_manager.addTestProvider(
             provider_name,
@@ -140,6 +150,9 @@ def startup_testprovider(location_manager, provider_name):
         print(f"Error: {err}")
 
 def set_provider_location(location_manager, provider_name, latitude, longitude):
+    """
+    set the fake latitude and longitude coordinates
+    """
     location = Location(provider_name)
     location.setAltitude(1)
     location.setTime(System.currentTimeMillis())

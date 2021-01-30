@@ -45,8 +45,15 @@ class MainApp(MDApp):
                 Logger.info("APP: Location Permission requests have been accepted")
             else:
                 Logger.info("APP: Location Permission requests have been rejected")
-        for item in args:
-            Logger.info(f"APP: {event} = {item}")
+        elif event == "location":
+            loc = args[0]
+            self.add_status(f"Latitude: {loc.getLatitude()}, Longitutde: {loc.getLongitude()}")
+        elif event == "provider_enabled":
+            prov = args[0]
+            self.add_status(f"{prov.getName()} Provider enabled")
+        elif event == "provider_disabled":
+            prov = args[0]
+            self.add_status(f"{prov.getName()} Provider disabled")
     
     def on_get_location(self):
         Logger.info("APP: Refresh Pressed")

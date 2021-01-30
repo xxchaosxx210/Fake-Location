@@ -57,10 +57,9 @@ def require_location_permissions(func_callback):
         request_permissions(
             [Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION], on_request_result)
 
-class GpsTesting:
+class GpsTester:
 
-    def __init__(self, func_callback):
-        self.func_callback = func_callback
+    def __init__(self):
         self.location_manager = PythonActivity.mActivity.getSystemService(
             Context.LOCATION_SERVICE)
         self.providers = (
@@ -80,9 +79,7 @@ class GpsTesting:
                 False,
                 False,
                 0,
-                5
-            )
-            self.location_manager.setTestProviderEnabled(provider, True)
+                5)
     
     def disable_mock_locations(self):
         for provider in self.providers:

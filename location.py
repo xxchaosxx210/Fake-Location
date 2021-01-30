@@ -57,66 +57,14 @@ def require_location_permissions(func_callback):
         request_permissions(
             [Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION], on_request_result)
 
-class Gps(PythonJavaClass):
+class GPSListener(PythonJavaClass):
 
     __javainterfaces__ = ["android/location/LocationListener"]
 
-    def __init__(self, func_callback):
-        self._location_manager = PythonActivity.mActivity.getSystemService(Context.LOCATION_SERVICE)
-        self.provider_name = LocationManager.GPS_PROVIDER
+    def __init__(self, location_manager, func_callback):
         self._func_callback = func_callback
+        self._location_manager = location_manager
     
-    def init_mock_provider(self):
-        if not self._location_manager.getProvider(self.provider_name):
-            print(f"{self.provider_name} was no found add provider")
-            print("No Test Provider Found adding Test Provider")
-            self._location_manager.addTestProvider(
-                self.provider_name,
-                False,
-                False,
-                False,
-                False,
-                False,
-                False,
-                False,
-                0,
-                1
-            )
-            self.start_mock_provider()
-            return False
-        else:
-            print("Founc test provider no need to add")
-            return True
-    
-    def remove_mock_provider(self):
-        self._location_manager.removeTestProvider(self.provider_name)
-    
-    def set_mock_location(self, latitude, longitude):
-        array = self._location_manager.getProviders(True).toArray()
-        for item in array:
-            print(f"Provider: {item}")
-        print(f"Array[1] = {array[1]}")
-        loc = Location(self.provider_name)
-        loc.setAltitude(1)
-        loc.setTime(System.currentTimeMillis())
-        loc.setAccuracy(1)
-        loc.setLatitude(latitude)
-        loc.setLongitude(longitude)
-        if VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1:
-            loc.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
-        try:
-            self._location_manager.setTestProviderLocation(array[1], loc)
-        except Exception as err:
-            print(f"ERROR: {err}")
-
-    def start_mock_provider(self):
-        try:
-            self._location_manager.setTestProviderEnabled(self.provider_name, True)
-        except Exception:
-            self.init_mock_provider()
-    def stop_mock_provider(self):
-        pass#self._location_manager.setTestProviderEnabled(self.provider_name, False)
-        
     def start_gps_updates(self, time_interval, min_dist):
         """
         time_interval - int
@@ -167,4 +115,96 @@ class Gps(PythonJavaClass):
     @java_method('(Ljava/lang/Object;)Z')
     def equals(self, obj):
         return obj.hashCode() == self.hashCode()
+
+
+def get_location_manager():
+    return PythonActivity.mActivity.getSystemService(Context.LOCATION_SERVICE)
+
+def startup_testprovider(location_manager, provider_name):
+    location_manager.addTestProvider(
+        provider_name,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        0,
+        1)
+
+def set_provider_location(location_manager, provider_name, latitude, longitude):
+    location = Location(provider_name)
+    location.setAltitude(1)
+    location.setTime(System.currentTimeMillis())
+    location.setLatitude(latitude)
+    location.setLongitude(longitude)
+    location.setAccuracy(1)
+    if VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1:
+        location.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
+    try:
+        location_manager.setTestProviderLocation(provider_name, location)
+    except Exception as err:
+        print(f"ERROR: {err}")
+
+
+class GpsManager:
+
+    def __init__(self, func_callback):
+        self._location_manager = PythonActivity.mActivity.getSystemService(Context.LOCATION_SERVICE)
+        self.provider_name = LocationManager.GPS_PROVIDER
+        self._func_callback = func_callback
+        self.gps_listener = _GPSListener(self._func_callback)
+    
+    def init_mock_provider(self):
+        if not self._location_manager.getProvider(self.provider_name):
+            print(f"{self.provider_name} was no found add provider")
+            print("No Test Provider Found adding Test Provider")
+            self._location_manager.addTestProvider(
+                self.provider_name,
+                False,
+                False,
+                False,
+                False,
+                False,
+                False,
+                False,
+                0,
+                1
+            )
+            self.start_mock_provider()
+            return False
+        else:
+            print("Founc test provider no need to add")
+            return True
+    
+    def remove_mock_provider(self):
+        self._location_manager.removeTestProvider(self.provider_name)
+    
+    def set_mock_location(self, latitude, longitude):
+        array = self._location_manager.getProviders(True).toArray()
+        for item in array:
+            print(f"Provider: {item}")
+        print(f"Array[1] = {array[1]}")
+        loc = Location(self.provider_name)
+        loc.setAltitude(1)
+        loc.setTime(System.currentTimeMillis())
+        loc.setAccuracy(1)
+        loc.setLatitude(latitude)
+        loc.setLongitude(longitude)
+        if VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1:
+            loc.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
+        try:
+            self._location_manager.setTestProviderLocation(array[1], loc)
+        except Exception as err:
+            print(f"ERROR: {err}")
+
+    def start_mock_provider(self):
+        try:
+            self._location_manager.setTestProviderEnabled(self.provider_name, True)
+        except Exception:
+            self.init_mock_provider()
+
+    def stop_mock_provider(self):
+        pass#self._location_manager.setTestProviderEnabled(self.provider_name, False)
     

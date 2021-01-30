@@ -7,6 +7,7 @@ from kivymd.app import MDApp
 from kivy.logger import Logger
 from kivy.clock import mainthread
 from kivy.utils import platform
+from kivymd.toast import toast
 
 import time
 
@@ -14,26 +15,31 @@ is_android = platform == "android"
 
 # If android then load the Android classes
 if is_android:
-    from location import Gps
+    from location import get_location_manager
+    from location import startup_testprovider
+    from location import set_provider_location
+    from location import GPSListener
+    from location import LocationManager
     from location import require_location_permissions
-    from kivy.clock import Clock
 
 class MainApp(MDApp):
-
+    
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.theme_cls.primary_palette = "Blue"
+        if is_android:
+            # Get LocationManager from Android API
+            self._location_manager = get_location_manager()
     
     def on_stop(self):
         if is_android:
-            self.gps.stop_gps_updates()
-            #self.gps.stop_mock_provider()
-            #self.gps.start_mock_provider()
+            self.gps_listener.stop_gps_updates()
     
     def on_start(self):
         if is_android:
+            # Get ACCESS_FINE_LOCATION Permission from user
             require_location_permissions(self.on_gps_update)
-            self.gps = Gps(self.on_gps_update)
+            self.gps_listener = GPSListener(self._location_manager, self.on_gps_update)
             
     @mainthread
     def on_gps_update(self, provider, event, *args):
@@ -41,15 +47,11 @@ class MainApp(MDApp):
         any changes to location provider will be sent here
         """    
         if event == 'permissions-result':
-            print(args[0])
-            print(type(args[0]))
             if args[0] == True:
-                # setup locations
-                self.gps.init_mock_provider()
-                self.gps.start_gps_updates(3, 10)
-                Logger.info("APP: Location Permission requests have been accepted")
+                # Permission accepted start the LocationListener update
+                self.gps_listener.start_gps_updates(3, 10)
             else:
-                Logger.info("APP: Location Permission requests have been rejected")
+                toast("Request to use Locations rejected. Please enable Locations in App Permissions")
         elif event == "location":
             loc = args[0]
             self.add_status(f"Latitude: {loc.getLatitude()}, Longitutde: {loc.getLongitude()}")
@@ -62,20 +64,17 @@ class MainApp(MDApp):
     
     def on_get_location(self):
         if is_android:
-            loc = self.gps_location.get_location()
+            loc = self.gps_listener.get_location()
             if loc:
                 self.add_status(f"\n {loc.getLatitude()}, lng = {loc.getLongitude()}")
     
     def on_start_mock(self, lat, lng):
         if is_android:
-            self.gps.stop_mock_provider()
-            self.gps.start_mock_provider()
-            self.gps.set_mock_location(lat, lng)
+            pass
     
     def on_stop_mock(self):
         if is_android:
-            self.gps.stop_mock_provider()
-            self.gps.start_mock_provider()
+            pass
     
     def add_status(self, textline):
         self.root.ids["mock_status"].text += f"\n {textline}"

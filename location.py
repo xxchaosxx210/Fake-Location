@@ -146,8 +146,26 @@ def startup_testprovider(location_manager, provider_name):
             False,
             0,
             1)
+        return True
     except Exception as err:
         print(f"Error: {err}")
+        return False
+
+def remove_test_provider(location_manager, provider_name):
+    try:
+        location_manager.removeTestProvider(provider_name)
+        return True
+    except Exception as err:
+        print(f"Error: {err}")
+        return False
+
+def set_provider_enabled(location_manager, provider_name, enabled):
+    try:
+        location_manager.setTestProviderEnabled(provider_name, enabled)
+        return True
+    except Exception as err:
+        print(f"Error: {err}")
+        return  False
 
 def set_provider_location(location_manager, provider_name, latitude, longitude):
     """
@@ -163,5 +181,7 @@ def set_provider_location(location_manager, provider_name, latitude, longitude):
         location.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
     try:
         location_manager.setTestProviderLocation(provider_name, location)
+        return True
     except Exception as err:
-        print(f"ERROR: {err}")
+        print(f"Error: {err}")
+        return False

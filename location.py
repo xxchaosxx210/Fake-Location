@@ -59,10 +59,10 @@ class GpsManager(PythonJavaClass):
         criteria = Criteria()
         criteria.setAccuracy(Criteria.ACCURACY_FINE)
         self.best_provider = "test"#self.location_manager.getBestProvider(criteria, True)
-        if not self.best_provider:
-            print("No best provider found")
-        else:
-            print(f"Best Provider {self.best_provider}")
+        try:
+            self.remove_test_provider()
+        except:
+            print("Unable to remove Test Provider")
     
     def enable_mock_locations(self):
         self.location_manager.addTestProvider(

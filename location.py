@@ -66,20 +66,20 @@ class Gps(PythonJavaClass):
         self._func_callback = func_callback
     
     def init_mock_provider(self):
-        locprov = self._location_manager.getProvider(self.provider_name)
-        self._location_manager.addTestProvider(
-            locprov.getName(),
-            locprov.requiresNetwork(),
-            locprov.requiresSatellite(),
-            locprov.requiresCell(),
-            locprov.hasMonetaryCost(),
-            locprov.supportsAltitude(),
-            locprov.supportsSpeed(),
-            locprov.supportsBearing(),
-            locprov.getPowerRequirement(),
-            locprov.getAccuracy()
-        )
-        self._location_manager.setTestProviderEnabled(self.provider_name, True)
+        if not self._location_manager.getProvider(self.provider_name):
+            print("No Test Provider Found adding Test Provider")
+            self._location_manager.addTestProvider(
+                self.provider_name,
+                False,
+                False,
+                False,
+                False,
+                False,
+                False,
+                False,
+                0,
+                1
+            )
     
     def remove_mock_provider(self):
         self._location_manager.removeTestProvider(self.provider_name)

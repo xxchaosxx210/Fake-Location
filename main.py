@@ -44,6 +44,11 @@ class MainApp(MDApp):
             print(type(args[0]))
             if args[0] == True:
                 # setup locations
+                try:
+                    self.init_mock_provider()
+                except Exception as err:
+                    self.add_status(f"Error: {str(err)}")
+
                 self.gps.start_gps_updates(3, 10)
                 Logger.info("APP: Location Permission requests have been accepted")
             else:

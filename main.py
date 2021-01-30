@@ -14,7 +14,9 @@ is_android = platform == "android"
 
 # If android then load the Android classes
 if is_android:
-    from location import GpsManager
+    from location import GpsTesting
+    from location import GpsGpsListener
+    from location import require_location_permissions
 
 class MainApp(MDApp):
 
@@ -27,7 +29,7 @@ class MainApp(MDApp):
     
     def on_start(self):
         if is_android:
-            self.provider = GpsManager(self.on_gps_update)
+            require_location_permissions(self.on_gps_update)
             
     @mainthread
     def on_gps_update(self, provider, event, *args):

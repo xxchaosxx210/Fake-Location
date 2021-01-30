@@ -36,77 +36,12 @@ SystemClock = autoclass("android.os.SystemClock")
 VERSION = autoclass("android.os.Build$VERSION")
 VERSION_CODES = autoclass("android.os.Build$VERSION_CODES")
 
-class GpsManager(PythonJavaClass):
-
-    __javainterfaces__ = ["android/location/LocationListener"]
-
-    def __init__(self, func_callback, **kwargs):
-        """
-        func_callback(GpsListener, event, object)
-        """
-        print(f"API Version: {VERSION.SDK_INT}")
-        super().__init__(**kwargs)
-        self.func_callback = func_callback
-        self.location_manager = PythonActivity.mActivity.getSystemService(
-            Context.LOCATION_SERVICE
-        )
-        # Get Permission Request to start using GPSlistener
-        if VERSION.SDK_INT >= 23:
-            request_permissions(
-                [Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION], 
-                self.on_request_result
-            )
-        providers = self.location_manager.getProviders(False)
-        print(f"Providers: {providers}")
-        self.best_provider = LocationManager.GPS_PROVIDER
-        try:
-            self.remove_test_provider()
-        except:
-            print("Unable to remove Test Provider")
-    
-    def enable_mock_locations(self):
-        self.location_manager.addTestProvider(
-            self.best_provider, 
-            False,
-            False,
-            False,
-            False,
-            False,
-            False,
-            False,
-            0,
-            5
-        )
-        self.location_manager.setTestProviderEnabled(
-            self.best_provider, True
-        )
-    
-    def disable_mock_locations(self):
-        self.location_manager.setTestProviderEnabled(
-            self.best_provider, False
-        )
-    
-    def remove_test_provider(self):
-        self.location_manager.removeTestProvider(self.best_provider)
-    
-    def set_mock_location(self, latitude, longitude, altitude):
-        loc = Location(self.best_provider)
-        loc.setAltitude(altitude)
-        loc.setTime(System.currentTimeMillis())
-        loc.setAccuracy(5)
-        loc.setLatitude(latitude)
-        loc.setLongitude(longitude)
-        if VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1:
-            loc.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
-        self.location_manager.setTestProviderLocation(
-            self.best_provider,
-            loc
-        )
-    
-    def on_request_result(self, permissions, grant_results):
-        """
-        get the request results
-        """
+def require_location_permissions(func_callback):
+    """
+    get the request results call callback
+    def func_callback(obj, event, *args)
+    """
+    def on_request_result(permissions, grant_results):
         access_fine_ok = False
         access_coarse_ok = False
         for index, permission in enumerate(permissions):
@@ -115,9 +50,79 @@ class GpsManager(PythonJavaClass):
             if permission == Permission.ACCESS_COARSE_LOCATION:
                 access_coarse_ok = grant_results[index]
         if access_coarse_ok == True and access_fine_ok == True:
-            self.func_callback(self, "permissions-result", True)
+            func_callback(None, "permissions-result", True)
         else:
-            self.func_callback(self, "permissions-result", False)
+            func_callback(None, "permissions-result", False)
+    if VERSION.SDK_INT >= 23:
+        request_permissions(
+            [Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION], on_request_result)
+
+class GpsTesting:
+
+    def __init__(self, func_callback):
+        self.func_callback = func_callback
+        self.location_manager = PythonActivity.mActivity.getSystemService(
+            Context.LOCATION_SERVICE)
+        self.providers = (
+            LocationManager.NETWORK_PROVIDER,
+            LocationManager.GPS_PROVIDER
+        )
+
+    def init_mock_locations(self):
+        for provider in self.providers:
+            self.location_manager.addTestProvider(
+                provider, 
+                False,
+                False,
+                False,
+                False,
+                False,
+                False,
+                False,
+                0,
+                5
+            )
+            self.location_manager.setTestProviderEnabled(provider, True)
+    
+    def disable_mock_locations(self):
+        for provider in self.providers:
+            self.location_manager.setTestProviderEnabled(provider, False)
+    
+    def enable_mock_locations(self):
+        for provider in self.providers:
+            self.location_manager.setTestProviderEnabled(provider, True)
+    
+    def close(self):
+        for provider in self.providers:
+            self.location_manager.removeTestProvider(provider)
+    
+    def set_mock_locations(self, latitude, longitude, altitude):
+        for provider in self.providers:
+            loc = Location(provider)
+            loc.setAltitude(altitude)
+            loc.setTime(System.currentTimeMillis())
+            loc.setAccuracy(5)
+            loc.setLatitude(latitude)
+            loc.setLongitude(longitude)
+            if VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1:
+                loc.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
+            self.location_manager.setTestProviderLocation(
+                provider,
+                loc)
+
+class GpsListener(PythonJavaClass):
+
+    __javainterfaces__ = ["android/location/LocationListener"]
+
+    def __init__(self, func_callback, **kwargs):
+        """
+        func_callback(GpsListener, event, object)
+        """
+        super().__init__(**kwargs)
+        self.func_callback = func_callback
+        self.location_manager = PythonActivity.mActivity.getSystemService(
+            Context.LOCATION_SERVICE
+        )
     
     def start_gps_updates(self, time_interval, min_dist):
         """

@@ -34,6 +34,7 @@ SystemClock = autoclass("android.os.SystemClock")
 
 # Nested class requires $
 VERSION = autoclass("android.os.Build$VERSION")
+VERSION_CODES = autoclass("android.os.Build$VERSION_CODES")
 
 def require_location_permissions(func_callback):
     """
@@ -82,25 +83,25 @@ class Gps(PythonJavaClass):
                 1
             )
             self.start_mock_provider()
+            return False
         else:
-            print(f"{self.provider_name} was found")
+            return True
     
     def remove_mock_provider(self):
         self._location_manager.removeTestProvider(self.provider_name)
     
     def set_mock_location(self, latitude, longitude):
-        mockloc = Location(LocationManager.GPS_PROVIDER)
-        mockloc.setTime(System.currentTimeMillis())
-        mockloc.setAccuracy(1)
-        mockloc.setLatitude(latitude)
-        mockloc.setLongitude(longitude)
-        if VERSION.SDK_INT >= 17:
-            mockloc.setElapsedRealtimeNanos(
-                SystemClock.elapsedRealtimeNanos())
-        try:
-            self._location_manager.setTestProviderLocation(LocationManager.GPS_PROVIDER,  mockloc)
-        except Exception as err:
-            print(f"ERROR: {str(err)}")
+        loc = Location(self.provider_name)
+        loc.setAltitude(1)
+        loc.setTime(System.currentTimeMillis())
+        loc.setAccuracy(1)
+        loc.setLatitude(latitude)
+        loc.setLongitude(longitude)
+        if VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1:
+            loc.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
+        self.location_manager.setTestProviderLocation(
+            self.provider_name,
+            loc)
 
     def start_mock_provider(self):
         for provider in self._location_manager.getProviders(False).toArray():

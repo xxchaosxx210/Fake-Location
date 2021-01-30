@@ -85,6 +85,7 @@ class Gps(PythonJavaClass):
             self.start_mock_provider()
             return False
         else:
+            print("Founc test provider no need to add")
             return True
     
     def remove_mock_provider(self):
@@ -95,17 +96,18 @@ class Gps(PythonJavaClass):
         for item in array:
             print(f"Provider: {item}")
         print(f"Array[1] = {array[1]}")
-        # loc = Location(self.provider_name)
-        # loc.setAltitude(1)
-        # loc.setTime(System.currentTimeMillis())
-        # loc.setAccuracy(1)
-        # loc.setLatitude(latitude)
-        # loc.setLongitude(longitude)
-        # if VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1:
-        #     loc.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
-        # self._location_manager.setTestProviderLocation(
-        #     self.provider_name,
-        #     loc)
+        loc = Location(self.provider_name)
+        loc.setAltitude(1)
+        loc.setTime(System.currentTimeMillis())
+        loc.setAccuracy(1)
+        loc.setLatitude(latitude)
+        loc.setLongitude(longitude)
+        if VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1:
+            loc.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
+        try:
+            self._location_manager.setTestProviderLocation(array[1], loc)
+        except Exception as err:
+            print(f"ERROR: {err}")
 
     def start_mock_provider(self):
         try:

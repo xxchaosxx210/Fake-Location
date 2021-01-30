@@ -42,7 +42,7 @@ class MainApp(MDApp):
     def on_get_location(self):
         if is_android:
             loc = self.provider.get_location()
-            self.root.ids["mock_status"].text += f"\n lat = {loc.getLatitude()}, lng = {loc.getLongitude()}")
+            self.root.ids["mock_status"].text += f"\n lat = {loc.getLatitude()}, lng = {loc.getLongitude()}"
 
 
 def main():

@@ -59,7 +59,7 @@ class GpsManager(PythonJavaClass):
             )
         criteria = Criteria()
         criteria.setAccuracy(Criteria.ACCURACY_FINE)
-        self.best_provider = "test"#LocationManager.GPS_PROVIDER#self.location_manager.getBestProvider(criteria, True)
+        self.best_provider = LocationManager.GPS_PROVIDER#self.location_manager.getBestProvider(criteria, True)
         try:
             self.remove_test_provider()
         except:

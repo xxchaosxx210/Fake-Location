@@ -74,6 +74,7 @@ class MainApp(MDApp):
     def on_stop_mock(self):
         if is_android:
             self.gps.stop_mock_provider()
+            self.gps.start_mock_provider()
     
     def add_status(self, textline):
         self.root.ids["mock_status"].text += f"\n {textline}"

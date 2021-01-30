@@ -30,7 +30,6 @@ Looper = autoclass("android.os.Looper")
 PythonActivity = autoclass('org.kivy.android.PythonActivity')
 Context = autoclass("android.content.Context")
 System = autoclass("java.lang.System")
-Criteria = autoclass("android.location.Criteria")
 SystemClock = autoclass("android.os.SystemClock")
 
 # Nested class requires $
@@ -57,9 +56,8 @@ class GpsManager(PythonJavaClass):
                 [Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION], 
                 self.on_request_result
             )
-        criteria = Criteria()
-        criteria.setAccuracy(Criteria.ACCURACY_FINE)
-        self.best_provider = LocationManager.GPS_PROVIDER#self.location_manager.getBestProvider(criteria, True)
+        for provider in self.location_manager.getProviders(False)
+        self.best_provider = LocationManager.GPS_PROVIDER
         try:
             self.remove_test_provider()
         except:

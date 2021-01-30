@@ -91,33 +91,25 @@ class Gps(PythonJavaClass):
         self._location_manager.removeTestProvider(self.provider_name)
     
     def set_mock_location(self, latitude, longitude):
-        loc = Location(self.provider_name)
-        loc.setAltitude(1)
-        loc.setTime(System.currentTimeMillis())
-        loc.setAccuracy(1)
-        loc.setLatitude(latitude)
-        loc.setLongitude(longitude)
-        if VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1:
-            loc.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
-        self._location_manager.setTestProviderLocation(
-            self.provider_name,
-            loc)
+        for item in self._location_manager.getProviders(True).toArray():
+            print(f"Provider: {item}")
+        # loc = Location(self.provider_name)
+        # loc.setAltitude(1)
+        # loc.setTime(System.currentTimeMillis())
+        # loc.setAccuracy(1)
+        # loc.setLatitude(latitude)
+        # loc.setLongitude(longitude)
+        # if VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1:
+        #     loc.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
+        # self._location_manager.setTestProviderLocation(
+        #     self.provider_name,
+        #     loc)
 
     def start_mock_provider(self):
-        for provider in self._location_manager.getProviders(False).toArray():
-            print(provider)
-        try:
-            self._location_manager.setTestProviderEnabled(self.provider_name, True)
-        except Exception:
-            pass
+        self._location_manager.setTestProviderEnabled(self.provider_name, True)
 
     def stop_mock_provider(self):
-        for provider in self._location_manager.getProviders(True).toArray():
-            print(provider)
-        try:
-            self._location_manager.setTestProviderEnabled(self.provider_name, False)
-        except Exception:
-            pass
+        self._location_manager.setTestProviderEnabled(self.provider_name, False)
         
     def start_gps_updates(self, time_interval, min_dist):
         """

@@ -45,7 +45,7 @@ class MainApp(MDApp):
             print(type(args[0]))
             if args[0] == True:
                 # setup locations
-                #self.gps.init_mock_provider()
+                self.gps.init_mock_provider()
                 self.gps.start_gps_updates(3, 10)
                 Logger.info("APP: Location Permission requests have been accepted")
             else:
@@ -68,8 +68,8 @@ class MainApp(MDApp):
     
     def on_start_mock(self, lat, lng):
         if is_android:
-            #self.gps.stop_mock_provider()
-            #self.gps.start_mock_provider()
+            self.gps.stop_mock_provider()
+            self.gps.start_mock_provider()
             self.gps.set_mock_location(lat, lng)
     
     def on_stop_mock(self):

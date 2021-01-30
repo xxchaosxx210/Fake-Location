@@ -35,16 +35,16 @@ class MainApp(MDApp):
     def on_start(self):
         if is_android:
             request_permissions([Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION], self.on_request_result)
-            #self.provider.start_gps_updates(3000, 10)
     
     def on_request_result(self, permissions, grant_results):
         """
         get the request results
         """
-        print(f"Length permissions: {len(permissions)}, length of grant_results: {len(grant_results)}")
-        for permission in permissions:
+        for index, permission in enumerate(permissions):
             if permission == Permission.ACCESS_FINE_LOCATION:
-                Logger.info("App: ACCESS_FINE_LOCATION....")
+                if grant_results[index]:
+                    Logger.info("APP: ACCESS_FINE_LOCATION has been accepted")
+                    self.provider.start_gps_updates(3000, 10)
     
     @mainthread
     def on_gps_update(self, provider, event, *args):

@@ -89,7 +89,7 @@ class Gps(PythonJavaClass):
         self._location_manager.removeTestProvider(self.provider_name)
     
     def set_mock_location(self, latitude, longitude):
-        mockloc = Location(self.provider_name)
+        mockloc = Location("gps")
         mockloc.setTime(System.currentTimeMillis())
         mockloc.setAccuracy(1)
         mockloc.setLatitude(latitude)
@@ -98,7 +98,7 @@ class Gps(PythonJavaClass):
             mockloc.setElapsedRealtimeNanos(
                 SystemClock.elapsedRealtimeNanos())
         self._location_manager.setTestProviderLocation(
-            self.provider_name,  mockloc)
+            "gps",  mockloc)
     
     def start_mock_provider(self):
         for provider in self._location_manager.getProviders(False).toArray():

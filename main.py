@@ -72,8 +72,8 @@ class MainApp(MDApp):
     
     def on_start_mock(self, lat, lng):
         if is_android:
-            self.gps.stop_mock_provider()
-            self.gps.start_mock_provider()
+            #self.gps.stop_mock_provider()
+            #self.gps.start_mock_provider()
             self.gps.set_mock_location(lat, lng)
         #self.add_status(f"APP: {lat}, {lng}")
     

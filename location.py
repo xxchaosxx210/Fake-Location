@@ -95,6 +95,9 @@ class GpsManager(PythonJavaClass):
         loc.setLongitude(longitude)
         loc.setAltitude(altitude)
         loc.setTime(System.currentTimeMillis())
+        loc.setAccuracy(5)
+        loc.setSpeed(0.0)
+        loc.setProvider(self.best_provider)
         self.location_manager.setTestProviderLocation(
             self.best_provider,
             loc

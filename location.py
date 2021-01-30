@@ -154,7 +154,7 @@ class GpsManager:
         self._location_manager = PythonActivity.mActivity.getSystemService(Context.LOCATION_SERVICE)
         self.provider_name = LocationManager.GPS_PROVIDER
         self._func_callback = func_callback
-        self.gps_listener = _GPSListener(self._func_callback)
+        self.gps_listener = GPSListener(self._func_callback)
     
     def init_mock_provider(self):
         if not self._location_manager.getProvider(self.provider_name):

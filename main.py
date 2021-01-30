@@ -45,8 +45,8 @@ class MainApp(MDApp):
                 Logger.info("APP: Location Permission requests have been accepted")
             else:
                 Logger.info("APP: Location Permission requests have been rejected")
-        elif event == "location":
-            print(args[0])
+        for item in args:
+            Logger.info(f"APP: {event} = {item}")
     
     def on_get_location(self):
         Logger.info("APP: Refresh Pressed")

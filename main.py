@@ -40,7 +40,7 @@ class MainApp(MDApp):
             print(args[0])
             print(type(args[0]))
             if args[0] == True:
-                self.provider.enable_mock_locations()
+                #self.provider.enable_mock_locations()
                 Logger.info("APP: Location Permission requests have been accepted")
             else:
                 Logger.info("APP: Location Permission requests have been rejected")

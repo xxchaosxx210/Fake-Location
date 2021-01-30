@@ -56,6 +56,7 @@ class MainApp(MDApp):
         self.provider.disable_mock_locations()
 
 
+
 def main():
     MainApp().run()
 

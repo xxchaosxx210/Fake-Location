@@ -59,7 +59,7 @@ class GpsManager(PythonJavaClass):
             )
         criteria = Criteria()
         criteria.setAccuracy(Criteria.ACCURACY_FINE)
-        self.best_provider = LocationManager.GPS_PROVIDER#self.location_manager.getBestProvider(criteria, True)
+        self.best_provider = "test"#LocationManager.GPS_PROVIDER#self.location_manager.getBestProvider(criteria, True)
         try:
             self.remove_test_provider()
         except:
@@ -98,7 +98,6 @@ class GpsManager(PythonJavaClass):
         loc.setLatitude(latitude)
         loc.setLongitude(longitude)
         if VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1:
-            print("setting elapsedrealtimenanos")
             loc.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
         self.location_manager.setTestProviderLocation(
             self.best_provider,

@@ -62,10 +62,7 @@ class GpsTester:
     def __init__(self):
         self.location_manager = PythonActivity.mActivity.getSystemService(
             Context.LOCATION_SERVICE)
-        self.providers = (
-            LocationManager.NETWORK_PROVIDER,
-            LocationManager.GPS_PROVIDER
-        )
+        self.providers = ["fake-location-app"]
 
     def init_mock_locations(self):
         for provider in self.providers:

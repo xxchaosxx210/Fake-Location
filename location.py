@@ -30,6 +30,7 @@ Looper = autoclass("android.os.Looper")
 PythonActivity = autoclass('org.kivy.android.PythonActivity')
 Context = autoclass("android.content.Context")
 System = autoclass("java.lang.System")
+Criteria = autoclass("android.location.Criteria")
 
 # Nested class requires $
 VERSION = autoclass("android.os.Build$VERSION")
@@ -55,10 +56,17 @@ class GpsManager(PythonJavaClass):
                 [Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION], 
                 self.on_request_result
             )
+        criteria = Criteria()
+        criteria.setAccuracy(Criteria.ACCURACY_FINE)
+        self.best_provider = self.location_manager.getBestProvider(criteria, True)
+        if not self.best_provider:
+            print("No best provider found")
+        else:
+            print(f"Best Provider {self.best_provider}")
     
     def enable_mock_locations(self):
         self.location_manager.addTestProvider(
-            LocationManager.GPS_PROVIDER, 
+            self.best_provider, 
             False,
             False,
             False,
@@ -70,25 +78,25 @@ class GpsManager(PythonJavaClass):
             5
         )
         self.location_manager.setTestProviderEnabled(
-            LocationManager.GPS_PROVIDER, True
+            self.best_provider, True
         )
     
     def disable_mock_locations(self):
         self.location_manager.setTestProviderEnabled(
-            LocationManager.GPS_PROVIDER, False
+            self.best_provider, False
         )
     
     def remove_test_provider(self):
-        self.location_manager.removeTestProvider(LocationManager.GPS_PROVIDER)
+        self.location_manager.removeTestProvider(self.best_provider)
     
     def set_mock_location(self, latitude, longitude, altitude):
-        loc = Location(LocationManager.GPS_PROVIDER)
+        loc = Location(self.best_provider)
         loc.setLatitude(latitude)
         loc.setLongitude(longitude)
         loc.setAltitude(altitude)
         loc.setTime(System.currentTimeMillis())
         self.location_manager.setTestProviderLocation(
-            LocationManager.GPS_PROVIDER,
+            self.best_provider,
             loc
         )
     

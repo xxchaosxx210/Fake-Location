@@ -16,6 +16,7 @@ is_android = platform == "android"
 if is_android:
     from location import Gps
     from location import require_location_permissions
+    from kivy.clock import Clock
 
 class MainApp(MDApp):
 
@@ -45,7 +46,7 @@ class MainApp(MDApp):
             if args[0] == True:
                 # setup locations
                 try:
-                    self.gps.init_mock_provider()
+                    Clock.schedule_once(self.gps.init_mock_provider, 3)
                 except Exception as err:
                     self.add_status(f"Error: {str(err)}")
 

@@ -67,6 +67,7 @@ class Gps(PythonJavaClass):
     
     def init_mock_provider(self):
         if not self._location_manager.getProvider(self.provider_name):
+            print(f"{self.provider_name} was no found add provider")
             print("No Test Provider Found adding Test Provider")
             self._location_manager.addTestProvider(
                 self.provider_name,
@@ -80,6 +81,9 @@ class Gps(PythonJavaClass):
                 0,
                 1
             )
+            self.start_mock_provider()
+        else:
+            print(f"{self.provider_name} was found")
     
     def remove_mock_provider(self):
         self._location_manager.removeTestProvider(self.provider_name)

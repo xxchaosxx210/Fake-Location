@@ -15,6 +15,8 @@ is_android = platform == "android"
 # If android then load the Android classes
 if is_android:
     from location import GpsListener
+    from android.permissions import request_permissions
+    from android.permissions import Permission
 
 class MainApp(MDApp):
 
@@ -32,11 +34,17 @@ class MainApp(MDApp):
     
     def on_start(self):
         if is_android:
-            from android.permissions import request_permissions
-            from android.permissions import Permission
-            request_permissions([Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION])
-            time.sleep(3)
-            self.provider.start_gps_updates(3000, 10)
+            request_permissions([Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION], self.on_request_result)
+            #self.provider.start_gps_updates(3000, 10)
+    
+    def on_request_result(self, permissions, grant_results):
+        """
+        get the request results
+        """
+        print(f"Length permissions: {len(permissions)}, length of grant_results: {len(grant_results)}")
+        for permission in permissions:
+            if permission == Permission.ACCESS_FINE_LOCATION:
+                Logger.info("App: ACCESS_FINE_LOCATION....")
     
     @mainthread
     def on_gps_update(self, provider, event, *args):

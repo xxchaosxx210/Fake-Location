@@ -57,7 +57,6 @@ class GpsListener(PythonJavaClass):
                 access_fine_ok = grant_results[index]
             if permission == Permission.ACCESS_COARSE_LOCATION:
                 access_coarse_ok = grant_results[index]
-        print(f" Both are {access_coarse_ok}, {access_fine_ok}")
         if access_coarse_ok == True and access_fine_ok == True:
             self.func_callback(self, "permissions-result", [True])
         else:

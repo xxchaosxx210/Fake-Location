@@ -44,6 +44,7 @@ class MainApp(MDApp):
             self.root.ids["mock_status"].text += f"\n Lat: {lat}, Lng: {lng}"
         
         elif event == 'permissions-result':
+            print(args)
             if args[0] == True:
                 Logger.info("APP: ACCESS_FINE_LOCATION has been accepted")
                 self.provider.start_gps_updates(3000, 10)

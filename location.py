@@ -36,7 +36,9 @@ class GpsListener(PythonJavaClass):
         """
         func_callback(GpsListener, event, object)
         """
-        print(f"API Version: {Build.VERSION.SDK_INT}")
+        for item in dir(Build):
+            print(Build)
+        #print(f"API Version: {Build.VERSION.SDK_INT}")
         super().__init__(**kwargs)
         self.func_callback = func_callback
         self.location_manager = PythonActivity.mActivity.getSystemService(

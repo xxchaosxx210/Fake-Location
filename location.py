@@ -121,17 +121,20 @@ def get_location_manager():
     return PythonActivity.mActivity.getSystemService(Context.LOCATION_SERVICE)
 
 def startup_testprovider(location_manager, provider_name):
-    location_manager.addTestProvider(
-        provider_name,
-        False,
-        False,
-        False,
-        False,
-        False,
-        False,
-        False,
-        0,
-        1)
+    try:
+        location_manager.addTestProvider(
+            provider_name,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            0,
+            1)
+    except Exception as err:
+        print(f"Error: {err}")
 
 def set_provider_location(location_manager, provider_name, latitude, longitude):
     location = Location(provider_name)

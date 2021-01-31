@@ -40,21 +40,21 @@ MDBoxLayout:
             icon: "crosshairs-gps"
             opposite_colors: True
             elevation: 8
-            md_bg_color: app.theme_cls.primary_color
+            md_bg_color: 128/255, 204/255, 255/255, 1
             on_release: app.on_get_location()
         HorizontalSpacer:
         MDFloatingActionButton:
-            icon: "stop-circle"
+            icon: "stop"
             opposite_colors: True
             elevation: 8
-            md_bg_color: app.theme_cls.primary_color
+            md_bg_color: 200/255, 0, 0, 1
             on_release: app.on_stop_mock()
         HorizontalSpacer:
         MDFloatingActionButton:
-            icon: "check"
+            icon: "play"
             opposite_colors: True
             elevation: 8
-            md_bg_color: app.theme_cls.primary_color
+            md_bg_color: 0, 200/255, 0, 1
             on_release: app.on_start_mock(float(root.ids["latitude"].text), float(root.ids["longitude"].text))
         HorizontalSpacer:
             size_hint: .5, 1

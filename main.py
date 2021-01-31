@@ -16,12 +16,7 @@ is_android = platform == "android"
 # If android then load the Android classes
 if is_android:
     from location import get_location_manager
-    from location import startup_testprovider
-    from location import set_provider_location
-    from location import remove_test_provider
-    from location import set_provider_enabled
     from location import GPSListener
-    from location import LocationManager
     from location import require_location_permissions
     from location import MockLocation
 
@@ -33,7 +28,7 @@ class MainApp(MDApp):
         if is_android:
             # Get LocationManager from Android API
             self._location_manager = get_location_manager()
-            self._update = MockLocation(self._location_manager, self.on_gps_update)
+            self._update = MockLocation(self._location_manager)
     
     def on_stop(self):
         if is_android:

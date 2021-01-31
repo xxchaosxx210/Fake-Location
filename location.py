@@ -133,68 +133,25 @@ def get_location_manager():
     """
     return PythonActivity.mActivity.getSystemService(Context.LOCATION_SERVICE)
 
-def startup_testprovider(location_manager, provider_name):
-    """
-    adds test provider for testing
-    """
-    try:
-        location_manager.addTestProvider(
-            provider_name,
-            True,
-            True,
-            False,
-            False,
-            False,
-            True,
-            True,
-            0,
-            5)
-        return True
-    except Exception as err:
-        print(f"Error: {err}")
-        return False
-
-def remove_test_provider(location_manager, provider_name):
-    try:
-        location_manager.removeTestProvider(provider_name)
-        return True
-    except Exception as err:
-        print(f"Error: {err}")
-        return False
-
-def set_provider_enabled(location_manager, provider_name, enabled):
-    try:
-        location_manager.setTestProviderEnabled(provider_name, enabled)
-        return True
-    except Exception as err:
-        print(f"Error: {err}")
-        return  False
-
-def set_provider_location(location_manager, provider_name, latitude, longitude):
-    """
-    set the fake latitude and longitude coordinates
-    """
-    location = Location(provider_name)
-    location.setAltitude(1)
-    location.setTime(System.currentTimeMillis())
-    location.setLatitude(latitude)
-    location.setLongitude(longitude)
-    location.setAccuracy(5)
-    if VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1:
-        location.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
-    try:
-        location_manager.setTestProviderLocation(provider_name, location)
-        return True
-    except Exception as err:
-        print(f"Error: {err}")
-        return False
-
 
 class MockLocation(threading.Thread):
 
-    def __init__(self, location_manager, callback):
+    """
+    Mock Locations needs to be constantly updated in order to bypass Google Maps and other Apps
+    This thread handles requests
+    call send_message to send events to thread
+    event - stop, stop, quit
+    args -
+        if event is start then args = (float, float) - latitude and longitude values
+        stop: - stop mock locations
+        quit: - quit the thread
+    """
+
+    def __init__(self, location_manager):
+        """
+        location_manager - LocationManager (call get_location_manager -> location_manager)
+        """
         super().__init__()
-        self._callback = callback
         self.queue = queue.Queue()
         self.location_manager = location_manager
     
@@ -227,9 +184,6 @@ class MockLocation(threading.Thread):
     def send_message(self, event, *args):
         s = json.dumps({"event": event, "args": args})
         self.queue.put_nowait(s)
-    
-    def dispatch_message(self, event, *args):
-        self._callback(self, event, args)
 
 
 def stop_mock_updates(location_manager):

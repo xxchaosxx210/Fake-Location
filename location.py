@@ -193,7 +193,7 @@ def set_provider_location(location_manager, provider_name, latitude, longitude):
 class MockLocation(threading.Thread):
 
     def __init__(self, callback):
-        super(threading.Thread, self).__init__()
+        super().__init__()
         self._callback = callback
         self.queue = queue.Queue()
     

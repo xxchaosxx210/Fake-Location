@@ -4,15 +4,54 @@
 <MockToolBarButton@MDFloatingActionButton>:
     spacing: "20dp"
     padding: "20dp"
+<MockToolBarSpacer@Widget>:
+    size_hint_x: None
+    width: "20dp"
 
 MDBoxLayout:
     orientation: "vertical"
     padding: "10dp"
+
+    MDGridLayout:
+        rows: 1
+        size_hint: 1, .2
+        padding: "20dp"
+        MockToolBarSpacer:
+        MockToolBarTextField:
+            id: latitude
+            text: "-6.664608"
+        MockToolBarSpacer:
+        MockToolBarTextField:
+            id: longitude
+            text: "19.590709"
+        MockToolBarSpacer:
+        MockToolBarButton:
+            icon: "crosshairs-gps"
+            opposite_colors: True
+            elevation: 8
+            md_bg_color: app.theme_cls.primary_color
+            on_release: app.on_get_location()
+        MockToolBarSpacer:
+        MockToolBarButton:
+            icon: "stop-circle"
+            opposite_colors: True
+            elevation: 8
+            md_bg_color: app.theme_cls.primary_color
+            on_release: app.on_stop_mock()
+        MockToolBarSpacer:
+        MockToolBarButton:
+            icon: "check"
+            opposite_colors: True
+            elevation: 8
+            md_bg_color: app.theme_cls.primary_color
+            on_release: app.on_start_mock(float(root.ids["latitude"].text), float(root.ids["longitude"].text))
+        MockToolBarSpacer:
+
     ScrollView:
         size_hint: 1, .8
         canvas.before:
             Color:
-                rgba: .8, .8, .9, 1
+                rgba: 230/255, 243/255, 255/255, 1
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -24,32 +63,4 @@ MDBoxLayout:
                 id: mock_status
                 size_hint_y: None
                 height: self.texture_size[1]
-    MDGridLayout:
-        rows: 1
-        size_hint: 1, .2
-        padding: "20dp"
-        MockToolBarTextField:
-            id: latitude
-            text: "-6.664608"
-        MockToolBarTextField:
-            id: longitude
-            text: "19.590709"
-        MockToolBarButton:
-            icon: "crosshairs-gps"
-            opposite_colors: True
-            elevation: 8
-            md_bg_color: app.theme_cls.primary_color
-            on_release: app.on_get_location()
-        MockToolBarButton:
-            icon: "stop-circle"
-            opposite_colors: True
-            elevation: 8
-            md_bg_color: app.theme_cls.primary_color
-            on_release: app.on_stop_mock()
-        MockToolBarButton:
-            icon: "check"
-            opposite_colors: True
-            elevation: 8
-            md_bg_color: app.theme_cls.primary_color
-            on_release: app.on_start_mock(float(root.ids["latitude"].text), float(root.ids["longitude"].text))
         

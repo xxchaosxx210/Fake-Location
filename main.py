@@ -23,6 +23,7 @@ if is_android:
     from location import GPSListener
     from location import LocationManager
     from location import require_location_permissions
+    from location import MockLocation
 
 class MainApp(MDApp):
     
@@ -32,18 +33,19 @@ class MainApp(MDApp):
         if is_android:
             # Get LocationManager from Android API
             self._location_manager = get_location_manager()
+            self._update = MockLocation(self.on_gps_update)
     
     def on_stop(self):
         if is_android:
             self.gps_listener.stop_gps_updates()
-            remove_test_provider(self._location_manager, LocationManager.GPS_PROVIDER)
-            startup_testprovider(self._location_manager, LocationManager.GPS_PROVIDER)
+            self._update.send_message("quit")
     
     def on_start(self):
         if is_android:
             # Get ACCESS_FINE_LOCATION Permission from user
             require_location_permissions(self.on_gps_update)
             self.gps_listener = GPSListener(self._location_manager, self.on_gps_update)
+            self._update.start()
             
     @mainthread
     def on_gps_update(self, provider, event, *args):
@@ -54,9 +56,6 @@ class MainApp(MDApp):
             if args[0] == True:
                 # Permission accepted start the LocationListener update
                 self.gps_listener.start_gps_updates(3, 10)
-                remove_test_provider(self._location_manager, LocationManager.GPS_PROVIDER)
-                startup_testprovider(self._location_manager, LocationManager.GPS_PROVIDER)
-                set_provider_enabled(self._location_manager, LocationManager.GPS_PROVIDER, True)
             else:
                 toast("Request to use Locations rejected. Please enable Locations in App Permissions")
         elif event == "location":
@@ -79,13 +78,11 @@ class MainApp(MDApp):
         if is_android:
             latitude = float(self.root.ids["latitude"].text)
             longitude = float(self.root.ids["longitude"].text)
-            set_provider_location(self._location_manager, LocationManager.GPS_PROVIDER,
-                                 latitude, longitude)
+            self._update.send_message("start")
     
     def on_stop_mock(self):
         if is_android:
-            set_provider_enabled(self._location_manager, LocationManager.GPS_PROVIDER, False)
-            set_provider_enabled(self._location_manager, LocationManager.GPS_PROVIDER, True)
+            self._update.send_message("stop")
     
     def add_status(self, textline):
         self.root.ids["mock_status"].text += f"\n {textline}"

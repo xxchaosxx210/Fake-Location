@@ -198,6 +198,9 @@ class MockLocation(threading.Thread):
         self.queue = queue.Queue()
     
     def run(self):
+        set_location = True
+        latitude = 51.2323
+        longitude = 1.23433
         while 1:
             try:
                 s = self.queue.get(timeout=1)
@@ -211,6 +214,7 @@ class MockLocation(threading.Thread):
                     break
             except queue.Empty:
                 pass
+
     
     def send_message(self, event, *args):
         s = json.dumps({"event": event, "args": args})

@@ -209,6 +209,7 @@ def set_mock(location_manager, provider, lat, lng):
 
         provider is a string constant and can be LocationManager.GPS_PROVIDER or LocationManager.NETWORK_PROVIDER
             for system wide location testing. For app specific use a custom naming string
+        
     """
     try:
         location_manager.addTestProvider(

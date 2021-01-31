@@ -36,7 +36,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = hostpython3==3.7.8,python3==3.7.8,kivy==2.0.0,kivymd==0.104.1,jnius,mapview
+requirements = hostpython3==3.7.8,python3==3.7.8,kivy==2.0.0,kivymd==0.104.1,jnius,openssl,requests,urllib3,chardet,idna,concurrent.futures,mapview
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes

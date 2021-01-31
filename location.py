@@ -16,6 +16,9 @@ Contains functions and classes for dealing with Androids Location API
 In order to get location updates- call start_gps_updates
 if just want location right away then call get_location
 """
+import threading
+import queue
+import json
 
 from jnius import autoclass
 from jnius import PythonJavaClass
@@ -142,10 +145,10 @@ def startup_testprovider(location_manager, provider_name):
             False,
             False,
             False,
-            False,
-            False,
+            True,
+            True,
             0,
-            1)
+            5)
         return True
     except Exception as err:
         print(f"Error: {err}")
@@ -176,7 +179,7 @@ def set_provider_location(location_manager, provider_name, latitude, longitude):
     location.setTime(System.currentTimeMillis())
     location.setLatitude(latitude)
     location.setLongitude(longitude)
-    location.setAccuracy(1)
+    location.setAccuracy(5)
     if VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1:
         location.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
     try:
@@ -185,3 +188,69 @@ def set_provider_location(location_manager, provider_name, latitude, longitude):
     except Exception as err:
         print(f"Error: {err}")
         return False
+
+
+class MockLocation(threading.Thread):
+
+    def __init__(self, callback):
+        super(threading.Thread, self).__init__()
+        self._callback = callback
+        self.queue = queue.Queue()
+    
+    def run(self):
+        while 1:
+            try:
+                s = self.queue.get(timeout=1)
+                msg = json.loads(s)
+                event = msg["event"]
+                if event == "stop":
+                    print("You pressed stop")
+                elif event == "start":
+                    print("You pressed start")
+                elif event == "quit":
+                    break
+            except queue.Empty:
+                pass
+    
+    def send_message(self, event, *args):
+        s = json.dumps({"event": event, "args": args})
+        self.queue.put_nowait(s)
+    
+    def dispatch_message(self, event, *args):
+        self._callback(self, event, args)
+
+
+def stop_mock_updates(location_manager):
+    location_manager.removeTestProvider(LocationManager.GPS_PROVIDER)
+    location_manager.removeTestProvider(LocationManager.NETWORK_PROVIDER)
+
+def set_mock(location_manager, provider, lat, lng):
+    location_manager.addTestProvider(
+        provider,
+        False,
+        False,
+        False,
+        False,
+        False,
+        True,
+        True,
+        0,
+        5)
+    new_loc = Location(provider)
+
+    new_loc.setLatitude(lat)
+    new_loc.setLongitude(lng)
+    new_loc.setAccuracy(1.0)
+    new_loc.setTime(System.currentTimeMillis())
+    new_loc.setSpeed(0.0)
+    new_loc.setBearing(1.0)
+    new_loc.setAltitude(3.0)
+    if VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1:
+        location_manager.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
+    if VERSION.SDK_INT >= VERSION_CODES.O:
+        location_manager.setBearingAccuracyDegrees(0.1)
+        location_manager.setVerticalAccuracyMeters(0.1)
+        location_manager.setSpeedAccuracyMetersPerSecond(0.0)
+    location_manager.setTestProviderEnabled(provider, True)
+
+    location_manager.setTestProviderLocation(provider, new_loc)

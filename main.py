@@ -9,6 +9,8 @@ from kivy.clock import mainthread
 from kivy.utils import platform
 from kivymd.toast import toast
 
+from mockmapview import MockMapView
+
 import time
 
 is_android = platform == "android"

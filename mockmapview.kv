@@ -1,0 +1,7 @@
+#:import MapView kivy.garden.mapview.MapView
+
+<MockMapView>:
+    lat: 10
+    lon: 10
+    zoom: 4
+    on_zoom: self.zoom = 4 if self.zoom < 4 else self.zoom

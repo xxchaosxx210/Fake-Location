@@ -1,4 +1,5 @@
 #:import MapView kivy.garden.mapview.MapView
+#:include mockmapview.kv
 
 <HorizontalSpacer@Widget>:
     size_hint_x: None
@@ -64,14 +65,7 @@ MDBoxLayout:
 
     VerticalSpacer:
 
-    MapView:
+    MockMapView:
         id: map
         size_hint: 1, .8
-        lat: 10
-        lon: 10
-        zoom: 5
-        MapMarkerPopup:
-            source: "target.png"
-            lat: 11
-            lon: 11
         

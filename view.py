@@ -130,7 +130,7 @@ class MapMarker(ButtonBehavior, Image):
     """Longitude of the marker
     """
 
-    source = StringProperty(join(dirname(__file__), "icons", "marker.png"))
+    source = StringProperty("marker.png")
     """Source of the marker, defaults to our own marker.png
     """
 

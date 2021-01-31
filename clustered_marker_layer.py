@@ -370,7 +370,7 @@ class SuperCluster(object):
 
 
 class ClusterMapMarker(MapMarker):
-    source = StringProperty(join(dirname(__file__), "icons", "cluster.png"))
+    source = StringProperty("cluster.png")
     cluster = ObjectProperty()
     num_points = NumericProperty()
     text_color = ListProperty([.1, .1, .1, 1])

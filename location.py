@@ -221,6 +221,7 @@ class MockLocation(threading.Thread):
             except queue.Empty:
                 pass
             if not stop_mock:
+                stop_mock_updates(self.location_manager)
                 set_mock(self.location_manager, LocationManager.GPS_PROVIDER, latitude, longitude)
                 set_mock(self.location_manager, LocationManager.NETWORK_PROVIDER, latitude, longitude)
 

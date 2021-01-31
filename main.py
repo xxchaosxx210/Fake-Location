@@ -21,6 +21,8 @@ if is_android:
     from location import GPSListener
     from location import require_location_permissions
     from location import MockLocation
+    from location import get_location
+    from location import LocationManager
 
 class MainApp(MDApp):
     
@@ -65,9 +67,14 @@ class MainApp(MDApp):
     
     def on_get_location(self):
         if is_android:
-            loc = self.gps_listener.get_location()
+            loc = get_location(self._location_manager, LocationManager.GPS_PROVIDER)
             if loc:
                 Logger.info(f"GET_LOCATION: lat={loc.getLatitude()}, lng={loc.getLongitude()}")
+            else:
+                # Try Network Provider instead
+                loc = get_location(self._location_manager, LocationManager.NETWORK_PROVIDER)
+                if loc:
+                    Logger.info(f"GET_LOCATION: lat={loc.getLatitude()}, lng={loc.getLongitude()}")
     
     def on_start_mock(self, lat, lng):
         if is_android:

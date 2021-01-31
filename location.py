@@ -63,6 +63,7 @@ def require_location_permissions(func_callback):
         request_permissions(
             [Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION], on_request_result)
 
+
 class GPSListener(PythonJavaClass):
 
     """
@@ -96,12 +97,6 @@ class GPSListener(PythonJavaClass):
         """
         self._location_manager.removeUpdates(self)
     
-    def get_location(self):
-        """
-        returns Location object or None if no GPS availible
-        """
-        return self._location_manager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-    
     @java_method('()I')
     def hashCode(self):
         """
@@ -127,8 +122,17 @@ class GPSListener(PythonJavaClass):
         return obj.hashCode() == self.hashCode()
 
 
+def get_location(location_manager, provider):
+    """
+    get_location(object, str)
+    returns a LocationManager object. provider can be any provider name.
+    Example of system wide providers - LocationManager.GPS_PROVIDER or LocationManager.NETWORK_PROVIDER
+    """
+    return location_manager.getLastKnownLocation(provider)
+
 def get_location_manager():
     """
+    get_location_manager()
     returns a LocationManager object from Android system
     """
     return PythonActivity.mActivity.getSystemService(Context.LOCATION_SERVICE)

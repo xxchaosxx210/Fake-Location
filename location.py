@@ -237,11 +237,11 @@ def stop_mock_updates(location_manager):
     try:
         location_manager.removeTestProvider(LocationManager.GPS_PROVIDER)
     except Exception as err:
-        print(f"STOP_MOCK_UPDATES: {err}"")
+        print(f"STOP_MOCK_UPDATES: {err}")
     try:
         location_manager.removeTestProvider(LocationManager.NETWORK_PROVIDER)
     except Exception as err:
-        print(f"STOP_MOCK_UPDATES: {err}"")
+        print(f"STOP_MOCK_UPDATES: {err}")
 
 def set_mock(location_manager, provider, lat, lng):
     try:

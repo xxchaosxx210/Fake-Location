@@ -1,51 +1,65 @@
-<MockToolBarTextField@MDTextField>:
-    spacing: "20dp"
-    padding: "20dp"
-<MockToolBarButton@MDFloatingActionButton>:
-    spacing: "20dp"
-    padding: "20dp"
-<MockToolBarSpacer@Widget>:
+<HorizontalSpacer@Widget>:
     size_hint_x: None
     width: "20dp"
 
+<VerticalSpacer@Widget>:
+    size_hint_y: None
+    height: "20dp"
+    size_hint_x: 1
+
 MDBoxLayout:
     orientation: "vertical"
-    padding: "10dp"
 
-    MDGridLayout:
-        rows: 1
-        size_hint: 1, .2
-        padding: "20dp"
-        MockToolBarSpacer:
-        MockToolBarTextField:
+    MDBoxLayout:
+        orientation: "horizontal"
+        size_hint: 1, .1
+        HorizontalSpacer:
+        MDTextField:
             id: latitude
             text: "-6.664608"
-        MockToolBarSpacer:
-        MockToolBarTextField:
+            hint_text: "Latitude"
+            input_filter: "float"
+        HorizontalSpacer:
+            width: "40dp"
+        MDTextField:
             id: longitude
             text: "19.590709"
-        MockToolBarSpacer:
-        MockToolBarButton:
+            hint_text: "Longitude"
+            input_filter: "float"
+        HorizontalSpacer:
+
+    VerticalSpacer:
+
+    MDBoxLayout:
+        orientation: "horizontal"
+        size_hint: 1, .1
+        padding: "5dp"
+        HorizontalSpacer:
+            size_hint: .5, 1
+        MDFloatingActionButton:
             icon: "crosshairs-gps"
             opposite_colors: True
             elevation: 8
             md_bg_color: app.theme_cls.primary_color
             on_release: app.on_get_location()
-        MockToolBarSpacer:
-        MockToolBarButton:
+        HorizontalSpacer:
+        MDFloatingActionButton:
             icon: "stop-circle"
             opposite_colors: True
             elevation: 8
             md_bg_color: app.theme_cls.primary_color
             on_release: app.on_stop_mock()
-        MockToolBarSpacer:
-        MockToolBarButton:
+        HorizontalSpacer:
+        MDFloatingActionButton:
             icon: "check"
             opposite_colors: True
             elevation: 8
             md_bg_color: app.theme_cls.primary_color
             on_release: app.on_start_mock(float(root.ids["latitude"].text), float(root.ids["longitude"].text))
-        MockToolBarSpacer:
+        HorizontalSpacer:
+            size_hint: .5, 1
+
+    VerticalSpacer:
 
     ScrollView:
         size_hint: 1, .8
@@ -63,4 +77,6 @@ MDBoxLayout:
                 id: mock_status
                 size_hint_y: None
                 height: self.texture_size[1]
+    
+    VerticalSpacer:
         

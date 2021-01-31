@@ -64,10 +64,15 @@ MDBoxLayout:
     VerticalSpacer:
 
     MapView:
+        id: map
         size_hint: 1, .6
         lat: 10
         lon: 10
         zoom: 5
+        MapMarkerPopup:
+            source: "target.png"
+            lat: 11
+            lon: 11
 
     ScrollView:
         size_hint: 1, .2

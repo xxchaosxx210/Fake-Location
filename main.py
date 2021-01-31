@@ -42,6 +42,8 @@ class MainApp(MDApp):
             require_location_permissions(self.on_gps_update)
             self.gps_listener = GPSListener(self._location_manager, self.on_gps_update)
             self._update.start()
+        map = self.root.ids["map"]
+        print("")
 
     @mainthread
     def on_gps_update(self, provider, event, *args):

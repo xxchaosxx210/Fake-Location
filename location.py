@@ -244,18 +244,21 @@ def stop_mock_updates(location_manager):
         print(f"STOP_MOCK_UPDATES: {err}"")
 
 def set_mock(location_manager, provider, lat, lng):
-    location_manager.addTestProvider(
-        provider,
-        False,
-        False,
-        False,
-        False,
-        False,
-        True,
-        True,
-        0,
-        5)
-    new_loc = Location(provider)
+    try:
+        location_manager.addTestProvider(
+            provider,
+            False,
+            False,
+            False,
+            False,
+            False,
+            True,
+            True,
+            0,
+            5)
+        new_loc = Location(provider)
+    except Exception as err:
+        print(f"SET_MOCK: {err}")
 
     new_loc.setLatitude(lat)
     new_loc.setLongitude(lng)
@@ -270,6 +273,12 @@ def set_mock(location_manager, provider, lat, lng):
         location_manager.setBearingAccuracyDegrees(0.1)
         location_manager.setVerticalAccuracyMeters(0.1)
         location_manager.setSpeedAccuracyMetersPerSecond(0.0)
-    location_manager.setTestProviderEnabled(provider, True)
-
-    location_manager.setTestProviderLocation(provider, new_loc)
+    
+    try:
+        location_manager.setTestProviderEnabled(provider, True)
+    except Exception as err:
+        print(f"SET_MOCK: {err}")
+    try:
+        location_manager.setTestProviderLocation(provider, new_loc)
+    except Exception as err:
+        print(f"SET_MOCK: {err}")

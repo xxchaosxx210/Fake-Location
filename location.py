@@ -213,7 +213,7 @@ class MockLocation(threading.Thread):
                 elif event == "quit":
                     break
             except queue.Empty:
-                pass
+                print("No Messages")
 
     
     def send_message(self, event, *args):

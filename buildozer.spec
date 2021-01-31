@@ -43,7 +43,7 @@ requirements = hostpython3==3.7.8,python3==3.7.8,kivy==2.0.0,kivymd==0.104.1,jni
 # requirements.source.kivy = ../../kivy
 
 # (list) Garden requirements
-#garden_requirements = 
+garden_requirements = kivy_garden.mapview
 
 # (str) Presplash of the application
 presplash.filename = ./fake-location-logo.jpg

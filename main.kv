@@ -1,3 +1,5 @@
+#:import MapView kivy.garden.mapview.MapView
+
 <HorizontalSpacer@Widget>:
     size_hint_x: None
     width: "20dp"
@@ -61,8 +63,16 @@ MDBoxLayout:
 
     VerticalSpacer:
 
+    MapView:
+        size_hint: 1, .6
+        lat: -6.664608
+        lon: 19.590709
+        zoom: 5
+        on_lat: print("lat", self.lat)
+        on_lon: print("lng", self.lon)
+
     ScrollView:
-        size_hint: 1, .8
+        size_hint: 1, .2
         canvas.before:
             Color:
                 rgba: 230/255, 243/255, 255/255, 1

@@ -214,6 +214,7 @@ class MockLocation(threading.Thread):
                     break
             except queue.Empty:
                 print("No Messages")
+        print("MockLocation: Thread has quit")
 
     
     def send_message(self, event, *args):

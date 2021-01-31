@@ -33,7 +33,7 @@ class MainApp(MDApp):
         if is_android:
             # Get LocationManager from Android API
             self._location_manager = get_location_manager()
-            self._update = MockLocation(self.on_gps_update)
+            self._update = MockLocation(self._location_manager, self.on_gps_update)
     
     def on_stop(self):
         if is_android:

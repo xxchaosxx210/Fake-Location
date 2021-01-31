@@ -255,10 +255,10 @@ def set_mock(location_manager, provider, lat, lng):
             True,
             0,
             5)
-        new_loc = Location(provider)
     except Exception as err:
         print(f"SET_MOCK: {err}")
 
+    new_loc = Location(provider)
     new_loc.setLatitude(lat)
     new_loc.setLongitude(lng)
     new_loc.setAccuracy(1.0)

@@ -36,11 +36,11 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = hostpython3==3.7.8,python3==3.7.8,kivy==2.0.0,kivymd==0.104.1,jnius,requests,certifi,urllib3,chardet,idna,kivy_garden.mapview
+requirements = hostpython3==3.7.8,python3==3.7.8,kivy==2.0.0,kivymd==0.104.1,jnius,requests,certifi,urllib3,chardet,idna
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
-requirements.source.kivy = ./mapview
+#requirements.source.kivy = ./mapview
 
 # (list) Garden requirements
 garden_requirements = mapview
@@ -213,7 +213,7 @@ android.permissions = INTERNET,ACCESS_FINE_LOCATION,ACCESS_MOCK_LOCATION,ACCESS_
 #android.uses_library =
 
 # (str) Android logcat filters to use
-#android.logcat_filters = *:S python:D
+android.logcat_filters = *:S python:D
 
 # (bool) Copy library instead of making a libpymodules.so
 #android.copy_libs = 1

@@ -147,6 +147,8 @@ class MockLocation(threading.Thread):
         quit: - quit the thread
     """
 
+    THREAD_TIMEOUT = 1 # Thread loop. Seconds
+
     def __init__(self, location_manager):
         """
         location_manager - LocationManager (call get_location_manager -> location_manager)
@@ -156,12 +158,16 @@ class MockLocation(threading.Thread):
         self.location_manager = location_manager
     
     def run(self):
+        """
+        sets mock location when start message sent
+        send quit to obviously quit the loop
+        """
         stop_mock = True
         latitude = 51.2323
         longitude = 1.23433
         while 1:
             try:
-                s = self.queue.get(timeout=1)
+                s = self.queue.get(timeout=MockLocation.THREAD_TIMEOUT)
                 msg = json.loads(s)
                 event = msg["event"]
                 if event == "stop":
@@ -197,6 +203,13 @@ def stop_mock_updates(location_manager):
         print(f"STOP_MOCK_UPDATES: {err}")
 
 def set_mock(location_manager, provider, lat, lng):
+    """
+    set_mock(object, str, float, float)
+        location_manager is a LocationManager object obtained from get_location_manager()
+
+        provider is a string constant and can be LocationManager.GPS_PROVIDER or LocationManager.NETWORK_PROVIDER
+            for system wide location testing. For app specific use a custom naming string
+    """
     try:
         location_manager.addTestProvider(
             provider,

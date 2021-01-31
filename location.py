@@ -268,11 +268,11 @@ def set_mock(location_manager, provider, lat, lng):
     new_loc.setBearing(1.0)
     new_loc.setAltitude(3.0)
     if VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1:
-        location_manager.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
+        new_loc.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
     if VERSION.SDK_INT >= VERSION_CODES.O:
-        location_manager.setBearingAccuracyDegrees(0.1)
-        location_manager.setVerticalAccuracyMeters(0.1)
-        location_manager.setSpeedAccuracyMetersPerSecond(0.0)
+        new_loc.setBearingAccuracyDegrees(0.1)
+        new_loc.setVerticalAccuracyMeters(0.1)
+        new_loc.setSpeedAccuracyMetersPerSecond(0.0)
     
     try:
         location_manager.setTestProviderEnabled(provider, True)

@@ -46,10 +46,10 @@ requirements = hostpython3==3.7.8,python3==3.7.8,kivy==2.0.0,kivymd==0.104.1,jni
 #garden_requirements =
 
 # (str) Presplash of the application
-#presplash.filename = %(source.dir)s/data/presplash.png
+presplash.filename = ./fake-location-logo.jpg
 
 # (str) Icon of the application
-#icon.filename = %(source.dir)s/data/icon.png
+icon.filename = ./fake-location-icon.ico
 
 # (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
 orientation = portrait

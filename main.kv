@@ -2,11 +2,11 @@
 
 <HorizontalSpacer@Widget>:
     size_hint_x: None
-    width: "20dp"
+    width: "10dp"
 
 <VerticalSpacer@Widget>:
     size_hint_y: None
-    height: "20dp"
+    height: "10dp"
     size_hint_x: 1
 
 MDBoxLayout:
@@ -31,6 +31,7 @@ MDBoxLayout:
         HorizontalSpacer:
 
     VerticalSpacer:
+        height: "2dp"
 
     MDBoxLayout:
         orientation: "horizontal"
@@ -65,7 +66,7 @@ MDBoxLayout:
 
     MapView:
         id: map
-        size_hint: 1, .6
+        size_hint: 1, .8
         lat: 10
         lon: 10
         zoom: 5
@@ -73,23 +74,4 @@ MDBoxLayout:
             source: "target.png"
             lat: 11
             lon: 11
-
-    ScrollView:
-        size_hint: 1, .2
-        canvas.before:
-            Color:
-                rgba: 230/255, 243/255, 255/255, 1
-            Rectangle:
-                pos: self.pos
-                size: self.size
-        MDBoxLayout:
-            adaptive_height: True
-            padding: "10dp"
-            MDLabel:
-                text: ""
-                id: mock_status
-                size_hint_y: None
-                height: self.texture_size[1]
-    
-    VerticalSpacer:
         

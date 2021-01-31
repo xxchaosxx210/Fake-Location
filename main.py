@@ -34,7 +34,6 @@ class MainApp(MDApp):
         if is_android:
             self.gps_listener.stop_gps_updates()
             self._update.send_message("quit")
-        self.add_status("Goodbye :)")
     
     def on_start(self):
         if is_android:
@@ -42,8 +41,6 @@ class MainApp(MDApp):
             require_location_permissions(self.on_gps_update)
             self.gps_listener = GPSListener(self._location_manager, self.on_gps_update)
             self._update.start()
-        map = self.root.ids["map"]
-        print("")
 
     @mainthread
     def on_gps_update(self, provider, event, *args):
@@ -58,19 +55,17 @@ class MainApp(MDApp):
                 toast("Request to use Locations rejected. Please enable Locations in App Permissions")
         elif event == "location":
             loc = args[0]
-            self.add_status(f"Latitude: {loc.getLatitude()}, Longitutde: {loc.getLongitude()}")
+            Logger.info(f"LOCATION_EVENT: lat={loc.getLatitude()},lng={loc.getLongitude()}")
         elif event == "provider_enabled":
-            prov = args[0]
-            self.add_status(f"{prov} Provider enabled")
+            Logger.info(f"{args[0]}: Enabled")
         elif event == "provider_disabled":
-            prov = args[0]
-            self.add_status(f"{prov} Provider disabled")
+            Logger.info(f"{args[0]}: Disabled")
     
     def on_get_location(self):
         if is_android:
             loc = self.gps_listener.get_location()
             if loc:
-                self.add_status(f"\n {loc.getLatitude()}, lng = {loc.getLongitude()}")
+                Logger.info(f"GET_LOCATION: lat={loc.getLatitude()}, lng={loc.getLongitude()}")
     
     def on_start_mock(self, lat, lng):
         if is_android:
@@ -81,10 +76,6 @@ class MainApp(MDApp):
     def on_stop_mock(self):
         if is_android:
             self._update.send_message("stop")
-    
-    def add_status(self, textline):
-        self.root.ids["mock_status"].text += f"\n {textline}"
-
 
 def main():
     MainApp().run()

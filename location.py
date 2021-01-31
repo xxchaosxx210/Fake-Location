@@ -234,8 +234,14 @@ class MockLocation(threading.Thread):
 
 
 def stop_mock_updates(location_manager):
-    location_manager.removeTestProvider(LocationManager.GPS_PROVIDER)
-    location_manager.removeTestProvider(LocationManager.NETWORK_PROVIDER)
+    try:
+        location_manager.removeTestProvider(LocationManager.GPS_PROVIDER)
+    except Exception as err:
+        print(f"STOP_MOCK_UPDATES: {err}"")
+    try:
+        location_manager.removeTestProvider(LocationManager.NETWORK_PROVIDER)
+    except Exception as err:
+        print(f"STOP_MOCK_UPDATES: {err}"")
 
 def set_mock(location_manager, provider, lat, lng):
     location_manager.addTestProvider(

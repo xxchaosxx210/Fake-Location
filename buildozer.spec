@@ -40,7 +40,7 @@ requirements = hostpython3==3.7.8,python3==3.7.8,kivy==2.0.0,kivymd==0.104.1,jni
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
-requirements.source.kivy = ./mapview,./mapview/icons
+requirements.source.kivy = ./mapview;./mapview/icons
 
 # (list) Garden requirements
 #garden_requirements =

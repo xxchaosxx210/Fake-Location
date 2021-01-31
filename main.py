@@ -78,7 +78,7 @@ class MainApp(MDApp):
         if is_android:
             latitude = float(self.root.ids["latitude"].text)
             longitude = float(self.root.ids["longitude"].text)
-            self._update.send_message("start")
+            self._update.send_message("start", [latitude, longitude])
     
     def on_stop_mock(self):
         if is_android:

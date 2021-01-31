@@ -192,13 +192,14 @@ def set_provider_location(location_manager, provider_name, latitude, longitude):
 
 class MockLocation(threading.Thread):
 
-    def __init__(self, callback):
+    def __init__(self, location_manager, callback):
         super().__init__()
         self._callback = callback
         self.queue = queue.Queue()
+        self.location_manager = location_manager
     
     def run(self):
-        set_location = True
+        stop_mock = True
         latitude = 51.2323
         longitude = 1.23433
         while 1:
@@ -207,16 +208,26 @@ class MockLocation(threading.Thread):
                 msg = json.loads(s)
                 event = msg["event"]
                 if event == "stop":
-                    print("You pressed stop")
+                    stop_mock = True
+                    print("MocLocation: Stopped")
+                    #stop_mock_updates(self.location_manager)
                 elif event == "start":
-                    print("You pressed start")
+                    stop_mock = False
+                    args = msg["args"]
+                    print(f"MockLocation: {args}")
+                    latitude = args[0]
+                    longitude = args[1]
+                    print(f"MockLocation: New Latitude and Longitude {latitude}, {longitude}")
                 elif event == "quit":
+                    #stop_mock_updates(self.location_manager)
                     break
             except queue.Empty:
                 print("No Messages")
-        print("MockLocation: Thread has quit")
+            if not stop_mock:
+                #set_mock(self.location_manager, LocationManager.GPS_PROVIDER, latitude, longitude)
+                #set_mock(self.location_manager, LocationManager.NETWORK_PROVIDER, latitude, longitude)
+                print(f"MockLocation: Set Mock {latitude}, {longitude}")
 
-    
     def send_message(self, event, *args):
         s = json.dumps({"event": event, "args": args})
         self.queue.put_nowait(s)

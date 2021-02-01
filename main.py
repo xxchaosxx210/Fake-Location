@@ -1,7 +1,11 @@
 __title__ = "Fake Location"
 __author__ = "Paul Millar"
 __version__ = "0.1"
-__description__ = "A Fake GPS app for android"
+__description__ = """
+A Fake GPS app for android using the kivy and kivymd framework.
+This App will run on Windows and Linux but because they lack
+the GPS API the Win and *nix are for testing purposes only
+"""
 
 from kivymd.app import MDApp
 from kivy.logger import Logger
@@ -14,8 +18,8 @@ from kivymd.uix.boxlayout import MDBoxLayout
 
 from mockmapview import MockMapView
 
-import time
-import random
+# Debugging
+from debug import Debug
 
 is_android = platform == "android"
 
@@ -27,7 +31,6 @@ if is_android:
     from location import MockLocation
     from location import get_system_location
 
-
 def _getlatlng(location_manager):
     latlng = None
     if is_android:
@@ -35,8 +38,8 @@ def _getlatlng(location_manager):
         if location:
             latlng = (location.getLatitude(), location.getLongitude())
     else:
-        # generate random latitude and longitude coordinates
-        latlng = (random.uniform(-90, 90), random.uniform(-180, 180))
+        # use the debugging location
+        latlng = (Debug.latitude, Debug.longitude)
     return latlng
 
 
@@ -71,13 +74,19 @@ class MainApp(MDApp):
             require_location_permissions(self.on_gps_update)
             self.gps_listener = GPSListener(self._location_manager, self.on_gps_update)
             self._update.start()
+        else:
+            # Set a random location on Windows or Linux
+            latlng = _getlatlng(self._location_manager)
+            if latlng:
+                self.root.mockmapview.update_current_locmarker(latlng[0], latlng[1], False)
 
     @mainthread
     def on_gps_update(self, provider, event, *args):
         """
         on_gps_update(str, str, tuple)
         Callback function for handling messages sent from
-        Mock Locations thread and gps update listener.
+        Mock Locations thread and gps update listener. This method
+        is only used on the Android version
         Is also the handler for permission request results.
         event - location, provider-enabled, provider-disabled, permission-result
         location -              args[float, float]
@@ -89,7 +98,7 @@ class MainApp(MDApp):
                 self.gps_listener.start_gps_updates(3, 10)
                 latlng = _getlatlng(self._location_manager)
                 if latlng:
-                    self.root.mockmapview.setdefault(*latlng)
+                    self.root.mockmapview.update_current_locmarker(latlng[0], latlng[1], False)
                 else:
                     toast("Could not find your location. Try turning Location on in settings")
             else:
@@ -108,7 +117,7 @@ class MainApp(MDApp):
         """
         latlng = _getlatlng(self._location_manager)
         if latlng:
-            self.root.mockmapview.setdefault(*latlng)
+            self.root.mockmapview.update_current_locmarker(latlng[0], latlng[1], True)
         else:
             toast("Could not find your location. Try turning Location on in settings")
     
@@ -116,12 +125,17 @@ class MainApp(MDApp):
         """
         Start button is pressed
         """
+        latitude = self.root.mockmapview.lat
+        longitude = self.root.mockmapview.lon
         if is_android:
             # get the latitude coordinates from mockmapview and send them
             # to mock location thread
-            self._update.send_message("start", 
-                self.root.mockmapview.lat,
-                self.root.mockmapview.lon)
+            self._update.send_message("start", latitude, longitude)
+        else:
+            # set global debugging coordinates
+            Debug.latitude = latitude
+            Debug.longitude = longitude
+            self.root.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude)
     
     def on_stop_mock(self):
         """

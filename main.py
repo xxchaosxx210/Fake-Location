@@ -8,6 +8,8 @@ from kivy.logger import Logger
 from kivy.clock import mainthread
 from kivy.utils import platform
 from kivymd.toast import toast
+from kivy.properties import ObjectProperty
+from kivymd.uix.boxlayout import MDBoxLayout
 
 from mockmapview import MockMapView
 
@@ -24,6 +26,10 @@ if is_android:
     from location import get_location
     from location import LocationManager
 
+class Container(MDBoxLayout):
+    # Mpaview object
+    mockmapview = ObjectProperty(None)
+
 class MainApp(MDApp):
     
     def __init__(self, **kwargs):
@@ -32,10 +38,12 @@ class MainApp(MDApp):
         if is_android:
             # Get LocationManager from Android API
             self._location_manager = get_location_manager()
+            # Mock handler thread for setting mock location and enabling and disabling the mock locations
             self._update = MockLocation(self._location_manager)
     
     def on_stop(self):
         if is_android:
+            # close thread and gps listener
             self.gps_listener.stop_gps_updates()
             self._update.send_message("quit")
     
@@ -49,7 +57,13 @@ class MainApp(MDApp):
     @mainthread
     def on_gps_update(self, provider, event, *args):
         """
-        any changes to location provider will be sent here
+        on_gps_update(str, str, tuple)
+        Callback function for handling messages sent from
+        Mock Locations thread and gps update listener.
+        Is also the handler for permission request results.
+        event - location, provider-enabled, provider-disabled, permission-result
+        location -              args[float, float]
+        permission-result -     args[bool]
         """    
         if event == 'permissions-result':
             if args[0] == True:
@@ -66,6 +80,10 @@ class MainApp(MDApp):
             Logger.info(f"{args[0]}: Disabled")
     
     def on_get_location(self):
+        """
+        Get Location position is pressed
+        """
+        print(self.root.mockmapview.zoom)
         if is_android:
             loc = get_location(self._location_manager, LocationManager.GPS_PROVIDER)
             if loc:
@@ -77,12 +95,20 @@ class MainApp(MDApp):
                     Logger.info(f"GET_LOCATION: lat={loc.getLatitude()}, lng={loc.getLongitude()}")
     
     def on_start_mock(self, lat, lng):
+        """
+        Start button is pressed
+        """
         if is_android:
+            # get the latitude coordinates from textfields and send them
+            # to mock location thread
             latitude = float(self.root.ids["latitude"].text)
             longitude = float(self.root.ids["longitude"].text)
             self._update.send_message("start", latitude, longitude)
     
     def on_stop_mock(self):
+        """
+        Stop button is pressed
+        """
         if is_android:
             self._update.send_message("stop")
 

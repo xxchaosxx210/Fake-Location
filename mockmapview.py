@@ -3,7 +3,7 @@ from kivy.logger import Logger
 
 
 class MockMapView(MapView):
-    DEFAULT_ZOOM_IN = 10
+    DEFAULT_ZOOM_IN = 13
 
     def on_zoom(self, view, zoom_level):
         Logger.info(f"ZOOM: {zoom_level}")

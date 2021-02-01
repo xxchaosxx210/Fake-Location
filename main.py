@@ -56,6 +56,8 @@ class MainApp(MDApp):
             self._location_manager = get_location_manager()
             # Mock handler thread for setting mock location and enabling and disabling the mock locations
             self._update = MockLocation(self._location_manager)
+        else:
+            self._location_manager = None
     
     def on_stop(self):
         if is_android:
@@ -104,16 +106,11 @@ class MainApp(MDApp):
         """
         Get Location position is pressed
         """
-        if is_android:
-            latlng = get_system_location(self._location_manager)
-            if latlng:
-                self.root.mockmapview.setdefault(*latlng)
-            else:
-                toast("Could not find your location. Try turning Location on in settings")
-        else:
-            # generate random latitude and longitude coordinates
-            latlng = _getlatlng(None)
+        latlng = _getlatlng(self._location_manager)
+        if latlng:
             self.root.mockmapview.setdefault(*latlng)
+        else:
+            toast("Could not find your location. Try turning Location on in settings")
     
     def on_start_mock(self):
         """

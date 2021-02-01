@@ -4,7 +4,7 @@ from kivy.logger import Logger
 from kivymd.app import App
 
 class MockMapView(MapView):
-    DEFAULT_ZOOM_IN = 14
+    DEFAULT_ZOOM_IN = 8
 
     def __init__(self, **kwargs):
         self._target_marker = None

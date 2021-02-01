@@ -26,12 +26,15 @@ class MockMapView(MapView):
     
     def on_touch_up(self, touch):
         lat, lng = self.get_latlon_at(touch.x, touch.y, self.zoom)
+        self.update_marker(lat, lng)
+        super().on_touch_up(touch)
+    
+    def update_marker(self, lat, lng):
         if self._marker:
             self.remove_marker(self._marker)
         self._marker = MapMarker(source="target.png", lat=lat, lon=lng)
         self.add_marker(self._marker)
-        super().on_touch_up(touch)
-    
+
     def setdefault(self, lat, lng):
         self.center_on(lat, lng)
         self.zoom = MockMapView.DEFAULT_ZOOM_IN

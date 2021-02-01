@@ -37,36 +37,45 @@ Container:
     VerticalSpacer:
         height: "2dp"
 
-    MDBoxLayout:
-        orientation: "horizontal"
-        size_hint: 1, .1
-        padding: "5dp"
-        HorizontalSpacer:
-            size_hint: .5, 1
-        MDIconButton:
-            icon: "crosshairs-gps"
-            elevation: 5
-            opposite_colors: True
-            md_bg_color: 128/255, 204/255, 255/255, 1
-            on_release: app.on_loc_button_released()
-        HorizontalSpacer:
-        MDIconButton:
-            icon: "stop"
-            opposite_colors: True
-            md_bg_color: 200/255, 0, 0, 1
-            on_release: app.on_stop_mock()
-        HorizontalSpacer:
-        MDIconButton:
-            icon: "play"
-            opposite_colors: True
-            md_bg_color: 0, 200/255, 0, 1
-            on_release: app.on_start_mock()
-        HorizontalSpacer:
-            size_hint: .5, 1
-
     VerticalSpacer:
 
-    MockMapView:
-        id: map
-        size_hint: 1, .8
+    RelativeLayout:
+        id: mapview_container
+
+        MockMapView:
+            id: map
+        
+        MDBoxLayout:
+            top: mapview_container.top
+            orientation: "horizontal"
+            size_hint_y: None
+            height: "48dp"
+            canvas.before:
+                Color:
+                    rgba: .2, .2, .2, .6
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            HorizontalSpacer:
+                size_hint: .5, 1
+            MDIconButton:
+                icon: "crosshairs-gps"
+                elevation: 5
+                opposite_colors: True
+                md_bg_color: 128/255, 204/255, 255/255, 1
+                on_release: app.on_loc_button_released()
+            HorizontalSpacer:
+            MDIconButton:
+                icon: "stop"
+                opposite_colors: True
+                md_bg_color: 200/255, 0, 0, 1
+                on_release: app.on_stop_mock()
+            HorizontalSpacer:
+            MDIconButton:
+                icon: "play"
+                opposite_colors: True
+                md_bg_color: 0, 200/255, 0, 1
+                on_release: app.on_start_mock()
+            HorizontalSpacer:
+                size_hint: .5, 1
         

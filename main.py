@@ -142,7 +142,7 @@ class MainApp(MDApp):
             toast("Press on the map to select target location and then press the start button")
     
     def on_stop_mock(self):
-        """
+        """ 
         Stop button is pressed
         """
         if is_android:

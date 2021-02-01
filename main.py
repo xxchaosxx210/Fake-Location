@@ -123,8 +123,8 @@ class MainApp(MDApp):
             # get the latitude coordinates from mockmapview and send them
             # to mock location thread
             self._update.send_message("start", 
-                self.root.mockmap.lat,
-                self.root.mockmap.lon)
+                self.root.mockmapview.lat,
+                self.root.mockmapview.lon)
     
     def on_stop_mock(self):
         """

@@ -11,6 +11,11 @@
     height: "10dp"
     size_hint_x: 1
 
+<MapViewToolBarButton@MDRectangleFlatIconButton>:
+    theme_text_color: "Custom"
+    md_bg_color: get_color_from_hex("#336699")
+    text_color: get_color_from_hex("#ECF2F9")
+
 Container:
     orientation: "vertical"
     mockmapview: map
@@ -52,23 +57,18 @@ Container:
                 Rectangle:
                     size: self.size
                     pos: self.pos
-            MDRectangleFlatIconButton:
+            MDSeparator:
+            MapViewToolBarButton:
                 icon: "crosshairs-gps"
-                opposite_colors: True
                 on_release: app.on_loc_button_released()
-            VerticalSpacer:
-            MDRectangleFlatIconButton:
+            MDSeparator:
+            MapViewToolBarButton:
                 icon: "stop"
-                opposite_colors: True
                 on_release: app.on_stop_mock()
-            VerticalSpacer:
-            MDRectangleFlatIconButton:
+            MDSeparator:
+            MapViewToolBarButton:
                 icon: "play"
-                opposite_colors: True
                 on_release: app.on_start_mock()
-                theme_text_color: "Custom"
-                md_bg_color: get_color_from_hex("#336699")
-                text_color: get_color_from_hex("#ECF2F9")
-            VerticalSpacer:
+            Widget:
                 size_hint: .5, 1
         

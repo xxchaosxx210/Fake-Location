@@ -115,7 +115,7 @@ class MainApp(MDApp):
             latlng = _getlatlng(None)
             self.root.mockmapview.setdefault(*latlng)
     
-    def on_start_mock(self, lat, lng):
+    def on_start_mock(self):
         """
         Start button is pressed
         """

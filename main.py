@@ -73,12 +73,12 @@ class MainApp(MDApp):
             # Get ACCESS_FINE_LOCATION Permission from user
             require_location_permissions(self.on_gps_update)
             self.gps_listener = GPSListener(self._location_manager, self.on_gps_update)
+            # start the mock location thread
             self._update.start()
         else:
             # Set a random location on Windows or Linux
-            latlng = _getlatlng(self._location_manager)
-            if latlng:
-                self.root.mockmapview.update_current_locmarker(latlng[0], latlng[1], False)
+            Debug.randomize_latlng()
+            self.root.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude, False)
 
     @mainthread
     def on_gps_update(self, provider, event, *args):
@@ -135,7 +135,7 @@ class MainApp(MDApp):
             # set global debugging coordinates
             Debug.latitude = latitude
             Debug.longitude = longitude
-            self.root.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude)
+            self.root.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude, False)
     
     def on_stop_mock(self):
         """
@@ -143,6 +143,10 @@ class MainApp(MDApp):
         """
         if is_android:
             self._update.send_message("stop")
+        else:
+            # Set a random location on Windows or Linux
+            Debug.randomize_latlng()
+            self.root.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude, False)
 
 def main():
     MainApp().run()

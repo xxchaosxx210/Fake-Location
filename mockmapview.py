@@ -3,7 +3,7 @@ from kivy.garden.mapview import MapMarker
 from kivy.logger import Logger
 
 class MockMapView(MapView):
-    DEFAULT_ZOOM_IN = 16
+    DEFAULT_ZOOM_IN = 14
 
     def __init__(self, **kwargs):
         self._target_marker = None

@@ -122,6 +122,17 @@ class GPSListener(PythonJavaClass):
         return obj.hashCode() == self.hashCode()
 
 
+def get_system_location(location_manager):
+    """
+    get_system_location(object)
+    trys to get best last known location from GPS_PROVIDER and GPS_NETWORK
+    returns None if unsuccesful else returns Location object
+    """
+    location = location_manager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+    if not location:
+        location = location_manager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+    return location
+
 def get_location(location_manager, provider):
     """
     get_location(object, str)

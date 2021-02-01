@@ -23,8 +23,7 @@ if is_android:
     from location import GPSListener
     from location import require_location_permissions
     from location import MockLocation
-    from location import get_location
-    from location import LocationManager
+    from location import get_system_location
 
 class Container(MDBoxLayout):
     # Mpaview object
@@ -85,14 +84,12 @@ class MainApp(MDApp):
         """
         print(self.root.mockmapview.zoom)
         if is_android:
-            loc = get_location(self._location_manager, LocationManager.GPS_PROVIDER)
-            if loc:
-                Logger.info(f"GET_LOCATION: lat={loc.getLatitude()}, lng={loc.getLongitude()}")
+            location = get_system_location(self._location_manager)
+            if location:
+                self.root.mockmapview.lat = location.getLatitude()
+                self.root.mockmapview.lon = location.getLongitude()
             else:
-                # Try Network Provider instead
-                loc = get_location(self._location_manager, LocationManager.NETWORK_PROVIDER)
-                if loc:
-                    Logger.info(f"GET_LOCATION: lat={loc.getLatitude()}, lng={loc.getLongitude()}")
+                toast("Could not find your location. Try turning Location on in settings")
     
     def on_start_mock(self, lat, lng):
         """

@@ -69,6 +69,11 @@ class MainApp(MDApp):
             if args[0] == True:
                 # Permission accepted start the LocationListener update
                 self.gps_listener.start_gps_updates(3, 10)
+                location = get_system_location(self._location_manager)
+                if location:
+                    self.root.mockmapview.setdefault(location.getLatitude(), location.getLongitude())
+                else:
+                    toast("Could not find your location. Try turning Location on in settings")
             else:
                 toast("Request to use Locations rejected. Please enable Locations in App Permissions")
         elif event == "location":
@@ -86,8 +91,7 @@ class MainApp(MDApp):
         if is_android:
             location = get_system_location(self._location_manager)
             if location:
-                self.root.mockmapview.zoom = MockMapView.DEFAULT_ZOOM_IN
-                self.root.mockmapview.center_on(location.getLatitude(), location.getLongitude())
+                self.root.mockmapview.setdefault(location.getLatitude(), location.getLongitude())
             else:
                 toast("Could not find your location. Try turning Location on in settings")
         else:

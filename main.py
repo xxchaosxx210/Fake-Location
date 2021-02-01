@@ -9,6 +9,7 @@ from kivy.clock import mainthread
 from kivy.utils import platform
 from kivymd.toast import toast
 from kivy.properties import ObjectProperty
+from kivy.properties import StringProperty
 from kivymd.uix.boxlayout import MDBoxLayout
 
 from mockmapview import MockMapView
@@ -26,9 +27,24 @@ if is_android:
     from location import MockLocation
     from location import get_system_location
 
+
+def _getlatlng(location_manager):
+    latlng = None
+    if is_android:
+        location = get_system_location(location_manager)
+        if location:
+            latlng = (location.getLatitude(), location.getLongitude())
+    else:
+        # generate random latitude and longitude coordinates
+        latlng = (random.uniform(-90, 90), random.uniform(-180, 180))
+    return latlng
+
+
 class Container(MDBoxLayout):
     # Mpaview object
     mockmapview = ObjectProperty(None)
+    lat_text = StringProperty("-12.98989")
+    lon_text = StringProperty("52.87878")
 
 class MainApp(MDApp):
     
@@ -69,9 +85,9 @@ class MainApp(MDApp):
             if args[0] == True:
                 # Permission accepted start the LocationListener update
                 self.gps_listener.start_gps_updates(3, 10)
-                location = get_system_location(self._location_manager)
-                if location:
-                    self.root.mockmapview.setdefault(location.getLatitude(), location.getLongitude())
+                latlng = _getlatlng(self._location_manager)
+                if latlng:
+                    self.root.mockmapview.setdefault(*latlng)
                 else:
                     toast("Could not find your location. Try turning Location on in settings")
             else:
@@ -84,32 +100,31 @@ class MainApp(MDApp):
         elif event == "provider_disabled":
             Logger.info(f"{args[0]}: Disabled")
     
-    def on_get_location(self):
+    def on_loc_button_released(self):
         """
         Get Location position is pressed
         """
         if is_android:
-            location = get_system_location(self._location_manager)
-            if location:
-                self.root.mockmapview.setdefault(location.getLatitude(), location.getLongitude())
+            latlng = get_system_location(self._location_manager)
+            if latlng:
+                self.root.mockmapview.setdefault(*latlng)
             else:
                 toast("Could not find your location. Try turning Location on in settings")
         else:
             # generate random latitude and longitude coordinates
-            lat = random.uniform(-90, 90)
-            lng = random.uniform(-180, 180)
-            self.root.mockmapview.setdefault(lat, lng)
+            latlng = _getlatlng(None)
+            self.root.mockmapview.setdefault(*latlng)
     
     def on_start_mock(self, lat, lng):
         """
         Start button is pressed
         """
         if is_android:
-            # get the latitude coordinates from textfields and send them
+            # get the latitude coordinates from mockmapview and send them
             # to mock location thread
-            latitude = float(self.root.ids["latitude"].text)
-            longitude = float(self.root.ids["longitude"].text)
-            self._update.send_message("start", latitude, longitude)
+            self._update.send_message("start", 
+                self.root.mockmap.lat,
+                self.root.mockmap.lon)
     
     def on_stop_mock(self):
         """

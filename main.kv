@@ -13,6 +13,8 @@
 Container:
     orientation: "vertical"
     mockmapview: map
+    lat_text: latitude.text
+    lon_text: longitude.text
 
     MDBoxLayout:
         orientation: "horizontal"
@@ -20,14 +22,14 @@ Container:
         HorizontalSpacer:
         MDTextField:
             id: latitude
-            text: "-6.664608"
+            text: root.lat_text
             hint_text: "Latitude"
             input_filter: "float"
         HorizontalSpacer:
             width: "40dp"
         MDTextField:
             id: longitude
-            text: "19.590709"
+            text: root.lon_text
             hint_text: "Longitude"
             input_filter: "float"
         HorizontalSpacer:
@@ -46,7 +48,7 @@ Container:
             opposite_colors: True
             elevation: 1
             md_bg_color: 128/255, 204/255, 255/255, 1
-            on_release: app.on_get_location()
+            on_release: app.on_loc_button_released()
         HorizontalSpacer:
         MDFloatingActionButton:
             icon: "stop"

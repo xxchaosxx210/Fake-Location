@@ -82,12 +82,10 @@ class MainApp(MDApp):
         """
         Get Location position is pressed
         """
-        print(self.root.mockmapview.zoom)
         if is_android:
             location = get_system_location(self._location_manager)
             if location:
-                self.root.mockmapview.lat = location.getLatitude()
-                self.root.mockmapview.lon = location.getLongitude()
+                self.root.mockmapview.center_on(location.getLatitude(), location.getLongitude())
             else:
                 toast("Could not find your location. Try turning Location on in settings")
     

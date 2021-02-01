@@ -94,8 +94,7 @@ class MainApp(MDApp):
             # generate random latitude and longitude coordinates
             lat = random.uniform(-90, 90)
             lng = random.uniform(-180, 180)
-            self.root.mockmapview.zoom = MockMapView.DEFAULT_ZOOM_IN
-            self.root.mockmapview.center_on(lat, lng)
+            self.root.mockmapview.setdefault(lat, lng)
     
     def on_start_mock(self, lat, lng):
         """

@@ -85,6 +85,7 @@ class MainApp(MDApp):
         if is_android:
             location = get_system_location(self._location_manager)
             if location:
+                self.root.mockmapview.zoom = 8
                 self.root.mockmapview.center_on(location.getLatitude(), location.getLongitude())
             else:
                 toast("Could not find your location. Try turning Location on in settings")

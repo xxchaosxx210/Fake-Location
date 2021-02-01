@@ -2,6 +2,7 @@ from kivy.garden.mapview import MapView
 from kivy.garden.mapview import MapMarker
 from kivy.logger import Logger
 from kivymd.app import App
+from kivy.metrics import dp
 
 class MockMapView(MapView):
     DEFAULT_ZOOM_IN = 8
@@ -17,7 +18,7 @@ class MockMapView(MapView):
         """
         # Check mouse click is in MapView bounds before updating
         if touch.x >= 0.0 and touch.y >= 0.0 and touch.x <= self.width and touch.y <= self.height:
-            lat, lng = self.get_latlon_at(touch.x, touch.y, None)
+            lat, lng = self.get_latlon_at(touch.x, touch.y - dp(23), None)
             self.update_target_marker(lat, lng)
         super().on_touch_up(touch)
     

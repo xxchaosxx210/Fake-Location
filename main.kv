@@ -1,4 +1,5 @@
 #:import MapView kivy.garden.mapview.MapView
+#:import get_color_from_hex kivy.utils.get_color_from_hex
 #:include mockmapview.kv
 
 <HorizontalSpacer@Widget>:
@@ -34,11 +35,6 @@ Container:
             input_filter: "float"
         HorizontalSpacer:
 
-    VerticalSpacer:
-        height: "2dp"
-
-    VerticalSpacer:
-
     RelativeLayout:
         id: mapview_container
 
@@ -46,36 +42,33 @@ Container:
             id: map
         
         MDBoxLayout:
-            top: mapview_container.top
-            orientation: "horizontal"
-            size_hint_y: None
-            height: "48dp"
+            orientation: "vertical"
+            size_hint_x: None
+            width: "48dp"
+            pos_hint: {"right": 1, "top": 1}
             canvas.before:
                 Color:
-                    rgba: .2, .2, .2, .6
+                    rgba: .8, .8, .8, 0
                 Rectangle:
                     size: self.size
                     pos: self.pos
-            HorizontalSpacer:
-                size_hint: .5, 1
-            MDIconButton:
+            MDRectangleFlatIconButton:
                 icon: "crosshairs-gps"
-                elevation: 5
                 opposite_colors: True
-                md_bg_color: 128/255, 204/255, 255/255, 1
                 on_release: app.on_loc_button_released()
-            HorizontalSpacer:
-            MDIconButton:
+            VerticalSpacer:
+            MDRectangleFlatIconButton:
                 icon: "stop"
                 opposite_colors: True
-                md_bg_color: 200/255, 0, 0, 1
                 on_release: app.on_stop_mock()
-            HorizontalSpacer:
-            MDIconButton:
+            VerticalSpacer:
+            MDRectangleFlatIconButton:
                 icon: "play"
                 opposite_colors: True
-                md_bg_color: 0, 200/255, 0, 1
                 on_release: app.on_start_mock()
-            HorizontalSpacer:
+                theme_text_color: "Custom"
+                md_bg_color: get_color_from_hex("#336699")
+                text_color: get_color_from_hex("#ECF2F9")
+            VerticalSpacer:
                 size_hint: .5, 1
         

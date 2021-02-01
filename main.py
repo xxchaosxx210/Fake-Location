@@ -14,6 +14,7 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from mockmapview import MockMapView
 
 import time
+import random
 
 is_android = platform == "android"
 
@@ -85,10 +86,16 @@ class MainApp(MDApp):
         if is_android:
             location = get_system_location(self._location_manager)
             if location:
-                self.root.mockmapview.zoom = 8
+                self.root.mockmapview.zoom = MockMapView.DEFAULT_ZOOM_IN
                 self.root.mockmapview.center_on(location.getLatitude(), location.getLongitude())
             else:
                 toast("Could not find your location. Try turning Location on in settings")
+        else:
+            # generate random latitude and longitude coordinates
+            lat = random.uniform(-90, 90)
+            lng = random.uniform(-180, 180)
+            self.root.mockmapview.zoom = MockMapView.DEFAULT_ZOOM_IN
+            self.root.mockmapview.center_on(lat, lng)
     
     def on_start_mock(self, lat, lng):
         """

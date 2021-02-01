@@ -125,17 +125,21 @@ class MainApp(MDApp):
         """
         Start button is pressed
         """
-        latitude = self.root.mockmapview.lat
-        longitude = self.root.mockmapview.lon
-        if is_android:
-            # get the latitude coordinates from mockmapview and send them
-            # to mock location thread
-            self._update.send_message("start", latitude, longitude)
+        # get the target marker coordinates
+        latitude, longitude = self.root.mockmapview.get_last_target_coords()
+        if latitude and longitude:
+            # if target marker exists then set the mock location
+            if is_android:
+                # tell mock location thread to set new coordinates
+                self._update.send_message("start", latitude, longitude)
+            else:
+                # set global debugging coordinates
+                Debug.latitude = latitude
+                Debug.longitude = longitude
+                self.root.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude, False)
         else:
-            # set global debugging coordinates
-            Debug.latitude = latitude
-            Debug.longitude = longitude
-            self.root.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude, False)
+            # Let user know nothing was selected
+            toast("Press on the map to select target location and then press the start button")
     
     def on_stop_mock(self):
         """
@@ -147,6 +151,7 @@ class MainApp(MDApp):
             # Set a random location on Windows or Linux
             Debug.randomize_latlng()
             self.root.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude, False)
+        self.root.mockmapview.remove_target_marker()
 
 def main():
     MainApp().run()

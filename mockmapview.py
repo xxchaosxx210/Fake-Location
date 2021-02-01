@@ -1,6 +1,7 @@
 from kivy.garden.mapview import MapView
 from kivy.garden.mapview import MapMarker
 from kivy.logger import Logger
+from kivymd.app import App
 
 class MockMapView(MapView):
     DEFAULT_ZOOM_IN = 14
@@ -9,23 +10,41 @@ class MockMapView(MapView):
         self._target_marker = None
         self._current_loc_marker = None
         super().__init__(**kwargs)
-
-    def on_zoom(self, view, zoom_level):
-        Logger.info(f"ZOOM: {zoom_level}")
-        super().on_zoom(view, zoom_level)
     
     def on_touch_up(self, touch):
-        lat, lng = self.get_latlon_at(touch.x, touch.y, self.zoom)
-        self.update_target_marker(lat, lng)
+        """
+        Map pressed get coordinates and update target marker position
+        """
+        # Check mouse click is in MapView bounds before updating
+        if touch.x >= 0.0 and touch.y >= 0.0 and touch.x <= self.width and touch.y <= self.height:
+            lat, lng = self.get_latlon_at(touch.x, touch.y, self.zoom)
+            self.update_target_marker(lat, lng)
         super().on_touch_up(touch)
     
     def update_target_marker(self, lat, lng):
+        """
+        update_target_locmarker(float, float)
+        updates the target location marker
+        lat - Latitude coordinates
+        lng - Longitude coords
+        """
         if self._target_marker:
             self.remove_marker(self._target_marker)
         self._target_marker = MapMarker(source="target.png", lat=lat, lon=lng)
         self.add_marker(self._target_marker)
+        window = App.get_running_app()
+        # add coords to root windows textfields
+        window.root.lat_text = str(lat)
+        window.root.lon_text = str(lng)
 
     def update_current_locmarker(self, lat, lng, zoom):
+        """
+        update_current_locmarker(float, float, bool)
+        updates the current location marker
+        lat - Latitude coordinates
+        lng - Longitude coords
+        zoom - Zoom into marker if True else ignore Zoom
+        """
         self.center_on(lat, lng)
         if zoom:
             self.zoom = MockMapView.DEFAULT_ZOOM_IN
@@ -33,3 +52,19 @@ class MockMapView(MapView):
             self.remove_marker(self._current_loc_marker)
         self._current_loc_marker = MapMarker(source="current_marker.png", lat=lat, lon=lng)
         self.add_marker(self._current_loc_marker)
+        #Logger.info(f"UPDATE_CURRENT_MARKER: lat={lat}, lng={lng}, zoom={zoom}")
+    
+    def get_last_target_coords(self):
+        """
+        returns last targets latitude and lonitude coordinates. None is no target selected
+        """
+        if self._target_marker:
+            lat, lng = (self._target_marker.lat, self._target_marker.lon)
+        else:
+            lat, lng = (None, None)
+        #Logger.info(f"GET_LAST_TARGET_COORDS: lat{lat}, lng={lng}")
+        return (lat, lng)
+    
+    def remove_target_marker(self):
+        if self._target_marker:
+            self.remove_marker(self._target_marker)

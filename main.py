@@ -16,12 +16,6 @@ using buildozer
 Version 0.1.1
 -------------
 Modified the toolbar buttons
-
-Version 0.1.2
-Add settings file
-Settings file will include
-zoom level on close
-last target position
 """
 
 from kivymd.app import MDApp

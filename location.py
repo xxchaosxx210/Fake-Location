@@ -26,6 +26,8 @@ from jnius import java_method
 from android.permissions import request_permissions
 from android.permissions import Permission
 
+from collections import namedtuple
+
 # reflect our Android classes from the Android SDK
 
 LocationManager = autoclass("android.location.LocationManager")
@@ -36,14 +38,32 @@ Context = autoclass("android.content.Context")
 System = autoclass("java.lang.System")
 SystemClock = autoclass("android.os.SystemClock")
 Geocoder = autoclass("android.location.Geocoder")
-Address = autoclass("android.location.Address")
 Locale = autoclass("java.util.Locale")
 
 # Nested class requires $
 VERSION = autoclass("android.os.Build$VERSION")
 VERSION_CODES = autoclass("android.os.Build$VERSION_CODES")
 
+GeoAddress = namedtuple("Address", ["city", "county", "country",
+                                    "postcode", "second_address",
+                                    "house_number", "latitude",
+                                    "longitude"])
+
 def get_geo_location(address, max_result):
+    """
+    get_geo_location(str, int)
+    address to look up, max_results are maximum results returned from look up
+    returns a List of GeoAddress namedtuples on success
+    each GeoAddress contains
+    city
+    county
+    country
+    postcode
+    second_address
+    house_number
+    latitude
+    longitude
+    """
     if Geocoder.isPresent():
         print("GeoCoder is present...")
         geo = Geocoder(PythonActivity.mActivity, Locale.getDefault())
@@ -51,14 +71,24 @@ def get_geo_location(address, max_result):
         java_list = geo.getFromLocationName(address, max_result)
         if java_list:
             print("List found...")
-            for index, addr in enumerate(java_list.toArray()):
-                print(f"Address {index}: lat={addr.getLatitude()}, lng={addr.getLongitude()}")
-            return True
+            addresses = []
+            for addr in java_list.toArray():
+                addresses.append(GeoAddress(
+                    city=str(addr.getLocality()),
+                    county=str(addr.getSubAdminArea()),
+                    country=str(addr.getAdminArea()),
+                    postcode=str(addr.getPostalCode()),
+                    second_address=str(addr.getThoroughfare()),
+                    house_number=str(addr.getSubThoroughfare()),
+                    latitude=addr.getLatitude(),
+                    longitude=addr.getLongitude()
+                ))
+            return addresses
         else:
             print("No list found...")
     else:
         print("No GeCoder present")
-    return False
+    return []
 
 def require_location_permissions(func_callback):
     """

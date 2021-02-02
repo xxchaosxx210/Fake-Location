@@ -128,7 +128,10 @@ class MainApp(MDApp):
         Get Location position is pressed
         """
         if is_android:
-            get_geo_location("69 Berners Street NR3", 4)
+            addresses = get_geo_location("69 Berners Street NR3", 4)
+            if addresses:
+                for addr in addresses:
+                    print(f"{addr}")
         latlng = _getlatlng(self._location_manager)
         if latlng:
             self.root.mockmapview.update_current_locmarker(latlng[0], latlng[1], True)

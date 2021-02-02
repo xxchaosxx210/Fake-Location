@@ -5,6 +5,8 @@ from kivymd.uix.list import OneLineIconListItem
 from kivy.lang import Builder
 from kivy.utils import platform
 from kivy.clock import mainthread
+from kivy.properties import ObjectProperty
+from kivy.properties import StringProperty
 
 is_android = platform == "android"
 
@@ -20,12 +22,16 @@ Builder.load_string("""
     orientation: "vertical"
     size_hint: 1, None
     height: "300dp"
+    scroll_view: id_scroll_view
+    list_items: id_search_list
+
     MDTextField:
         size_hint: 1, .2
-        text: ""
+        text: address_textfield
         hint_text: "Search Address"
-        id: id_search_text
         on_text: root.on_text(self, self.text)
+        id: id_text_field
+
     ScrollView:
         size_hint: 1, None
         height: 0
@@ -49,22 +55,23 @@ class SearchThread(threading.Thread):
         super().__init__(**kwargs)
 
     def run(self):
+        """
+        retrieve geo location list and notify parent thread
+        """
         if is_android:
-            addrs = get_geo_location(self.address,
-                                    10)
-            self.callback(
-                list(map(lambda x: format_geo_address(x), addrs))
-            )
+            addrs = get_geo_location(self.address, 10)
+            self.callback(addrs)
         else:
             addrs = Debug.get_geo_address(self.address, 10)
-            self.callback(
-                list(map(lambda x: format_geo_address(x), addrs))
-            )
+            self.callback(addrs)
 
 class SearchListItem(OneLineIconListItem):
     pass
 
 class SearchContent(MDBoxLayout):
+
+    scroll_view = ObjectProperty(None)
+    list_items = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -73,16 +80,24 @@ class SearchContent(MDBoxLayout):
     @mainthread
     def on_search_result(self, addr_list):
         """
-        add new results to popup
+        callback return function from SearchThread
         """
         if addr_list:
-            self.ids.id_scroll_view.size_hint_y = 1
+            self.scroll_view.size_hint_y = 1
             for addr in addr_list:
+                # Will improve the way list items are handled
                 address = format_geo_address(addr)
-                listitem = SearchListItem(text=address)
-                self.ids.id_search_list.add_widget(listitem)
+                # create a new list item
+                listitem = SearchListItem(text=address, on_press=self.on_item_selected)
+                # add it on
+                self.list_items.add_widget(listitem)
         else:
-            self.ids.id_scroll_view.size_hint_y = 0
+            # hide the popup menu
+            self.scroll_view.size_hint_y = 0
+    
+    def on_item_selected(self, item):
+        self.ids = item.text
+        self.list_items.clear_widgets()
     
     def do_search(self, text):
         """

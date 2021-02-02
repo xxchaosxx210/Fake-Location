@@ -4,8 +4,15 @@ from kivy.logger import Logger
 from kivymd.app import App
 from kivy.metrics import dp
 
+from kivy.properties import ObjectProperty
+
 class MockMapView(MapView):
     DEFAULT_ZOOM_IN = 8
+
+    # reference to the mapview button toolbar
+    # need this to check if touch up event was triggered inside
+    # the toolbar if so then we ignore adding a target marker
+    toolbar = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         self._target_marker = None
@@ -16,8 +23,8 @@ class MockMapView(MapView):
         """
         Map pressed get coordinates and update target marker position
         """
-        # Check mouse click is in MapView bounds before updating
-        if touch.x >= 0.0 and touch.y >= 0.0 and touch.x <= self.width and touch.y <= self.height:
+        # make sure was inside the mapview bounds before updating target marker
+        if self.collide_point(touch.x, touch.y) == True and self.toolbar.collide_point(touch.x, touch.y) == False:
             lat, lng = self.get_latlon_at(touch.x, touch.y - dp(23), None)
             self.update_target_marker(lat, lng)
         super().on_touch_up(touch)

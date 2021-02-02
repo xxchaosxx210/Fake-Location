@@ -45,15 +45,17 @@ Container:
 
         MockMapView:
             id: map
+            toolbar: map_toolbar
         
         MDBoxLayout:
+            id: map_toolbar
             orientation: "vertical"
             size_hint_x: None
             width: "48dp"
             pos_hint: {"right": 1, "top": 1}
             canvas.before:
                 Color:
-                    rgba: .8, .8, .8, 0
+                    rgba: .8, .8, .8, 1
                 Rectangle:
                     size: self.size
                     pos: self.pos

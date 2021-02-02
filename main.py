@@ -74,12 +74,10 @@ class MainApp(MDApp):
             self._update = MockLocation(self._location_manager)
         else:
             self._location_manager = None
-        self.searchmenupopup = None
+        self.searchmenupopup = SearchPopupMenu(self._on_search)
     
     def on_search_dialog(self, *args):
-        if not self.searchmenupopup:
-            self.searchmenupopup = SearchPopupMenu(self._on_search)
-            self.searchmenupopup.open()
+        self.searchmenupopup.open()
         
     def _on_search(self, *args):
         """

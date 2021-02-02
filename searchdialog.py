@@ -7,6 +7,7 @@ from kivy.utils import platform
 from kivy.clock import mainthread
 from kivy.properties import ObjectProperty
 from kivy.properties import StringProperty
+from kivy.metrics import sp
 
 is_android = platform == "android"
 
@@ -18,10 +19,11 @@ else:
 import threading
 
 Builder.load_string("""
+#:import Window kivy.core.window.Window
 <SearchContent>:
     orientation: "vertical"
     size_hint: 1, None
-    height: "300dp"
+    height: "400dp"
     scroll_view: id_scroll_view
     list_items: id_search_list
 
@@ -36,13 +38,26 @@ Builder.load_string("""
         size_hint: 1, .8
         id: id_scroll_view
         scroll_type: ["content"]
+        padding: 0
+        spacing: 0
         MDList:
+            padding: 0
+            spacing: 0
             id: id_search_list
+            canvas.before:
+                Color:
+                    rgba: 1, 0, 0, .6
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
 
 <SearchListItem>:
-    text: ""
-    padding: 0
-    spacing: 0
+    canvas.before:
+        Color:
+            rgba: .4, .4, .4, .6
+        Rectangle:
+            pos: self.pos
+            size: self.size
 """)
 
 def format_geo_address(addr):
@@ -85,12 +100,14 @@ class SearchContent(MDBoxLayout):
         callback return function from SearchThread
         """
         if addr_list:
-            #self.scroll_view.size_hint_y = 1
             for addr in addr_list:
                 # Will improve the way list items are handled
                 address = format_geo_address(addr)
                 # create a new list item
-                listitem = SearchListItem(text=address, on_press=self.on_item_selected)
+                listitem = SearchListItem(
+                    text=address, 
+                    on_press=self.on_item_selected,
+                    font_style="Body2")
                 # add it on
                 self.list_items.add_widget(listitem)
     

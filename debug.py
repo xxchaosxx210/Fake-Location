@@ -32,3 +32,8 @@ class Debug:
                             -0.1288632693726255), 
                             range(random.randrange(1, 20)))
         return addresses
+    
+    @staticmethod
+    def log_object(obj):
+        for item in dir(obj):
+            print(item)

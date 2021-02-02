@@ -33,8 +33,7 @@ Builder.load_string("""
         id: id_text_field
 
     ScrollView:
-        size_hint: 1, None
-        height: 0
+        size_hint: 1, .8
         id: id_scroll_view
         scroll_type: ["content"]
         MDList:
@@ -42,6 +41,8 @@ Builder.load_string("""
 
 <SearchListItem>:
     text: ""
+    padding: 0
+    spacing: 0
 """)
 
 def format_geo_address(addr):
@@ -84,7 +85,7 @@ class SearchContent(MDBoxLayout):
         callback return function from SearchThread
         """
         if addr_list:
-            self.scroll_view.size_hint_y = 1
+            #self.scroll_view.size_hint_y = 1
             for addr in addr_list:
                 # Will improve the way list items are handled
                 address = format_geo_address(addr)
@@ -92,9 +93,6 @@ class SearchContent(MDBoxLayout):
                 listitem = SearchListItem(text=address, on_press=self.on_item_selected)
                 # add it on
                 self.list_items.add_widget(listitem)
-        else:
-            # hide the popup menu
-            self.scroll_view.size_hint_y = 0
     
     def on_item_selected(self, item):
         """

@@ -12,8 +12,8 @@ is_android = platform == "android"
 
 if is_android:
     from location import get_geo_location
-else:
-    from debug import Debug
+
+from debug import Debug
 
 import threading
 

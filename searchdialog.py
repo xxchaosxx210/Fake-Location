@@ -21,9 +21,8 @@ Builder.load_string("""
         size_hint: 1, None
         height: 0
         id: id_scroll_view
+        scroll_type: ["content"]
         MDList:
-            adaptive_height: True
-            size_hint: 1, 1
             id: id_search_list
 
 <SearchListItem>:
@@ -39,10 +38,12 @@ class SearchContent(MDBoxLayout):
         super().__init__(**kwargs)
     
     def on_text(self, textfield, text):
-        self.ids.id_scroll_view.size_hint_y = 1
-        listitem = SearchListItem(text=text)
-        self.ids.id_search_list.add_widget(listitem)
-        print(text)
+        # make sure enough characters are filled into the search field
+        if len(text) > 4:
+            # do a geolocation search
+            self.ids.id_scroll_view.size_hint_y = 1
+            listitem = SearchListItem(text=text)
+            self.ids.id_search_list.add_widget(listitem)
 
 
 class SearchPopupMenu(MDDialog):

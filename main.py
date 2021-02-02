@@ -43,7 +43,6 @@ if is_android:
     from location import require_location_permissions
     from location import MockLocation
     from location import get_system_location
-    from location import get_geo_location
 
 def _getlatlng(location_manager):
     latlng = None
@@ -79,14 +78,14 @@ class MainApp(MDApp):
     
     def on_search_dialog(self, *args):
         if not self.searchmenupopup:
-            self.searchmenupopup = SearchPopupMenu(callback=self._on_search_dialog_dimsiss)
+            self.searchmenupopup = SearchPopupMenu(self._on_search)
             self.searchmenupopup.open()
         
-    def _on_search_dialog_dimsiss(self, address, lat, lng):
+    def _on_search(self, *args):
         """
         _on_search_dialog_dimsiss is a callback from SearchPopupMenu
         """
-        print(address, lat, lng)
+        pass
     
     def on_stop(self):
         if is_android:

@@ -1,25 +1,40 @@
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFlatButton
+from kivymd.uix.list import OneLineIconListItem
 from kivy.lang import Builder
+from kivy.metrics import dp
+
 
 Builder.load_string("""
 <SearchContent>:
     orientation: "vertical"
+    size_hint: 1, None
+    height: "300dp"
     MDTextField:
+        size_hint: 1, .2
         text: ""
         hint_text: "Search Address"
         id: id_search
         on_text: root.on_text(self, self.text)
+    ScrollView:
+        size_hint: 1, .8
+        MDList:
+            size_hint: 1, 1
+            id: id_search_list
 """)
 
 class SearchContent(MDBoxLayout):
-    
-    def on_search_button(self):
-        print("help")
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
     
     def on_text(self, textfield, text):
-        print(text)
+        self.ids.id_search.add_widget(
+            OneLineIconListItem(text="Paul Millar is a terrible coder")
+            )
+        print("")
+        
 
 class SearchPopupMenu(MDDialog):
 
@@ -44,7 +59,7 @@ class SearchPopupMenu(MDDialog):
     
     def on_search(self, *args):
         self._callback(self.content_cls.ids.id_search.text, 0.0, 0.0)
-        self.dismiss()
+        #self.dismiss()
     
 
 

@@ -76,3 +76,17 @@ class MockMapView(MapView):
     def remove_target_marker(self):
         if self._target_marker:
             self.remove_marker(self._target_marker)
+    
+    def on_zoom_button(self, zoom_value):
+        """
+        on_zoom(int)
+        zoom_value is the zoom value to change
+        zooms on target marker if no target marker then zoom
+        to center of map
+        """
+        if self._target_marker:
+            self.center_on(self._target_marker.lat, self._target_marker.lon)
+            self.zoom = zoom_value
+        else:
+            self.zoom = zoom_value
+        

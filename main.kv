@@ -77,11 +77,11 @@ Container:
                 height: "50dp"
             MapViewToolBarButton:
                 icon: "magnify-plus"
-                on_release: lambda x: x == 0
+                on_release: map.on_zoom_button(map.zoom + 1)
             MDSeparator:
             MapViewToolBarButton:
                 icon: "magnify-minus"
-                on_release: lambda x: x == 0
+                on_release: map.on_zoom_button(map.zoom - 1)
             Widget:
                 height: .5
         

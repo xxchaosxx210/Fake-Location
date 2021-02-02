@@ -1,6 +1,6 @@
 __title__ = "Fake Location"
 __author__ = "Paul Millar"
-__version__ = "0.1"
+__version__ = "0.1.1"
 __description__ = """
 A Fake GPS app for android using the kivy and kivymd framework.
 This App will run on Windows and Linux but because they lack

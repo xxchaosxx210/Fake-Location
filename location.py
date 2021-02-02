@@ -44,10 +44,10 @@ Locale = autoclass("java.util.Locale")
 VERSION = autoclass("android.os.Build$VERSION")
 VERSION_CODES = autoclass("android.os.Build$VERSION_CODES")
 
-GeoAddress = namedtuple("Address", ["city", "county", "country",
-                                    "postcode", "second_address",
-                                    "house_number", "latitude",
-                                    "longitude"])
+_GeoAddress = namedtuple("Address", ["city", "county", "country",
+                                     "postcode", "second_address",
+                                     "house_number", "latitude",
+                                     "longitude"])
 
 def get_geo_location(address, max_result):
     """
@@ -73,7 +73,7 @@ def get_geo_location(address, max_result):
             print("List found...")
             addresses = []
             for addr in java_list.toArray():
-                addresses.append(GeoAddress(
+                addresses.append(_GeoAddress(
                     city=str(addr.getLocality()),
                     county=str(addr.getSubAdminArea()),
                     country=str(addr.getAdminArea()),

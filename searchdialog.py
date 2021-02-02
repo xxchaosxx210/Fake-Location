@@ -3,8 +3,17 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.list import OneLineIconListItem
 from kivy.lang import Builder
-from kivy.metrics import dp
+from kivy.utils import platform
+from kivy.clock import mainthread
 
+is_android = platform == "android"
+
+if is_android:
+    from location import get_geo_location
+else:
+    from debug import Debug
+
+import threading
 
 Builder.load_string("""
 <SearchContent>:
@@ -29,6 +38,29 @@ Builder.load_string("""
     text: ""
 """)
 
+def format_geo_address(addr):
+    return f"{addr.house_number} {addr.second_address} {addr.postcode} {addr.country}"
+
+class SearchThread(threading.Thread):
+
+    def __init__(self, address, callback, **kwargs):
+        self.callback = callback
+        self.address = address
+        super().__init__(**kwargs)
+
+    def run(self):
+        if is_android:
+            addrs = get_geo_location(self.address,
+                                    10)
+            self.callback(
+                list(map(lambda x: format_geo_address(x), addrs))
+            )
+        else:
+            addrs = Debug.get_geo_address(self.address, 10)
+            self.callback(
+                list(map(lambda x: format_geo_address(x), addrs))
+            )
+
 class SearchListItem(OneLineIconListItem):
     pass
 
@@ -36,14 +68,39 @@ class SearchContent(MDBoxLayout):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.thread = None
+    
+    @mainthread
+    def on_search_result(self, addr_list):
+        """
+        add new results to popup
+        """
+        if addr_list:
+            self.ids.id_scroll_view.size_hint_y = 1
+            for addr in addr_list:
+                address = format_geo_address(addr)
+                listitem = SearchListItem(text=address)
+                self.ids.id_search_list.add_widget(listitem)
+        else:
+            self.ids.id_scroll_view.size_hint_y = 0
+    
+    def do_search(self, text):
+        """
+        init search thread and start it
+        """
+        self.thread = SearchThread(text, self.on_search_result)
+        self.thread.start()
     
     def on_text(self, textfield, text):
         # make sure enough characters are filled into the search field
         if len(text) > 4:
             # do a geolocation search
-            self.ids.id_scroll_view.size_hint_y = 1
-            listitem = SearchListItem(text=text)
-            self.ids.id_search_list.add_widget(listitem)
+            if self.thread:
+                # if the thread isnt alive then create a new one
+                if not self.thread.is_alive():
+                    self.do_search(text)
+            else:
+                self.do_search(text)
 
 
 class SearchPopupMenu(MDDialog):

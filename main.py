@@ -7,12 +7,21 @@ This App will run on Windows and Linux but because they lack
 the GPS API the Win and *nix are for testing purposes only
 
 Version 0.1
+-----------
 laying the framework down. Setting up android testing provider
 trying for days to get the mock locations to work on google maps.
 the another few days trying to get mapview to work and compile
 using buildozer
 
 Version 0.1.1
+-------------
+Modified the toolbar buttons
+
+Version 0.1.2
+Add settings file
+Settings file will include
+zoom level on close
+last target position
 """
 
 from kivymd.app import MDApp

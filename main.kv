@@ -39,6 +39,20 @@ Container:
             hint_text: "Longitude"
             input_filter: "float"
         HorizontalSpacer:
+    
+    MDBoxLayout:
+        orientation: "horizontal"
+        size_hint: 1, .1
+        HorizontalSpacer:
+        MDTextField:
+            size_hint: .9, 1
+            text: ""
+            mode: "rectangle"
+            hint_text: "Address to Search"
+        MDIconButton:
+            size_hint: .1, 1
+            icon: "search-web"  
+        HorizontalSpacer:
 
     RelativeLayout:
         id: mapview_container
@@ -53,7 +67,7 @@ Container:
             size_hint_x: None
             width: "48dp"
             size_hint_y: .5
-            pos_hint: {"right": 1, "top": 1}
+            pos_hint: {"center_y": .5, "right": 1}
             canvas.before:
                 Color:
                     rgba: 1, 1, 1, 0

@@ -18,8 +18,16 @@ Builder.load_string("""
         id: id_search
         on_text: root.on_text(self, self.text)
     ScrollView:
-        size_hint: 1, .8
+        size_hint: 1, None
+        height: 0
+        id: id_scroll_view
         MDList:
+            canvas.before:
+                Color:
+                    rgba: 1, 0, 0, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
             size_hint: 1, 1
             id: id_search_list
 """)
@@ -30,11 +38,12 @@ class SearchContent(MDBoxLayout):
         super().__init__(**kwargs)
     
     def on_text(self, textfield, text):
+        self.ids.id_scroll_view.size_hint_y = 1
         self.ids.id_search.add_widget(
-            OneLineIconListItem(text="Paul Millar is a terrible coder")
+            OneLineIconListItem(text=text)
             )
-        print("")
-        
+        print(text)
+
 
 class SearchPopupMenu(MDDialog):
 

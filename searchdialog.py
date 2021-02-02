@@ -27,7 +27,7 @@ Builder.load_string("""
 
     MDTextField:
         size_hint: 1, .2
-        text: address_textfield
+        text: ""
         hint_text: "Search Address"
         on_text: root.on_text(self, self.text)
         id: id_text_field
@@ -76,6 +76,7 @@ class SearchContent(MDBoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.thread = None
+        self.item_selected = False
     
     @mainthread
     def on_search_result(self, addr_list):
@@ -96,8 +97,16 @@ class SearchContent(MDBoxLayout):
             self.scroll_view.size_hint_y = 0
     
     def on_item_selected(self, item):
-        self.ids = item.text
+        """
+        Item got selected in the search list
+        set the item_select to true so we 
+        know that text has been added from search
+        this is to avoid another search when on_text gets called
+        """
+        self.item_selected = True
+        self.ids.id_text_field.text = item.text
         self.list_items.clear_widgets()
+        self.item_selected = False
     
     def do_search(self, text):
         """
@@ -107,14 +116,17 @@ class SearchContent(MDBoxLayout):
         self.thread.start()
     
     def on_text(self, textfield, text):
+        # check if text has been added after selecting item from MDList
         # make sure enough characters are filled into the search field
-        if len(text) > 4:
-            # do a geolocation search
+        # 4 is default
+        if not self.item_selected and len(text) > 4:
+            # Text was typed in so do a search
             if self.thread:
                 # if the thread isnt alive then create a new one
                 if not self.thread.is_alive():
                     self.do_search(text)
             else:
+                # No thread running
                 self.do_search(text)
 
 
@@ -140,8 +152,8 @@ class SearchPopupMenu(MDDialog):
         self.dismiss()
     
     def on_search(self, *args):
-        self._callback(self.content_cls.ids.id_search_text.text, 0.0, 0.0)
-        #self.dismiss()
+        self._callback(self.content_cls.ids.id_text_field.text, 0.0, 0.0)
+        self.dismiss()
     
 
 

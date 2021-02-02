@@ -1,4 +1,4 @@
-__version__ = '0.1'
+__version__ = '0.2'
 __author__ = 'Paul Millar'
 __description__ = """
 
@@ -10,8 +10,6 @@ Contains functions and classes for dealing with Androids Location API
 
  GPSListener - A class for retrieving GPS location data
  Functions for performing tests ie. Mock Locations on device
-
- Note: I can't for the love of me get this to work on SDK 29 and above
 
 In order to get location updates- call start_gps_updates
 if just want location right away then call get_location
@@ -37,10 +35,30 @@ PythonActivity = autoclass('org.kivy.android.PythonActivity')
 Context = autoclass("android.content.Context")
 System = autoclass("java.lang.System")
 SystemClock = autoclass("android.os.SystemClock")
+Geocoder = autoclass("android.location.Geocoder")
+Address = autoclass("android.location.Address")
+Locale = autoclass("java.util.Locale")
 
 # Nested class requires $
 VERSION = autoclass("android.os.Build$VERSION")
 VERSION_CODES = autoclass("android.os.Build$VERSION_CODES")
+
+def get_geo_location(address, max_result):
+    if Geocoder.isPresent():
+        print("GeoCoder is present...")
+        geo = Geocoder(PythonActivity.mActivity, Locale.getDefault())
+        print("Looked up addresses")
+        java_list = geo.getFromLocationName(address, max_result)
+        if java_list:
+            print("List found...")
+            for index, addr in enumerate(java_list.toArray()):
+                print(f"Address {index}: lat={addr.getLatitude()}, lng={addr.getLongitude()}")
+            return True
+        else:
+            print("No list found...")
+    else:
+        print("No GeCoder present")
+    return False
 
 def require_location_permissions(func_callback):
     """

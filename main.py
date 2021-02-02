@@ -41,6 +41,7 @@ if is_android:
     from location import require_location_permissions
     from location import MockLocation
     from location import get_system_location
+    from location import get_geo_location
 
 def _getlatlng(location_manager):
     latlng = None
@@ -126,6 +127,8 @@ class MainApp(MDApp):
         """
         Get Location position is pressed
         """
+        if is_android:
+            get_geo_location("69 Berners Street NR3", 4)
         latlng = _getlatlng(self._location_manager)
         if latlng:
             self.root.mockmapview.update_current_locmarker(latlng[0], latlng[1], True)

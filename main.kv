@@ -21,6 +21,11 @@ Container:
     mockmapview: map
     lat_text: latitude.text
     lon_text: longitude.text
+    
+    MDToolbar:
+        title: "Search Address"
+        right_action_items: [['search-web', lambda x: print("Nothing yet")]]
+        md_bg_color: app.theme_cls.primary_color
 
     MDBoxLayout:
         orientation: "horizontal"
@@ -38,20 +43,6 @@ Container:
             text: root.lon_text
             hint_text: "Longitude"
             input_filter: "float"
-        HorizontalSpacer:
-    
-    MDBoxLayout:
-        orientation: "horizontal"
-        size_hint: 1, .1
-        HorizontalSpacer:
-        MDTextField:
-            size_hint: .9, 1
-            text: ""
-            mode: "rectangle"
-            hint_text: "Address to Search"
-        MDIconButton:
-            size_hint: .1, 1
-            icon: "search-web"  
         HorizontalSpacer:
 
     RelativeLayout:

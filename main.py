@@ -79,8 +79,14 @@ class MainApp(MDApp):
     
     def on_search_dialog(self, *args):
         if not self.searchmenupopup:
-            self.searchmenupopup = SearchPopupMenu()
+            self.searchmenupopup = SearchPopupMenu(callback=self._on_search_dialog_dimsiss)
             self.searchmenupopup.open()
+        
+    def _on_search_dialog_dimsiss(self, address, lat, lng):
+        """
+        _on_search_dialog_dimsiss is a callback from SearchPopupMenu
+        """
+        print(address, lat, lng)
     
     def on_stop(self):
         if is_android:

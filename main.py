@@ -5,6 +5,14 @@ __description__ = """
 A Fake GPS app for android using the kivy and kivymd framework.
 This App will run on Windows and Linux but because they lack
 the GPS API the Win and *nix are for testing purposes only
+
+Version 0.1
+laying the framework down. Setting up android testing provider
+trying for days to get the mock locations to work on google maps.
+the another few days trying to get mapview to work and compile
+using buildozer
+
+Version 0.1.1
 """
 
 from kivymd.app import MDApp

@@ -20,12 +20,14 @@ Modified the toolbar buttons
 
 from kivymd.app import MDApp
 from kivy.logger import Logger
+from kivymd.uix.dialog import MDDialog
 from kivy.clock import mainthread
 from kivy.utils import platform
 from kivymd.toast import toast
 from kivy.properties import ObjectProperty
 from kivy.properties import StringProperty
 from kivymd.uix.boxlayout import MDBoxLayout
+from searchdialog import SearchPopupMenu
 
 from mockmapview import MockMapView
 
@@ -73,6 +75,12 @@ class MainApp(MDApp):
             self._update = MockLocation(self._location_manager)
         else:
             self._location_manager = None
+        self.searchmenupopup = None
+    
+    def on_search_dialog(self, *args):
+        if not self.searchmenupopup:
+            self.searchmenupopup = SearchPopupMenu()
+            self.searchmenupopup.open()
     
     def on_stop(self):
         if is_android:

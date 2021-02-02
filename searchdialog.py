@@ -83,6 +83,8 @@ class SearchContent(MDBoxLayout):
         """
         callback return function from SearchThread
         """
+        if Debug.LOGGING_ENABLED:
+            Debug.log("on_search_result", "addr_list", len(list(addr_list)))
         if addr_list:
             self.scroll_view.size_hint_y = 1
             for addr in addr_list:

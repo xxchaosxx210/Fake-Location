@@ -1,5 +1,6 @@
 import random
 from collections import namedtuple
+from kivy.logger import Logger
 
 # Debugging
 MIN_LATITUDE = -90
@@ -18,6 +19,8 @@ class Debug:
     latitude = random.uniform(MIN_LATITUDE, MAX_LATITUDE)
     longitude = random.uniform(MIN_LONGITUDE, MAX_LONGITUDE)
 
+    LOGGING_ENABLED = True
+
     @staticmethod
     def randomize_latlng():
         Debug.latitude = random.uniform(MIN_LATITUDE, MAX_LATITUDE)
@@ -32,3 +35,16 @@ class Debug:
                             -0.1288632693726255), 
                             range(random.randrange(1, 20)))
         return addresses
+    
+    @staticmethod
+    def log(message_type="APP", *args):
+        """
+        display log type and args
+        for example - log("App", "x", x)
+        will display "[App] x = 5" in the log
+        """
+        text = f"{message_type}: "
+        for element in args:
+            text += f"{element} = "
+        Logger.info(text[:-3])
+        

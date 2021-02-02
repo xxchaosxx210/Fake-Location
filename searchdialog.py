@@ -15,22 +15,23 @@ Builder.load_string("""
         size_hint: 1, .2
         text: ""
         hint_text: "Search Address"
-        id: id_search
+        id: id_search_text
         on_text: root.on_text(self, self.text)
     ScrollView:
         size_hint: 1, None
         height: 0
         id: id_scroll_view
         MDList:
-            canvas.before:
-                Color:
-                    rgba: 1, 0, 0, 1
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
+            adaptive_height: True
             size_hint: 1, 1
             id: id_search_list
+
+<SearchListItem>:
+    text: ""
 """)
+
+class SearchListItem(OneLineIconListItem):
+    pass
 
 class SearchContent(MDBoxLayout):
 
@@ -39,9 +40,8 @@ class SearchContent(MDBoxLayout):
     
     def on_text(self, textfield, text):
         self.ids.id_scroll_view.size_hint_y = 1
-        self.ids.id_search.add_widget(
-            OneLineIconListItem(text=text)
-            )
+        listitem = SearchListItem(text=text)
+        self.ids.id_search_list.add_widget(listitem)
         print(text)
 
 
@@ -67,7 +67,7 @@ class SearchPopupMenu(MDDialog):
         self.dismiss()
     
     def on_search(self, *args):
-        self._callback(self.content_cls.ids.id_search.text, 0.0, 0.0)
+        self._callback(self.content_cls.ids.id_search_text.text, 0.0, 0.0)
         #self.dismiss()
     
 

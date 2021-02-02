@@ -28,6 +28,7 @@ from kivy.properties import StringProperty
 from kivymd.uix.boxlayout import MDBoxLayout
 
 from mockmapview import MockMapView
+from searchaddressbar import SearchAddressBar
 
 # Debugging
 from debug import Debug

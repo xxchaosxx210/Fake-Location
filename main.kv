@@ -1,6 +1,7 @@
 #:import MapView kivy.garden.mapview.MapView
 #:import get_color_from_hex kivy.utils.get_color_from_hex
 #:include mockmapview.kv
+#:include searchaddressbar.kv
 
 <HorizontalSpacer@Widget>:
     size_hint_x: None
@@ -40,19 +41,8 @@ Container:
             input_filter: "float"
         HorizontalSpacer:
     
-    MDBoxLayout:
-        orientation: "horizontal"
+    SearchAddressBar:
         size_hint: 1, .1
-        HorizontalSpacer:
-        MDTextField:
-            size_hint: .9, 1
-            text: ""
-            mode: "rectangle"
-            hint_text: "Address to Search"
-        MDIconButton:
-            size_hint: .1, 1
-            icon: "search-web"  
-        HorizontalSpacer:
 
     RelativeLayout:
         id: mapview_container

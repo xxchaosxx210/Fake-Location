@@ -20,7 +20,6 @@ Modified the toolbar buttons
 
 from kivymd.app import MDApp
 from kivy.logger import Logger
-from kivymd.uix.dialog import MDDialog
 from kivy.clock import mainthread
 from kivy.utils import platform
 from kivymd.toast import toast

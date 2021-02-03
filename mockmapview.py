@@ -1,6 +1,5 @@
 from kivy.garden.mapview import MapView
 from kivy.garden.mapview import MapMarker
-from kivy.logger import Logger
 from kivymd.app import App
 from kivy.metrics import dp
 

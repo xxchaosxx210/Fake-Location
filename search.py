@@ -1,5 +1,4 @@
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.button import MDFlatButton
 from kivymd.uix.list import OneLineIconListItem
 from kivy.lang import Builder
 from kivy.utils import platform
@@ -34,14 +33,18 @@ Builder.load_string("""
             id: id_search_list
     
     MDFloatLayout:
-        MDFlatButton:
-            text: "Cancel"
-            id: id_cancel_button
-            pos_hint: {"right": 1, "bottom": 1}
-        MDFlatButton:
-            text: "Search"
-            id: id_search_button
-            pos_hint: {"right": 1, "bottom": 1}
+        MDBoxLayout:
+            orientation: "horizontal"
+            size_hint: None, None
+            size: dp(120), dp(48)
+            pos_hint: {"right": .9, "bottom": 1}
+            spacing: "10dp"
+            MDFlatButton:
+                text: "Cancel"
+                id: id_cancel_button
+            MDFlatButton:
+                text: "Search"
+                id: id_search_button
 
 <SearchListItem>:
     font_style: "Body2"

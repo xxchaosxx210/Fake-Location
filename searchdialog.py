@@ -6,15 +6,13 @@ from kivy.lang import Builder
 from kivy.utils import platform
 from kivy.clock import mainthread
 from kivy.properties import ObjectProperty
-from kivy.properties import StringProperty
-from kivy.metrics import sp
 
 is_android = platform == "android"
 
 if is_android:
     from location import get_geo_location
-else:
-    from debug import Debug
+
+from debug import Debug
 
 import threading
 
@@ -22,15 +20,16 @@ Builder.load_string("""
 #:import Window kivy.core.window.Window
 <SearchContent>:
     orientation: "vertical"
-    size_hint: 1, None
-    height: "400dp"
+    size_hint_y: None
+    height:  "500dp"
+    spacing: "0dp"
+    padding: "0dp"
     scroll_view: id_scroll_view
     list_items: id_search_list
 
-    MDTextField:
-        size_hint: 1, .2
-        text: ""
-        hint_text: "Search Address"
+    MDTextFieldRect:
+        size_hint_y: None
+        height: "48dp"
         on_text: root.on_text(self, self.text)
         id: id_text_field
 
@@ -38,26 +37,13 @@ Builder.load_string("""
         size_hint: 1, .8
         id: id_scroll_view
         scroll_type: ["content"]
-        padding: 0
-        spacing: 0
         MDList:
-            padding: 0
-            spacing: 0
             id: id_search_list
-            canvas.before:
-                Color:
-                    rgba: 1, 0, 0, .6
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
 
 <SearchListItem>:
-    canvas.before:
-        Color:
-            rgba: .4, .4, .4, .6
-        Rectangle:
-            pos: self.pos
-            size: self.size
+    font_style: "Body2"
+    padding: "0dp"
+    spacing: "0dp"
 """)
 
 def format_geo_address(addr):
@@ -106,8 +92,7 @@ class SearchContent(MDBoxLayout):
                 # create a new list item
                 listitem = SearchListItem(
                     text=address, 
-                    on_press=self.on_item_selected,
-                    font_style="Body2")
+                    on_press=self.on_item_selected)
                 # add it on
                 self.list_items.add_widget(listitem)
     
@@ -118,6 +103,7 @@ class SearchContent(MDBoxLayout):
         know that text has been added from search
         this is to avoid another search when on_text gets called
         """
+        Debug.log_object(item)
         self.item_selected = True
         self.ids.id_text_field.text = item.text
         self.list_items.clear_widgets()

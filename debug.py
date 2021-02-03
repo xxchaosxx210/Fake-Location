@@ -27,7 +27,7 @@ class Debug:
     def get_geo_address(address, max_range):
         addresses = map(lambda index: _GeoAddress(
                             "London", "Essex", 
-                            "UK", "SW1", "Test Street", "23",
+                            "UK", "SW1", "Test By Test Test Test Long Address", "23",
                             51.458120868483164,
                             -0.1288632693726255), 
                             range(random.randrange(1, 20)))

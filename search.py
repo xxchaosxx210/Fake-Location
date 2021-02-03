@@ -17,13 +17,18 @@ from debug import Debug
 import threading
 
 Builder.load_string("""
+
 <SearchContent>:
     orientation: "vertical"
     scroll_view: id_scroll_view
     list_items: id_search_list
     address_text: id_address_text.text
 
-    MDTextFieldRect:
+    MDToolbar:
+        title: "Search Address"
+        md_bg_color: app.theme_cls.primary_color
+
+    MDTextField:
         size_hint_y: None
         height: "36dp"
         on_text: root.on_text(self, self.text)
@@ -36,20 +41,13 @@ Builder.load_string("""
             id: id_search_list
     
     MDFloatLayout:
-        MDBoxLayout:
-            orientation: "horizontal"
+        MDFlatButton:
             size_hint: None, None
-            size: dp(120), dp(48)
-            pos_hint: {"right": .9, "bottom": 1}
-            spacing: "10dp"
-            MDFlatButton:
-                text: "Cancel"
-                id: id_cancel_button
-                on_release: app.root.current = "mapview"
-            MDFlatButton:
-                text: "Search"
-                id: id_search_button
-                on_release: root.on_search_button()
+            size: dp(68), dp(48)
+            text: "Cancel"
+            id: id_cancel_button
+            on_release: root.cleanup_and_exit()
+            pos_hint: {"right": 1, "bottom": 1}
 
 <SearchListItem>:
     font_style: "Body2"
@@ -93,9 +91,13 @@ class SearchContent(MDBoxLayout):
         self.thread = None
         self.item_selected = False
     
-    def on_search_button(self):
-        app = MDApp.get_running_app()
-        app.root.current = "mapview"
+    def cleanup_and_exit(self):
+        """
+        clears the list and exits
+        """
+        self.list_items.clear_widgets()
+        self.address_text = ""
+        MDApp.get_running_app().root.current = "mapview"
     
     @mainthread
     def on_search_result(self, addr_list):
@@ -124,16 +126,15 @@ class SearchContent(MDBoxLayout):
         know that text has been added from search
         this is to avoid another search when on_text gets called
         """
+        # get the app object
         app = MDApp.get_running_app()
         self.item_selected = True
         app.container.mockmapview.update_target_center(
                                 item.geoloc.latitude, 
                                 item.geoloc.longitude
                             )
-        self.list_items.clear_widgets()
-        self.address_text = ""
         self.item_selected = False
-        app.root.current = "mapview"
+        self.cleanup_and_exit()
     
     def do_search(self, text):
         """

@@ -69,9 +69,14 @@ class SearchThread(threading.Thread):
         retrieve geo location list and notify parent thread
         """
         if is_android:
-            addrs = get_geo_location(self.address, 10)
-            self.callback(addrs)
+            try:
+                addrs = get_geo_location(self.address, 10)
+            except Exception as err:
+                addrs = []
+            finally:
+                self.callback(addrs)
         else:
+            Debug.log("GEOTEST", "self.address", self.address)
             addrs = Debug.get_geo_address(self.address, 10)
             self.callback(addrs)
 
@@ -111,7 +116,6 @@ class SearchContent(MDBoxLayout):
         self.list_items.clear_widgets()
         if addr_list:
             for addr in addr_list:
-                print(f"lat = {addr.latitude}, type = {type(addr.latitude)}")
                 # Will improve the way list items are handled
                 address = format_geo_address(addr)
                 # create a new list item

@@ -1,5 +1,6 @@
 import random
 from collections import namedtuple
+from kivy.logger import Logger
 
 # Debugging
 MIN_LATITUDE = -90
@@ -37,3 +38,11 @@ class Debug:
     def log_object(obj):
         for item in dir(obj):
             print(item)
+    
+    @staticmethod
+    def log(event_type="APP", obj=None, *args):
+        Logger.info(f"{event_type}: Object={obj}")
+        text = ""
+        for item in args:
+            text += f"{item} = "
+        Logger.info(f"{event_type}: {text[:-3]}")

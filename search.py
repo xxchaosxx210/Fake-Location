@@ -156,6 +156,8 @@ class SearchContent(MDBoxLayout):
             else:
                 # No thread running
                 self.do_search(text)
+        else:
+            self.list_items.clear_widgets()
     
 
 

@@ -42,7 +42,7 @@ Locale = autoclass("java.util.Locale")
 
 # Nested class requires $
 VERSION = autoclass("android.os.Build$VERSION")
-VERSION_CODES = autoclass("android.os.Build$VERSION_CODES")
+#VERSION_CODES = autoclass("android.os.Build$VERSION_CODES")
 
 _GeoAddress = namedtuple("Address", ["city", "county", "country",
                                      "postcode", "second_address",
@@ -297,9 +297,11 @@ def set_mock(location_manager, provider, lat, lng):
     new_loc.setSpeed(0.0)
     new_loc.setBearing(1.0)
     new_loc.setAltitude(3.0)
-    if VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1:
+    if VERSION.SDK_INT >= 17:
+        # Greaster than Jelly Bean
         new_loc.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
-    if VERSION.SDK_INT >= VERSION_CODES.O:
+    if VERSION.SDK_INT >= 29:
+        # Greater than Oreo
         new_loc.setBearingAccuracyDegrees(0.1)
         new_loc.setVerticalAccuracyMeters(0.1)
         new_loc.setSpeedAccuracyMetersPerSecond(0.0)

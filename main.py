@@ -27,7 +27,6 @@ from kivymd.toast import toast
 from kivy.properties import ObjectProperty
 from kivy.properties import StringProperty
 from kivymd.uix.boxlayout import MDBoxLayout
-from searchdialog import SearchPopupMenu
 
 from mockmapview import MockMapView
 
@@ -63,6 +62,8 @@ class Container(MDBoxLayout):
     lon_text = StringProperty("52.87878")
 
 class MainApp(MDApp):
+
+    container = ObjectProperty(None)
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -74,10 +75,9 @@ class MainApp(MDApp):
             self._update = MockLocation(self._location_manager)
         else:
             self._location_manager = None
-        self.searchmenupopup = SearchPopupMenu(self._on_search)
     
     def on_search_dialog(self, *args):
-        self.searchmenupopup.open()
+        self.root.current = "search"
         
     def _on_search(self, *args):
         """
@@ -92,6 +92,8 @@ class MainApp(MDApp):
             self._update.send_message("quit")
     
     def on_start(self):
+        # Obtain a reference to the Container object
+        self.container = self.root.ids.id_map_screen_container
         if is_android:
             # Get ACCESS_FINE_LOCATION Permission from user
             require_location_permissions(self.on_gps_update)
@@ -101,7 +103,7 @@ class MainApp(MDApp):
         else:
             # Set a random location on Windows or Linux
             Debug.randomize_latlng()
-            self.root.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude, False)
+            self.container.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude, False)
 
     @mainthread
     def on_gps_update(self, provider, event, *args):
@@ -121,7 +123,7 @@ class MainApp(MDApp):
                 self.gps_listener.start_gps_updates(3, 10)
                 latlng = _getlatlng(self._location_manager)
                 if latlng:
-                    self.root.mockmapview.update_current_locmarker(latlng[0], latlng[1], False)
+                    self.container.mockmapview.update_current_locmarker(latlng[0], latlng[1], False)
                 else:
                     toast("Could not find your location. Try turning Location on in settings")
             else:
@@ -140,7 +142,7 @@ class MainApp(MDApp):
         """
         latlng = _getlatlng(self._location_manager)
         if latlng:
-            self.root.mockmapview.update_current_locmarker(latlng[0], latlng[1], True)
+            self.container.mockmapview.update_current_locmarker(latlng[0], latlng[1], True)
         else:
             toast("Could not find your location. Try turning Location on in settings")
     
@@ -149,7 +151,7 @@ class MainApp(MDApp):
         Start button is pressed
         """
         # get the target marker coordinates
-        latitude, longitude = self.root.mockmapview.get_last_target_coords()
+        latitude, longitude = self.container.mockmapview.get_last_target_coords()
         if latitude and longitude:
             # if target marker exists then set the mock location
             if is_android:
@@ -159,7 +161,7 @@ class MainApp(MDApp):
                 # set global debugging coordinates
                 Debug.latitude = latitude
                 Debug.longitude = longitude
-                self.root.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude, False)
+                self.container.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude, False)
         else:
             # Let user know nothing was selected
             toast("Press on the map to select target location and then press the start button")
@@ -173,8 +175,8 @@ class MainApp(MDApp):
         else:
             # Set a random location on Windows or Linux
             Debug.randomize_latlng()
-            self.root.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude, False)
-        self.root.mockmapview.remove_target_marker()
+            self.container.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude, False)
+        self.container.mockmapview.remove_target_marker()
 
 def main():
     MainApp().run()

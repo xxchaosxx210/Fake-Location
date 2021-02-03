@@ -1,4 +1,3 @@
-from kivymd.uix.dialog import MDDialog
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.list import OneLineIconListItem
@@ -17,33 +16,35 @@ from debug import Debug
 import threading
 
 Builder.load_string("""
-#:import Window kivy.core.window.Window
 <SearchContent>:
     orientation: "vertical"
-    size_hint_y: None
-    height:  "500dp"
-    spacing: "0dp"
-    padding: "0dp"
     scroll_view: id_scroll_view
     list_items: id_search_list
 
     MDTextFieldRect:
         size_hint_y: None
-        height: "48dp"
+        height: "36dp"
         on_text: root.on_text(self, self.text)
         id: id_text_field
 
     ScrollView:
-        size_hint: 1, .8
         id: id_scroll_view
         scroll_type: ["content"]
         MDList:
             id: id_search_list
+    
+    MDFloatLayout:
+        MDFlatButton:
+            text: "Cancel"
+            id: id_cancel_button
+            pos_hint: {"right": 1, "bottom": 1}
+        MDFlatButton:
+            text: "Search"
+            id: id_search_button
+            pos_hint: {"right": 1, "bottom": 1}
 
 <SearchListItem>:
     font_style: "Body2"
-    padding: "0dp"
-    spacing: "0dp"
 """)
 
 def format_geo_address(addr):
@@ -129,32 +130,6 @@ class SearchContent(MDBoxLayout):
             else:
                 # No thread running
                 self.do_search(text)
-
-
-class SearchPopupMenu(MDDialog):
-
-    def __init__(self, callback, **kwargs):
-        """
-        callback function will be called when either
-        cancel or search button pressed
-        search - address, lat, lng
-        """
-        kwargs["type"] = "custom"
-        kwargs["content_cls"] = SearchContent()
-        kwargs["buttons"] = [
-            MDFlatButton(text="Cancel", on_press=self.on_cancel),
-            MDFlatButton(text="Search", on_press=self.on_search)
-            ]
-        kwargs["auto_dismiss"] = False
-        super().__init__(**kwargs)
-        self._callback = callback
-    
-    def on_cancel(self, *args):
-        self.dismiss()
-    
-    def on_search(self, *args):
-        self._callback(self.content_cls.ids.id_text_field.text, 0.0, 0.0)
-        self.dismiss()
     
 
 

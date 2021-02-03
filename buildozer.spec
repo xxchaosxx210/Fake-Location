@@ -49,7 +49,7 @@ garden_requirements = mapview
 presplash.filename = ./fake-location-logo.png
 
 # (str) Icon of the application
-icon.filename = ./fake-location-icon.ico
+icon.filename = ./icon.ico
 
 # (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
 orientation = portrait

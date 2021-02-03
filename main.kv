@@ -1,5 +1,6 @@
 #:import MapView kivy.garden.mapview.MapView
 #:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import NoTransition kivy.uix.screenmanager.NoTransition
 #:import SearchContent search.SearchContent
 #:include mockmapview.kv
 
@@ -18,6 +19,7 @@
     text_color: get_color_from_hex("#ECF2F9")
 
 ScreenManager:
+    transition: NoTransition()
     MDScreen:
         name: "mapview"
         Container:

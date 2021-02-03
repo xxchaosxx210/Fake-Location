@@ -4,6 +4,7 @@ from kivy.lang import Builder
 from kivy.utils import platform
 from kivy.clock import mainthread
 from kivy.properties import ObjectProperty
+from kivymd.app import MDApp
 
 is_android = platform == "android"
 
@@ -42,9 +43,11 @@ Builder.load_string("""
             MDFlatButton:
                 text: "Cancel"
                 id: id_cancel_button
+                on_release: app.root.current = "mapview"
             MDFlatButton:
                 text: "Search"
                 id: id_search_button
+                on_release: root.on_search_button()
 
 <SearchListItem>:
     font_style: "Body2"
@@ -83,6 +86,9 @@ class SearchContent(MDBoxLayout):
         super().__init__(**kwargs)
         self.thread = None
         self.item_selected = False
+    
+    def on_search_button(self):
+        MDApp.get_running_app().root.current = "mapview"
     
     @mainthread
     def on_search_result(self, addr_list):

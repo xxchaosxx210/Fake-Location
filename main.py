@@ -26,6 +26,7 @@ from kivymd.toast import toast
 from kivy.properties import ObjectProperty
 from kivy.properties import StringProperty
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivy.uix.screenmanager import NoTransition
 
 from mockmapview import MockMapView
 

@@ -76,7 +76,7 @@ class MainApp(MDApp):
         else:
             self._location_manager = None
     
-    def on_search_dialog(self, *args):
+    def on_search_button(self, *args):
         self.root.current = "search"
         
     def _on_search(self, *args):

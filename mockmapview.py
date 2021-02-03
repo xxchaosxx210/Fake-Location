@@ -28,6 +28,10 @@ class MockMapView(MapView):
             self.update_target_marker(lat, lng)
         super().on_touch_up(touch)
     
+    def update_target_center(self, lat, lng):
+        self.update_target_marker(lat, lng)
+        self.center_on(lat, lng)
+    
     def update_target_marker(self, lat, lng):
         """
         update_target_locmarker(float, float)

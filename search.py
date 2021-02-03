@@ -4,6 +4,7 @@ from kivy.lang import Builder
 from kivy.utils import platform
 from kivy.clock import mainthread
 from kivy.properties import ObjectProperty
+from kivy.properties import StringProperty
 from kivymd.app import MDApp
 
 is_android = platform == "android"
@@ -20,16 +21,17 @@ Builder.load_string("""
     orientation: "vertical"
     scroll_view: id_scroll_view
     list_items: id_search_list
+    address_text: id_address_text.text
 
     MDTextFieldRect:
         size_hint_y: None
         height: "36dp"
         on_text: root.on_text(self, self.text)
-        id: id_text_field
+        id: id_address_text
+        text: root.address_text
 
     ScrollView:
         id: id_scroll_view
-        scroll_type: ["content"]
         MDList:
             id: id_search_list
     
@@ -75,12 +77,16 @@ class SearchThread(threading.Thread):
             self.callback(addrs)
 
 class SearchListItem(OneLineIconListItem):
-    pass
+
+    def __init__(self, geoloc, **kwargs):
+        self.geoloc = geoloc
+        super().__init__(**kwargs)
 
 class SearchContent(MDBoxLayout):
 
     scroll_view = ObjectProperty(None)
     list_items = ObjectProperty(None)
+    address_text = StringProperty("")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -88,19 +94,24 @@ class SearchContent(MDBoxLayout):
         self.item_selected = False
     
     def on_search_button(self):
-        MDApp.get_running_app().root.current = "mapview"
+        app = MDApp.get_running_app()
+        app.root.current = "mapview"
     
     @mainthread
     def on_search_result(self, addr_list):
         """
         callback return function from SearchThread
         """
+        # clear previous list
+        self.list_items.clear_widgets()
         if addr_list:
             for addr in addr_list:
+                print(f"lat = {addr.latitude}, type = {type(addr.latitude)}")
                 # Will improve the way list items are handled
                 address = format_geo_address(addr)
                 # create a new list item
                 listitem = SearchListItem(
+                    geoloc=addr,
                     text=address, 
                     on_press=self.on_item_selected)
                 # add it on
@@ -113,10 +124,16 @@ class SearchContent(MDBoxLayout):
         know that text has been added from search
         this is to avoid another search when on_text gets called
         """
+        app = MDApp.get_running_app()
         self.item_selected = True
-        self.ids.id_text_field.text = item.text
+        app.container.mockmapview.update_target_center(
+                                item.geoloc.latitude, 
+                                item.geoloc.longitude
+                            )
         self.list_items.clear_widgets()
+        self.address_text = ""
         self.item_selected = False
+        app.root.current = "mapview"
     
     def do_search(self, text):
         """

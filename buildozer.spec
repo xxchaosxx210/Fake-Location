@@ -46,7 +46,7 @@ requirements = hostpython3==3.7.8,python3==3.7.8,kivy==2.0.0,kivymd==0.104.1,jni
 garden_requirements = mapview
 
 # (str) Presplash of the application
-presplash.filename = ./fake-location-logo.jpg
+presplash.filename = ./fake-location-logo.png
 
 # (str) Icon of the application
 icon.filename = ./fake-location-icon.ico

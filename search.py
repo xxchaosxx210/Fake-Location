@@ -23,6 +23,7 @@ Builder.load_string("""
     scroll_view: id_scroll_view
     list_items: id_search_list
     address_text: id_address_text.text
+    app: app
 
     MDToolbar:
         title: "Search Address"
@@ -85,6 +86,8 @@ class SearchContent(MDBoxLayout):
     scroll_view = ObjectProperty(None)
     list_items = ObjectProperty(None)
     address_text = StringProperty("")
+    # reference object to App instance
+    app = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -97,7 +100,7 @@ class SearchContent(MDBoxLayout):
         """
         self.list_items.clear_widgets()
         self.address_text = ""
-        MDApp.get_running_app().root.current = "mapview"
+        self.app.root.current = "mapview"
     
     @mainthread
     def on_search_result(self, addr_list):
@@ -127,9 +130,8 @@ class SearchContent(MDBoxLayout):
         this is to avoid another search when on_text gets called
         """
         # get the app object
-        app = MDApp.get_running_app()
         self.item_selected = True
-        app.container.mockmapview.update_target_center(
+        self.app.container.mockmapview.update_target_center(
                                 item.geoloc.latitude, 
                                 item.geoloc.longitude
                             )

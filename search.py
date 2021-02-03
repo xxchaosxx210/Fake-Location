@@ -113,7 +113,6 @@ class SearchContent(MDBoxLayout):
         know that text has been added from search
         this is to avoid another search when on_text gets called
         """
-        Debug.log_object(item)
         self.item_selected = True
         self.ids.id_text_field.text = item.text
         self.list_items.clear_widgets()

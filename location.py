@@ -225,6 +225,7 @@ class MockLocation(threading.Thread):
         self.queue = queue.Queue()
         self.location_manager = location_manager
         self._callback = callback
+        self.kill = threading.Event()
         if providers:
             self._providers = providers
         else:
@@ -238,7 +239,7 @@ class MockLocation(threading.Thread):
         stop_mock = True
         latitude = 51.2323
         longitude = 1.23433
-        while 1:
+        while not self.kill.is_set():
             try:
                 s = self.queue.get(timeout=MockLocation.THREAD_TIMEOUT)
                 msg = json.loads(s)
@@ -251,15 +252,13 @@ class MockLocation(threading.Thread):
                     args = msg["args"]
                     latitude = args[0]
                     longitude = args[1]
-                elif event == "quit":
-                    self._stop_mock_updates()
-                    break
             except queue.Empty:
                 pass
-            if not stop_mock:
+            if not stop_mock and not self.kill.is_set():
                 # Loop through the providers and set the location
                 for provider in self._providers:
                     self._set_mock(provider, latitude, longitude)
+        print("Thread has quit")
 
     def send_message(self, event, *args):
         s = json.dumps({"event": event, "args": args})

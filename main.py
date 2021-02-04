@@ -27,6 +27,7 @@ from kivy.properties import ObjectProperty
 from kivy.properties import StringProperty
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.uix.screenmanager import NoTransition
+from kivy.base import EventLoop
 
 from mockmapview import MockMapView
 
@@ -89,14 +90,16 @@ class MainApp(MDApp):
         self.root.current = "search"
     
     def on_stop(self):
+        print("Stop method called")
         if is_android:
-            # close thread
-            self._update.send_message("quit")
+            # wait for the thread to cancel before quitting the thread
+            self._update.join()
     
     def on_start(self):
+        # Capture the Escape key
+        EventLoop.window.bind(on_keyboard=self.on_keyboard_press)
         # init basic dialogs
         Dialogs.generate_dialogs(self)
-
         # Obtain a reference to the Container Layout object
         self.container = self.root.ids.id_map_screen_container
         if is_android:
@@ -108,6 +111,18 @@ class MainApp(MDApp):
             # Set a random location on Windows or Linux
             Debug.randomize_latlng()
             self.container.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude, False)
+    
+    def on_keyboard_press(self, window, key, *args):
+        if key == 27:
+            # Escape key or back in android
+            # add more screen conditions later
+            if self.root.current == "mapview":
+                # Close mock update thread
+                # before the window closes
+                if is_android:
+                    self._update.kill.set()
+                return False
+            return True
 
     @mainthread
     def on_gps_update(self, provider, event, *args):

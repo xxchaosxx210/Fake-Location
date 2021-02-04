@@ -89,9 +89,6 @@ class MainApp(MDApp):
     def on_search_button(self, *args):
         self.root.current = "search"
     
-    def on_stop(self):
-        print("Stop method called")
-    
     def on_start(self):
         # Capture the Escape key
         EventLoop.window.bind(on_keyboard=self.on_keyboard_press)
@@ -121,6 +118,8 @@ class MainApp(MDApp):
                     print("Waiting for thread to quit")
                     self._mock_thread.join()
                 return False
+            elif self.root.current == "search":
+                self.root.current = "mapview"
             return True
 
     @mainthread

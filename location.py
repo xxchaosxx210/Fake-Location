@@ -257,6 +257,7 @@ class MockLocation(threading.Thread):
             except queue.Empty:
                 pass
             if not stop_mock:
+                # Loop through the providers and set the location
                 for provider in self._providers:
                     self._set_mock(provider, latitude, longitude)
 

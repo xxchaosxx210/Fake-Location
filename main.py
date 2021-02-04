@@ -87,12 +87,6 @@ class MainApp(MDApp):
     
     def on_search_button(self, *args):
         self.root.current = "search"
-        
-    def _on_search(self, *args):
-        """
-        _on_search_dialog_dimsiss is a callback from SearchPopupMenu
-        """
-        pass
     
     def on_stop(self):
         if is_android:
@@ -169,7 +163,7 @@ class MainApp(MDApp):
                 self.container.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude, False)
         else:
             # Let user know nothing was selected
-            toast("Press on the map to select target location and then press the start button")
+            Dialogs.show_alert("No Target found", "Press on the map to select target location and then press the start button")
     
     def on_stop_mock(self):
         """ 

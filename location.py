@@ -212,13 +212,17 @@ class MockLocation(threading.Thread):
 
     THREAD_TIMEOUT = 1 # Thread loop. Seconds
 
-    def __init__(self, location_manager):
+    def __init__(self, location_manager, callback):
         """
         location_manager - LocationManager (call get_location_manager -> location_manager)
+        callback         - callback to recieve messages
+            status       - str "permission-denied", "provider-exists"
+            instance     - object normally the Exception object
         """
         super().__init__()
         self.queue = queue.Queue()
         self.location_manager = location_manager
+        self._callback = callback
     
     def run(self):
         """
@@ -254,14 +258,20 @@ class MockLocation(threading.Thread):
         s = json.dumps({"event": event, "args": args})
         self.queue.put_nowait(s)
 
+    def _handle_error(self, err):
+        # Handles the error message and dispatches to main thread callback
+        if "provider network already exists" in err.__str__():
+            self._callback("provider-exists", err)
+        elif "not allowed to perform MOCK_LOCATION" in err.__str__():
+            self._callback("permission-denied", err)
 
     def _stop_mock_updates(self):
         try:
-            location_manager.removeTestProvider(LocationManager.GPS_PROVIDER)
+            self.location_manager.removeTestProvider(LocationManager.GPS_PROVIDER)
         except Exception as err:
             print(f"STOP_MOCK_UPDATES: {err}")
         try:
-            location_manager.removeTestProvider(LocationManager.NETWORK_PROVIDER)
+            self.location_manager.removeTestProvider(LocationManager.NETWORK_PROVIDER)
         except Exception as err:
             print(f"STOP_MOCK_UPDATES: {err}")
 

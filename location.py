@@ -93,7 +93,8 @@ def get_geo_location(address, max_result):
 def require_location_permissions(func_callback):
     """
     get the request results call callback
-    def func_callback(obj, event, *args)
+    def func_callback(result)
+        result - bool
     """
     def on_request_result(permissions, grant_results):
         access_fine_ok = False
@@ -104,9 +105,9 @@ def require_location_permissions(func_callback):
             if permission == Permission.ACCESS_COARSE_LOCATION:
                 access_coarse_ok = grant_results[index]
         if access_coarse_ok == True and access_fine_ok == True:
-            func_callback(None, "permissions-result", True)
+            func_callback(True)
         else:
-            func_callback(None, "permissions-result", False)
+            func_callback(False)
     if VERSION.SDK_INT >= 23:
         request_permissions(
             [Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION], on_request_result)
@@ -242,7 +243,7 @@ class MockLocationListener(threading.Thread):
         longitude = 1.23433
         while not self.kill.is_set():
             try:
-                s = self.queue.get(timeout=MockLocation.THREAD_TIMEOUT)
+                s = self.queue.get(timeout=MockLocationListener.THREAD_TIMEOUT)
                 msg = json.loads(s)
                 event = msg["event"]
                 if event == "stop":

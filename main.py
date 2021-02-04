@@ -73,7 +73,7 @@ class MainApp(MDApp):
         self.container = self.root.ids.id_map_screen_container
         if is_android:
             # Get ACCESS_FINE_LOCATION Permission from user
-            require_location_permissions(self.on_gps_update)
+            require_location_permissions(self._on_permissions_result)
             # start the mock location thread
             Globals.mock_thread.start()
         else:
@@ -98,25 +98,17 @@ class MainApp(MDApp):
             return True
 
     @mainthread
-    def on_gps_update(self, provider, event, *args):
-        """
-        on_gps_update(str, str, tuple)
-        Callback function for handling messages sent from
-        Mock Locations thread. This method
-        is only used on the Android version
-        Is also the handler for permission request results.
-        permission-result -     args[bool]
-        """    
-        if event == 'permissions-result':
-            if args[0] == True:
-                # Permission accepted get last known location
-                latlng = getlatlng(Globals.location_manager)
-                if latlng:
-                    self.container.mockmapview.update_current_locmarker(latlng[0], latlng[1], False)
-                else:
-                    toast("Could not find your location. Try turning Location on in settings")
+    def _on_permissions_result(self, result):
+        # Gets result from permission request 
+        if result == True:
+            # Permission accepted get last known location
+            latlng = getlatlng(Globals.location_manager)
+            if latlng:
+                self.container.mockmapview.update_current_locmarker(latlng[0], latlng[1], False)
             else:
-                toast("Request to use Locations rejected. Please enable Locations in App Permissions")
+                toast("Could not find your location. Try turning Location on in settings")
+        else:
+            toast("Request to use Locations rejected. Please enable Locations in App Permissions")
 
 def main():
     MainApp().run()

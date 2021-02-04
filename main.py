@@ -41,7 +41,6 @@ if is_android:
     from location import require_location_permissions
     from location import MockLocation
 
-
 class MainApp(MDApp):
 
     container = ObjectProperty(None)

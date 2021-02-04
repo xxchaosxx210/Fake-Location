@@ -1,7 +1,96 @@
 #:import MapView kivy.garden.mapview.MapView
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+
+<HorizontalSpacer@Widget>:
+    size_hint_x: None
+    width: "10dp"
+
+<VerticalSpacer@Widget>:
+    size_hint_y: None
+    height: "10dp"
+    size_hint_x: 1
+
+<MapViewToolBarButton@MDRectangleFlatIconButton>:
+    theme_text_color: "Custom"
+    md_bg_color: get_color_from_hex("#336699")
+    text_color: get_color_from_hex("#ECF2F9")
 
 <MockMapView>:
     lat: 10
     lon: 10
     zoom: 3
     on_zoom: self.zoom = 3 if self.zoom < 3 else self.zoom
+
+<MapContainer>:
+    app: app
+    orientation: "vertical"
+    mockmapview: id_map
+    lat_text: latitude.text
+    lon_text: longitude.text
+    
+    MDToolbar:
+        title: "Fake Location"
+        right_action_items: [['search-web', root.on_search_button]]
+        md_bg_color: app.theme_cls.primary_color
+        id: id_title_toolbar
+
+    MDBoxLayout:
+        orientation: "horizontal"
+        size_hint: 1, .1
+        HorizontalSpacer:
+        MDTextField:
+            id: latitude
+            text: root.lat_text
+            hint_text: "Latitude"
+            input_filter: "float"
+        HorizontalSpacer:
+            width: "40dp"
+        MDTextField:
+            id: longitude
+            text: root.lon_text
+            hint_text: "Longitude"
+            input_filter: "float"
+        HorizontalSpacer:
+
+    RelativeLayout:
+        id: mapview_container
+
+        MockMapView:
+            id: id_map
+            app: app
+            toolbar: map_toolbar
+        
+        MDBoxLayout:
+            id: map_toolbar
+            orientation: "vertical"
+            size_hint_x: None
+            width: "48dp"
+            size_hint_y: .5
+            pos_hint: {"center_y": .5, "right": 1}
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 0
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            MapViewToolBarButton:
+                icon: "crosshairs-gps"
+                on_release: root.on_loc_button_released()
+            MDSeparator:
+            MapViewToolBarButton:
+                icon: "stop"
+                on_release: root.on_stop_mock()
+            MDSeparator:
+            MapViewToolBarButton:
+                icon: "play"
+                on_release: root.on_start_mock()
+            Widget:
+                size_hint_y: None
+                height: "70dp"
+            MapViewToolBarButton:
+                icon: "magnify-plus"
+                on_release: id_map.on_zoom_button(id_map.zoom + 1)
+            MDSeparator:
+            MapViewToolBarButton:
+                icon: "magnify-minus"
+                on_release: id_map.on_zoom_button(id_map.zoom - 1)

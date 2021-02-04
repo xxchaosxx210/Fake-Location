@@ -1,3 +1,6 @@
+__title__ = "main_map"
+__description__ = """Holds the mapview and mapcontainer classes"""
+
 from kivy.garden.mapview import MapView
 from kivy.garden.mapview import MapMarker
 from kivymd.uix.boxlayout import MDBoxLayout

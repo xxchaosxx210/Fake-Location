@@ -149,10 +149,7 @@ class MainApp(MDApp):
             latlng = _getlatlng(self._location_manager)
         except Exception as err:
             if "ACCESS_FINE_LOCATION" in err.__str__():
-                Dialogs.show_alert("Permission Denied", """
-                Fake Location does not have the Location Privileges enabled\n 
-                please enable location privileges, goto: Settings->Apps->FakeLocation->Permissions
-                """)
+                Dialogs.show_location_denied()
                 return
         if latlng:
             self.container.mockmapview.update_current_locmarker(latlng[0], latlng[1], True)

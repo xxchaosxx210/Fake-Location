@@ -1,9 +1,18 @@
 from kivy.garden.mapview import MapView
 from kivy.garden.mapview import MapMarker
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivy.properties import StringProperty
 from kivymd.app import App
 from kivy.metrics import dp
 
 from kivy.properties import ObjectProperty
+
+class MapContainer(MDBoxLayout):
+    # Mpaview object
+    mockmapview = ObjectProperty(None)
+    lat_text = StringProperty("-12.98989")
+    lon_text = StringProperty("52.87878")
+
 
 class MockMapView(MapView):
     DEFAULT_ZOOM_IN = 8

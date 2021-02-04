@@ -55,13 +55,7 @@ def _getlatlng(location_manager):
         # use the debugging location
         latlng = (Debug.latitude, Debug.longitude)
     return latlng
-
-
-class Container(MDBoxLayout):
-    # Mpaview object
-    mockmapview = ObjectProperty(None)
-    lat_text = StringProperty("-12.98989")
-    lon_text = StringProperty("52.87878")
+    
 
 class MainApp(MDApp):
 

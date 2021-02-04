@@ -212,17 +212,23 @@ class MockLocation(threading.Thread):
 
     THREAD_TIMEOUT = 1 # Thread loop. Seconds
 
-    def __init__(self, location_manager, callback):
+    def __init__(self, location_manager, callback, 
+                 providers=None):
         """
         location_manager - LocationManager (call get_location_manager -> location_manager)
         callback         - callback to recieve messages
             status       - str "permission-denied", "provider-exists"
             instance     - object normally the Exception object
+        providers  - tuple Will use GPS_PROVIDER and NETWORK_PROVIDER as default
         """
         super().__init__()
         self.queue = queue.Queue()
         self.location_manager = location_manager
         self._callback = callback
+        if providers:
+            self._providers = providers
+        else:
+            self._providers = (LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER)
     
     def run(self):
         """
@@ -251,8 +257,8 @@ class MockLocation(threading.Thread):
             except queue.Empty:
                 pass
             if not stop_mock:
-                self._set_mock(LocationManager.GPS_PROVIDER, latitude, longitude)
-                self._set_mock(LocationManager.NETWORK_PROVIDER, latitude, longitude)
+                for provider in self._providers:
+                    self._set_mock(provider, latitude, longitude)
 
     def send_message(self, event, *args):
         s = json.dumps({"event": event, "args": args})
@@ -266,14 +272,11 @@ class MockLocation(threading.Thread):
             self._callback("permission-denied", err)
 
     def _stop_mock_updates(self):
-        try:
-            self.location_manager.removeTestProvider(LocationManager.GPS_PROVIDER)
-        except Exception as err:
-            self._handle_error(err)
-        try:
-            self.location_manager.removeTestProvider(LocationManager.NETWORK_PROVIDER)
-        except Exception as err:
-            self._handle_error(err)
+        for provider in self._providers:
+            try:
+                self.location_manager.removeTestProvider(provider)
+            except Exception as err:
+                self._handle_error(err)
 
     def _set_mock(self, provider, lat, lng):
         """

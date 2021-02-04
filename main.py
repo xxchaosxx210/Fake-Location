@@ -1,6 +1,8 @@
+from global_props import VERSION
+
 __title__ = "Fake Location"
 __author__ = "Paul Millar"
-__version__ = "0.1.1"
+__version__ = VERSION
 __description__ = """
 A Fake GPS app for android using the kivy and kivymd framework.
 This App will run on Windows and Linux but because they lack
@@ -39,7 +41,7 @@ from global_props import is_android
 if is_android:
     from location import get_location_manager
     from location import require_location_permissions
-    from location import MockLocation
+    from location import MockLocationListener
 
 class MainApp(MDApp):
 
@@ -52,7 +54,7 @@ class MainApp(MDApp):
             # Get LocationManager from Android API
             Globals.location_manager = get_location_manager()
             # Mock handler thread for setting mock location and enabling and disabling the mock locations
-            Globals.mock_thread = MockLocation(Globals.location_manager, self._on_mock_error)
+            Globals.mock_thread = MockLocationListener(Globals.location_manager, self._on_mock_error)
     
     def _on_mock_error(self, status, err):
         if status == "permission-denied":

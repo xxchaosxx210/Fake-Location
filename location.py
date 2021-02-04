@@ -197,7 +197,7 @@ def get_location_manager():
     return PythonActivity.mActivity.getSystemService(Context.LOCATION_SERVICE)
 
 
-class MockLocation(threading.Thread):
+class MockLocationListener(threading.Thread):
 
     """
     Mock Locations needs to be constantly updated in order to bypass Google Maps and other Apps
@@ -229,6 +229,7 @@ class MockLocation(threading.Thread):
         if providers:
             self._providers = providers
         else:
+            # Use System test providers instead
             self._providers = (LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER)
     
     def run(self):
@@ -325,3 +326,4 @@ class MockLocation(threading.Thread):
             self.location_manager.setTestProviderLocation(provider, new_loc)
         except Exception as err:
             self._handle_error(err)
+

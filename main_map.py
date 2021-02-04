@@ -41,6 +41,10 @@ def getlatlng(location_manager):
 
 
 class MapContainer(MDBoxLayout):
+    """
+    Container class holds the mapview and
+    handles button events
+    """
     # Mpaview object
     app = ObjectProperty(None)
     mockmapview = ObjectProperty(None)

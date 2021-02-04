@@ -235,82 +235,80 @@ class MockLocation(threading.Thread):
                 event = msg["event"]
                 if event == "stop":
                     stop_mock = True
-                    stop_mock_updates(self.location_manager)
+                    self._stop_mock_updates()
                 elif event == "start":
                     stop_mock = False
                     args = msg["args"]
                     latitude = args[0]
                     longitude = args[1]
                 elif event == "quit":
-                    stop_mock_updates(self.location_manager)
+                    self._stop_mock_updates()
                     break
             except queue.Empty:
                 pass
             if not stop_mock:
-                set_mock(self.location_manager, LocationManager.GPS_PROVIDER, latitude, longitude)
-                set_mock(self.location_manager, LocationManager.NETWORK_PROVIDER, latitude, longitude)
+                self._set_mock(LocationManager.GPS_PROVIDER, latitude, longitude)
+                self._set_mock(LocationManager.NETWORK_PROVIDER, latitude, longitude)
 
     def send_message(self, event, *args):
         s = json.dumps({"event": event, "args": args})
         self.queue.put_nowait(s)
 
 
-def stop_mock_updates(location_manager):
-    try:
-        location_manager.removeTestProvider(LocationManager.GPS_PROVIDER)
-    except Exception as err:
-        print(f"STOP_MOCK_UPDATES: {err}")
-    try:
-        location_manager.removeTestProvider(LocationManager.NETWORK_PROVIDER)
-    except Exception as err:
-        print(f"STOP_MOCK_UPDATES: {err}")
+    def _stop_mock_updates(self):
+        try:
+            location_manager.removeTestProvider(LocationManager.GPS_PROVIDER)
+        except Exception as err:
+            print(f"STOP_MOCK_UPDATES: {err}")
+        try:
+            location_manager.removeTestProvider(LocationManager.NETWORK_PROVIDER)
+        except Exception as err:
+            print(f"STOP_MOCK_UPDATES: {err}")
 
-def set_mock(location_manager, provider, lat, lng):
-    """
-    set_mock(object, str, float, float)
-        location_manager is a LocationManager object obtained from get_location_manager()
+    def _set_mock(self, provider, lat, lng):
+        """
+        set_mock(str, float, float)
+            provider is a string constant and can be LocationManager.GPS_PROVIDER or LocationManager.NETWORK_PROVIDER
+                for system wide location testing. For app specific use a custom naming string
+            
+        """
+        try:
+            self.location_manager.addTestProvider(
+                provider,
+                False,
+                False,
+                False,
+                False,
+                False,
+                True,
+                True,
+                0,
+                5)
+        except Exception as err:
+            print(f"SET_MOCK: {err}")
 
-        provider is a string constant and can be LocationManager.GPS_PROVIDER or LocationManager.NETWORK_PROVIDER
-            for system wide location testing. For app specific use a custom naming string
+        new_loc = Location(provider)
+        new_loc.setLatitude(lat)
+        new_loc.setLongitude(lng)
+        new_loc.setAccuracy(1.0)
+        new_loc.setTime(System.currentTimeMillis())
+        new_loc.setSpeed(0.0)
+        new_loc.setBearing(1.0)
+        new_loc.setAltitude(3.0)
+        if VERSION.SDK_INT >= 17:
+            # Greaster than Jelly Bean
+            new_loc.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
+        if VERSION.SDK_INT >= 29:
+            # Greater than Oreo
+            new_loc.setBearingAccuracyDegrees(0.1)
+            new_loc.setVerticalAccuracyMeters(0.1)
+            new_loc.setSpeedAccuracyMetersPerSecond(0.0)
         
-    """
-    try:
-        location_manager.addTestProvider(
-            provider,
-            False,
-            False,
-            False,
-            False,
-            False,
-            True,
-            True,
-            0,
-            5)
-    except Exception as err:
-        print(f"SET_MOCK: {err}")
-
-    new_loc = Location(provider)
-    new_loc.setLatitude(lat)
-    new_loc.setLongitude(lng)
-    new_loc.setAccuracy(1.0)
-    new_loc.setTime(System.currentTimeMillis())
-    new_loc.setSpeed(0.0)
-    new_loc.setBearing(1.0)
-    new_loc.setAltitude(3.0)
-    if VERSION.SDK_INT >= 17:
-        # Greaster than Jelly Bean
-        new_loc.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos())
-    if VERSION.SDK_INT >= 29:
-        # Greater than Oreo
-        new_loc.setBearingAccuracyDegrees(0.1)
-        new_loc.setVerticalAccuracyMeters(0.1)
-        new_loc.setSpeedAccuracyMetersPerSecond(0.0)
-    
-    try:
-        location_manager.setTestProviderEnabled(provider, True)
-    except Exception as err:
-        print(f"SET_MOCK: {err}")
-    try:
-        location_manager.setTestProviderLocation(provider, new_loc)
-    except Exception as err:
-        print(f"SET_MOCK: {err}")
+        try:
+            self.location_manager.setTestProviderEnabled(provider, True)
+        except Exception as err:
+            print(f"SET_MOCK: {err}")
+        try:
+            self.location_manager.setTestProviderLocation(provider, new_loc)
+        except Exception as err:
+            print(f"SET_MOCK: {err}")

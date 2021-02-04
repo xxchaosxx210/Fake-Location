@@ -33,6 +33,8 @@ from mockmapview import MockMapView
 # Debugging
 from debug import Debug
 
+from dialogs import Dialogs
+
 is_android = platform == "android"
 
 # If android then load the Android classes
@@ -92,7 +94,10 @@ class MainApp(MDApp):
             self._update.send_message("quit")
     
     def on_start(self):
-        # Obtain a reference to the Container object
+        # init basic dialogs
+        Dialogs.generate_dialogs(self)
+
+        # Obtain a reference to the Container Layout object
         self.container = self.root.ids.id_map_screen_container
         if is_android:
             # Get ACCESS_FINE_LOCATION Permission from user
@@ -140,7 +145,15 @@ class MainApp(MDApp):
         """
         Get Location position is pressed
         """
-        latlng = _getlatlng(self._location_manager)
+        try:
+            latlng = _getlatlng(self._location_manager)
+        except Exception as err:
+            if "ACCESS_FINE_LOCATION" in err.__str__():
+                Dialogs.show_alert("Permission Denied", """
+                Fake Location does not have the Location Privileges enabled\n 
+                please enable location privileges, goto: Settings->Apps->FakeLocation->Permissions
+                """)
+                return
         if latlng:
             self.container.mockmapview.update_current_locmarker(latlng[0], latlng[1], True)
         else:

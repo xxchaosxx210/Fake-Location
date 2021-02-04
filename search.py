@@ -72,11 +72,11 @@ class SearchThread(threading.Thread):
             try:
                 addrs = get_geo_location(self.address, 10)
             except Exception as err:
+                Debug.log("GEOTEST", error=err.__str__())
                 addrs = []
             finally:
                 self.callback(addrs)
         else:
-            Debug.log("GEOTEST", "self.address", self.address)
             addrs = Debug.get_geo_address(self.address, 10)
             self.callback(addrs)
 
@@ -107,7 +107,7 @@ class SearchContent(MDBoxLayout):
         self.address_text = ""
         self.app.root.current = "mapview"
     
-    @mainthread
+    @mainthread  
     def on_search_result(self, addr_list):
         """
         callback return function from SearchThread

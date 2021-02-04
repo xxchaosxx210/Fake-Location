@@ -40,9 +40,12 @@ class Debug:
             print(item)
     
     @staticmethod
-    def log(event_type="APP", obj=None, *args):
-        Logger.info(f"{event_type}: Object={obj}")
-        text = ""
-        for item in args:
-            text += f"{item} = "
-        Logger.info(f"{event_type}: {text[:-3]}")
+    def log(event_type="APP", obj=None, **kwargs):
+        """
+        place key value pairs
+        """
+        text = f"{event_type}: "
+        for key, value in kwargs.items():
+            text += f"{key}={value}, "
+        if len(text) >= 2:
+            Logger.info(text[:-2])

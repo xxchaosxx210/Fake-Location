@@ -29,7 +29,7 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.uix.screenmanager import NoTransition
 from kivy.base import EventLoop
 
-from mockmapview import MockMapView
+from main_map import MockMapView
 
 # Debugging
 from debug import Debug

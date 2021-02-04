@@ -21,41 +21,26 @@ Modified the toolbar buttons
 from kivymd.app import MDApp
 from kivy.logger import Logger
 from kivy.clock import mainthread
-from kivy.utils import platform
 from kivymd.toast import toast
 from kivy.properties import ObjectProperty
-from kivy.properties import StringProperty
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivy.uix.screenmanager import NoTransition
 from kivy.base import EventLoop
 
 from main_map import MockMapView
+from main_map import getlatlng
 
 # Debugging
 from debug import Debug
-
 from dialogs import Dialogs
 
-is_android = platform == "android"
+from global_props import Globals
+from global_props import is_android
 
 # If android then load the Android classes
 if is_android:
     from location import get_location_manager
     from location import require_location_permissions
     from location import MockLocation
-    from location import get_system_location
 
-def _getlatlng(location_manager):
-    latlng = None
-    if is_android:
-        location = get_system_location(location_manager)
-        if location:
-            latlng = (location.getLatitude(), location.getLongitude())
-    else:
-        # use the debugging location
-        latlng = (Debug.latitude, Debug.longitude)
-    return latlng
-    
 
 class MainApp(MDApp):
 
@@ -66,11 +51,9 @@ class MainApp(MDApp):
         self.theme_cls.primary_palette = "Blue"
         if is_android:
             # Get LocationManager from Android API
-            self._location_manager = get_location_manager()
+            Globals.location_manager = get_location_manager()
             # Mock handler thread for setting mock location and enabling and disabling the mock locations
-            self._mock_thread = MockLocation(self._location_manager, self._on_mock_error)
-        else:
-            self._location_manager = None
+            Globals.mock_thread = MockLocation(Globals.location_manager, self._on_mock_error)
     
     def _on_mock_error(self, status, err):
         if status == "permission-denied":
@@ -79,9 +62,6 @@ class MainApp(MDApp):
             Logger.info(f"Error: Provider exists")
         else:
             Logger.info(f"Unknown: {err.__str__()}")
-    
-    def on_search_button(self, *args):
-        self.root.current = "search"
     
     def on_start(self):
         # Capture the Escape key
@@ -94,7 +74,7 @@ class MainApp(MDApp):
             # Get ACCESS_FINE_LOCATION Permission from user
             require_location_permissions(self.on_gps_update)
             # start the mock location thread
-            self._mock_thread.start()
+            Globals.mock_thread.start()
         else:
             # Set a random location on Windows or Linux
             Debug.randomize_latlng()
@@ -108,9 +88,9 @@ class MainApp(MDApp):
                 # Close mock update thread
                 # before the window closes
                 if is_android:
-                    self._mock_thread.kill.set()
+                    Globals.mock_thread.kill.set()
                     print("Waiting for thread to quit")
-                    self._mock_thread.join()
+                    Globals.mock_thread.join()
                 return False
             elif self.root.current == "search":
                 self.root.current = "mapview"
@@ -129,60 +109,13 @@ class MainApp(MDApp):
         if event == 'permissions-result':
             if args[0] == True:
                 # Permission accepted get last known location
-                latlng = _getlatlng(self._location_manager)
+                latlng = getlatlng(Globals.location_manager)
                 if latlng:
                     self.container.mockmapview.update_current_locmarker(latlng[0], latlng[1], False)
                 else:
                     toast("Could not find your location. Try turning Location on in settings")
             else:
                 toast("Request to use Locations rejected. Please enable Locations in App Permissions")
-    
-    def on_loc_button_released(self):
-        """
-        Get Location position is pressed
-        """
-        try:
-            latlng = _getlatlng(self._location_manager)
-        except Exception as err:
-            if "ACCESS_FINE_LOCATION" in err.__str__():
-                Dialogs.show_location_denied()
-                return
-        if latlng:
-            self.container.mockmapview.update_current_locmarker(latlng[0], latlng[1], True)
-        else:
-            toast("Could not find your location. Try turning Location on in settings")
-    
-    def on_start_mock(self):
-        """
-        Start button is pressed
-        """
-        # get the target marker coordinates
-        latitude, longitude = self.container.mockmapview.get_last_target_coords()
-        if latitude and longitude:
-            # if target marker exists then set the mock location
-            if is_android:
-                # tell mock location thread to set new coordinates
-                self._mock_thread.send_message("start", latitude, longitude)
-            else:
-                # set global debugging coordinates
-                Debug.latitude = latitude
-                Debug.longitude = longitude
-                self.container.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude, False)
-        else:
-            # Let user know nothing was selected
-            Dialogs.show_alert("No Target found", "Press on the map to select target location and then press the start button")
-    
-    def on_stop_mock(self):
-        """ 
-        Stop button is pressed
-        """
-        if is_android:
-            self._mock_thread.send_message("stop")
-        else:
-            # Set a random location on Windows or Linux
-            Debug.randomize_latlng()
-            self.container.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude, False)
-        self.container.mockmapview.remove_target_marker()
 
 def main():
     MainApp().run()

@@ -23,6 +23,7 @@ ScreenManager:
     MDScreen:
         name: "mapview"
         MapContainer:
+            app: app
             orientation: "vertical"
             mockmapview: map
             lat_text: latitude.text
@@ -31,7 +32,7 @@ ScreenManager:
             
             MDToolbar:
                 title: "Fake Location"
-                right_action_items: [['search-web', app.on_search_button]]
+                right_action_items: [['search-web', id_map_screen_container.on_search_button]]
                 md_bg_color: app.theme_cls.primary_color
 
             MDBoxLayout:
@@ -57,6 +58,7 @@ ScreenManager:
 
                 MockMapView:
                     id: map
+                    app: app
                     toolbar: map_toolbar
                 
                 MDBoxLayout:
@@ -74,15 +76,15 @@ ScreenManager:
                             pos: self.pos
                     MapViewToolBarButton:
                         icon: "crosshairs-gps"
-                        on_release: app.on_loc_button_released()
+                        on_release: id_map_screen_container.on_loc_button_released()
                     MDSeparator:
                     MapViewToolBarButton:
                         icon: "stop"
-                        on_release: app.on_stop_mock()
+                        on_release: id_map_screen_container.on_stop_mock()
                     MDSeparator:
                     MapViewToolBarButton:
                         icon: "play"
-                        on_release: app.on_start_mock()
+                        on_release: id_map_screen_container.on_start_mock()
                     Widget:
                         size_hint_y: None
                         height: "70dp"

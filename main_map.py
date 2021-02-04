@@ -2,16 +2,92 @@ from kivy.garden.mapview import MapView
 from kivy.garden.mapview import MapMarker
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.properties import StringProperty
-from kivymd.app import App
 from kivy.metrics import dp
+from kivy.utils import platform
+from kivymd.toast import toast
+from kivy.logger import Logger
 
 from kivy.properties import ObjectProperty
 
+from global_props import is_android
+from global_props import Globals
+
+if is_android:
+    from location import get_system_location
+
+from debug import Debug
+from dialogs import Dialogs
+
+def getlatlng(location_manager):
+    latlng = None
+    if is_android:
+        location = get_system_location(location_manager)
+        if location:
+            latlng = (location.getLatitude(), location.getLongitude())
+    else:
+        # use the debugging location
+        latlng = (Debug.latitude, Debug.longitude)
+    return latlng
+
+
 class MapContainer(MDBoxLayout):
     # Mpaview object
+    app = ObjectProperty(None)
     mockmapview = ObjectProperty(None)
     lat_text = StringProperty("-12.98989")
     lon_text = StringProperty("52.87878")
+
+    def on_search_button(self, *args):
+        self.app.root.current = "search"
+
+    def on_loc_button_released(self):
+        """
+        Get Location position is pressed
+        """
+        try:
+            latlng = getlatlng(Globals.location_manager)
+            if latlng:
+                self.mockmapview.update_current_locmarker(latlng[0], latlng[1], True)
+            else:
+                toast("Could not find your location. Try turning Location on in settings")
+        except Exception as err:
+            if "ACCESS_FINE_LOCATION" in err.__str__():
+                Dialogs.show_location_denied()
+                return
+            else:
+                Logger.info(err.__str__())
+    
+    def on_start_mock(self):
+        """
+        Start button is pressed
+        """
+        # get the target marker coordinates
+        latitude, longitude = self.mockmapview.get_last_target_coords()
+        if latitude and longitude:
+            # if target marker exists then set the mock location
+            if is_android:
+                # tell mock location thread to set new coordinates
+                Globals.mock_thread.send_message("start", latitude, longitude)
+            else:
+                # set global debugging coordinates
+                Debug.latitude = latitude
+                Debug.longitude = longitude
+                self.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude, False)
+        else:
+            # Let user know nothing was selected
+            Dialogs.show_alert("No Target found", "Press on the map to select target location and then press the start button")
+    
+    def on_stop_mock(self):
+        """ 
+        Stop button is pressed
+        """
+        if is_android:
+            Globals.mock_thread.send_message("stop")
+        else:
+            # Set a random location on Windows or Linux
+            Debug.randomize_latlng()
+            self.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude, False)
+        self.mockmapview.remove_target_marker()
 
 
 class MockMapView(MapView):
@@ -21,6 +97,7 @@ class MockMapView(MapView):
     # need this to check if touch up event was triggered inside
     # the toolbar if so then we ignore adding a target marker
     toolbar = ObjectProperty(None)
+    app = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         self._target_marker = None
@@ -52,10 +129,9 @@ class MockMapView(MapView):
             self.remove_marker(self._target_marker)
         self._target_marker = MapMarker(source="target.png", lat=lat, lon=lng)
         self.add_marker(self._target_marker)
-        window = App.get_running_app()
         # add coords to root windows textfields
-        window.root.lat_text = str(lat)
-        window.root.lon_text = str(lng)
+        self.app.root.lat_text = str(lat)
+        self.app.root.lon_text = str(lng)
 
     def update_current_locmarker(self, lat, lng, zoom):
         """

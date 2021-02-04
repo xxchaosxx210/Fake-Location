@@ -40,7 +40,6 @@ is_android = platform == "android"
 # If android then load the Android classes
 if is_android:
     from location import get_location_manager
-    from location import GPSListener
     from location import require_location_permissions
     from location import MockLocation
     from location import get_system_location
@@ -89,8 +88,7 @@ class MainApp(MDApp):
     
     def on_stop(self):
         if is_android:
-            # close thread and gps listener
-            self.gps_listener.stop_gps_updates()
+            # close thread
             self._update.send_message("quit")
     
     def on_start(self):
@@ -102,7 +100,6 @@ class MainApp(MDApp):
         if is_android:
             # Get ACCESS_FINE_LOCATION Permission from user
             require_location_permissions(self.on_gps_update)
-            self.gps_listener = GPSListener(self._location_manager, self.on_gps_update)
             # start the mock location thread
             self._update.start()
         else:
@@ -115,17 +112,14 @@ class MainApp(MDApp):
         """
         on_gps_update(str, str, tuple)
         Callback function for handling messages sent from
-        Mock Locations thread and gps update listener. This method
+        Mock Locations thread. This method
         is only used on the Android version
         Is also the handler for permission request results.
-        event - location, provider-enabled, provider-disabled, permission-result
-        location -              args[float, float]
         permission-result -     args[bool]
         """    
         if event == 'permissions-result':
             if args[0] == True:
-                # Permission accepted start the LocationListener update
-                self.gps_listener.start_gps_updates(3, 10)
+                # Permission accepted get last known location
                 latlng = _getlatlng(self._location_manager)
                 if latlng:
                     self.container.mockmapview.update_current_locmarker(latlng[0], latlng[1], False)
@@ -133,13 +127,6 @@ class MainApp(MDApp):
                     toast("Could not find your location. Try turning Location on in settings")
             else:
                 toast("Request to use Locations rejected. Please enable Locations in App Permissions")
-        elif event == "location":
-            loc = args[0]
-            Logger.info(f"LOCATION_EVENT: lat={loc.getLatitude()},lng={loc.getLongitude()}")
-        elif event == "provider_enabled":
-            Logger.info(f"{args[0]}: Enabled")
-        elif event == "provider_disabled":
-            Logger.info(f"{args[0]}: Disabled")
     
     def on_loc_button_released(self):
         """

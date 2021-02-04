@@ -79,9 +79,11 @@ class MainApp(MDApp):
     
     def _on_mock_error(self, status, err):
         if status == "permission-denied":
-            Logger.info(f"ERROR: Mock Permisisson denied {err.__str__()}")
+            Logger.info(f"ERROR: Mock Permisisson denied")
         elif status == "provider-exists":
-            Logger.info(f"Error: Provider exists {err.__str__()}")
+            Logger.info(f"Error: Provider exists")
+        else:
+            Logger.info(f"Unknown: {err.__str__()}")
     
     def on_search_button(self, *args):
         self.root.current = "search"

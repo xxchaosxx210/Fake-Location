@@ -261,7 +261,7 @@ class MockLocation(threading.Thread):
     def _handle_error(self, err):
         # Handles the error message and dispatches to main thread callback
         if "provider network already exists" in err.__str__():
-            self._callback("provider-exists", err)
+            self._callback(f"provider-exists", err)
         elif "not allowed to perform MOCK_LOCATION" in err.__str__():
             self._callback("permission-denied", err)
 
@@ -269,11 +269,11 @@ class MockLocation(threading.Thread):
         try:
             self.location_manager.removeTestProvider(LocationManager.GPS_PROVIDER)
         except Exception as err:
-            print(f"STOP_MOCK_UPDATES: {err}")
+            self._handle_error(err)
         try:
             self.location_manager.removeTestProvider(LocationManager.NETWORK_PROVIDER)
         except Exception as err:
-            print(f"STOP_MOCK_UPDATES: {err}")
+            self._handle_error(err)
 
     def _set_mock(self, provider, lat, lng):
         """
@@ -295,7 +295,7 @@ class MockLocation(threading.Thread):
                 0,
                 5)
         except Exception as err:
-            print(f"SET_MOCK: {err}")
+            self._handle_error(err)
 
         new_loc = Location(provider)
         new_loc.setLatitude(lat)
@@ -317,8 +317,8 @@ class MockLocation(threading.Thread):
         try:
             self.location_manager.setTestProviderEnabled(provider, True)
         except Exception as err:
-            print(f"SET_MOCK: {err}")
+            self._handle_error(err)
         try:
             self.location_manager.setTestProviderLocation(provider, new_loc)
         except Exception as err:
-            print(f"SET_MOCK: {err}")
+            self._handle_error(err)

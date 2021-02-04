@@ -3,7 +3,6 @@ from kivy.garden.mapview import MapMarker
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.properties import StringProperty
 from kivy.metrics import dp
-from kivy.utils import platform
 from kivymd.toast import toast
 from kivy.logger import Logger
 
@@ -18,7 +17,15 @@ if is_android:
 from debug import Debug
 from dialogs import Dialogs
 
+
 def getlatlng(location_manager):
+    """
+    getlatlng(object)
+    if on android platform gets last known location
+    if on Windows Linux or iOS then dummy coordinates returned
+    could use plyer for kivy if migrate over
+    to cross platforms
+    """
     latlng = None
     if is_android:
         location = get_system_location(location_manager)

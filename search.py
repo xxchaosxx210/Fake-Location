@@ -1,13 +1,11 @@
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.list import OneLineIconListItem
 from kivy.lang import Builder
-from kivy.utils import platform
 from kivy.clock import mainthread
 from kivy.properties import ObjectProperty
 from kivy.properties import StringProperty
-from kivymd.app import MDApp
 
-is_android = platform == "android"
+from global_props import is_android
 
 if is_android:
     from location import get_geo_location

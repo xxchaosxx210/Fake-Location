@@ -1,6 +1,10 @@
 import random
+import time
+import json
+import os
 from collections import namedtuple
 from kivy.logger import Logger
+import global_props
 
 # Debugging
 MIN_LATITUDE = -90
@@ -49,3 +53,27 @@ class Debug:
             text += f"{key}={value}, "
         if len(text) >= 2:
             Logger.info(text[:-2])
+    
+    @staticmethod
+    def log_file(event, function_name, message):
+        """
+        log_file(str, str, str)
+            saves a log message to the log file on disk
+        """
+
+        full_path = os.path.join(global_props.PATH, global_props.LOG_FILENAME)
+        global_props.check_path_exists()
+        logs = ""
+        if os.path.exists(full_path):
+            stat = os.stat(full_path)
+            if stat.st_size <= 1000000:
+                # if logs is less than 1MB then load
+                with open(full_path, "r") as fp:
+                    logs = fp.read()
+        current_time = time.ctime(time.time())
+        logs += f"\n[{current_time}]:{function_name}:{message}"
+        global_props.save(global_props.LOG_FILENAME, logs)
+        
+
+
+        

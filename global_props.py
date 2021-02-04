@@ -23,30 +23,46 @@ else:
 
 _file_lock = Lock()
 
+# Settings
+# - 
+
+def load_Settings():
+    data = load(SETTINGS_FILENAME)
+    if data:
+        return json.loads(data)
+    return data
+
+def save_settings(data):
+    save(SETTINGS_FILENAME, json.dumps(data))
+
+def check_path_exists():
+    if not os.path.exists(PATH):
+        _file_lock.acquire()
+        os.mkdir(PATH)
+        _file_lock.release()
+
 def load(filename):
     """
     load(str)
     takes in the name of the file to load. Doesnt require full path just the name of the file and extension
     returns loaded json object or None if no file exists
     """
+    data = None
+    check_path_exists()
     full_path = os.path.join(PATH, filename)
     _file_lock.acquire()
-    data = None
-    if not os.path.exists(PATH):
-        os.mkdir(PATH)
     if os.path.exists(full_path):
-        with open(full_path) as fp:
-            data = json.loads(fp.read())
+        with open(full_path, "r") as fp:
+            data = fp.read()
     _file_lock.release()
     return data
 
 def save(filename, data):
     _file_lock.acquire()
     full_path = os.path.join(PATH, filename)
-    if not os.path.exists(PATH):
-        os.mkdir(PATH)
-    with open(full_path) as fp:
-        fp.write(json.dumps(data))
+    check_path_exists()
+    with open(full_path, "w") as fp:
+        fp.write(data)
     _file_lock.release()
 
 class Globals:

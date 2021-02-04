@@ -59,10 +59,11 @@ class MainApp(MDApp):
     def _on_mock_error(self, status, err):
         if status == "permission-denied":
             Logger.info(f"ERROR: Mock Permisisson denied")
+            Debug.log_file("Error", "_on_mock_error main.py", "MOCK LOCATION Permission denied")
         elif status == "provider-exists":
-            Logger.info(f"Error: Provider exists")
+            Debug.log_file("Error", "_on_mock_error main.py", "Provider exists")
         else:
-            Logger.info(f"Unknown: {err.__str__()}")
+            Debug.log_file("Error", "_on_mock_error main.py", f"{err.__str__()}")
     
     def on_start(self):
         # Capture the Escape key

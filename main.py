@@ -74,7 +74,7 @@ class MainApp(MDApp):
             # Get LocationManager from Android API
             self._location_manager = get_location_manager()
             # Mock handler thread for setting mock location and enabling and disabling the mock locations
-            self._update = MockLocation(self._location_manager, self._on_mock_error)
+            self._mock_thread = MockLocation(self._location_manager, self._on_mock_error)
         else:
             self._location_manager = None
     
@@ -93,7 +93,7 @@ class MainApp(MDApp):
         print("Stop method called")
         if is_android:
             # wait for the thread to cancel before quitting the thread
-            self._update.join()
+            self._mock_thread.join()
     
     def on_start(self):
         # Capture the Escape key
@@ -106,7 +106,7 @@ class MainApp(MDApp):
             # Get ACCESS_FINE_LOCATION Permission from user
             require_location_permissions(self.on_gps_update)
             # start the mock location thread
-            self._update.start()
+            self._mock_thread.start()
         else:
             # Set a random location on Windows or Linux
             Debug.randomize_latlng()
@@ -120,7 +120,7 @@ class MainApp(MDApp):
                 # Close mock update thread
                 # before the window closes
                 if is_android:
-                    self._update.kill.set()
+                    self._mock_thread.kill.set()
                 return False
             return True
 
@@ -170,7 +170,7 @@ class MainApp(MDApp):
             # if target marker exists then set the mock location
             if is_android:
                 # tell mock location thread to set new coordinates
-                self._update.send_message("start", latitude, longitude)
+                self._mock_thread.send_message("start", latitude, longitude)
             else:
                 # set global debugging coordinates
                 Debug.latitude = latitude
@@ -185,7 +185,7 @@ class MainApp(MDApp):
         Stop button is pressed
         """
         if is_android:
-            self._update.send_message("stop")
+            self._mock_thread.send_message("stop")
         else:
             # Set a random location on Windows or Linux
             Debug.randomize_latlng()

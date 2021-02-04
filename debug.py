@@ -61,18 +61,21 @@ class Debug:
             saves a log message to the log file on disk
         """
 
-        full_path = os.path.join(global_props.PATH, global_props.LOG_FILENAME)
         global_props.check_path_exists()
         logs = ""
-        if os.path.exists(full_path):
-            stat = os.stat(full_path)
+        if os.path.exists(global_props.LOG_PATH):
+            stat = os.stat(global_props.LOG_PATH)
             if stat.st_size <= 1000000:
                 # if logs is less than 1MB then load
-                with open(full_path, "r") as fp:
+                with open(global_props.LOG_PATH, "r") as fp:
                     logs = fp.read()
         current_time = time.ctime(time.time())
         logs += f"\n[{current_time}]:{function_name}:{message}"
-        global_props.save(global_props.LOG_FILENAME, logs)
+        global_props.save(global_props.LOG_PATH, logs)
+    
+    @staticmethod
+    def getlogfromfile():
+        return global_props.load(global_props.LOG_PATH)
         
 
 

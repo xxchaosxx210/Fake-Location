@@ -55,10 +55,10 @@ class MainApp(MDApp):
             Globals.location_manager = get_location_manager()
             # Mock handler thread for setting mock location and enabling and disabling the mock locations
             Globals.mock_thread = MockLocationListener(Globals.location_manager, self._on_mock_error)
+        print(Debug.getlogfromfile())
     
     def _on_mock_error(self, status, err):
         if status == "permission-denied":
-            Logger.info(f"ERROR: Mock Permisisson denied")
             Debug.log_file("Error", "_on_mock_error main.py", "MOCK LOCATION Permission denied")
         elif status == "provider-exists":
             Debug.log_file("Error", "_on_mock_error main.py", "Provider exists")

@@ -91,9 +91,6 @@ class MainApp(MDApp):
     
     def on_stop(self):
         print("Stop method called")
-        if is_android:
-            # wait for the thread to cancel before quitting the thread
-            self._mock_thread.join()
     
     def on_start(self):
         # Capture the Escape key
@@ -121,6 +118,8 @@ class MainApp(MDApp):
                 # before the window closes
                 if is_android:
                     self._mock_thread.kill.set()
+                    print("Waiting for thread to quit")
+                    self._mock_thread.join()
                 return False
             return True
 

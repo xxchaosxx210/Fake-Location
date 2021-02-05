@@ -1,5 +1,6 @@
 #:import NoTransition kivy.uix.screenmanager.NoTransition
 #:import SearchContent search.SearchContent
+#:import LogScreen log.LogScreen
 #:include main_map.kv
 
 ScreenManager:
@@ -11,4 +12,5 @@ ScreenManager:
     MDScreen:
         name: "search"
         SearchContent:
-        
+    LogScreen:
+        name: "log"

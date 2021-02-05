@@ -51,6 +51,9 @@ class MapContainer(MDBoxLayout):
     lat_text = StringProperty("-12.98989")
     lon_text = StringProperty("52.87878")
 
+    def on_log(self, *args):
+        self.app.root.current = "log"
+
     def on_search_button(self, *args):
         self.app.root.current = "search"
 

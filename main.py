@@ -55,7 +55,6 @@ class MainApp(MDApp):
             Globals.location_manager = get_location_manager()
             # Mock handler thread for setting mock location and enabling and disabling the mock locations
             Globals.mock_thread = MockLocationListener(Globals.location_manager, self._on_mock_error)
-        print(Debug.getlogfromfile())
     
     def _on_mock_error(self, status, err):
         if status == "permission-denied":
@@ -95,6 +94,8 @@ class MainApp(MDApp):
                     Globals.mock_thread.join()
                 return False
             elif self.root.current == "search":
+                self.root.current = "mapview"
+            elif self.root.current == "log":
                 self.root.current = "mapview"
             return True
 

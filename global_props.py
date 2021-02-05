@@ -42,6 +42,10 @@ def check_path_exists():
         os.mkdir(PATH)
         _file_lock.release()
 
+def delete_file(path):
+    if os.path.exists(path):
+        os.remove(path)
+
 def load(path):
     """
     load(str)

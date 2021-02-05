@@ -29,10 +29,6 @@ Please enable location privileges, goto: Settings->Apps->Fake Location->Permissi
 
 Builder.load_string("""
 
-<MDDialog>:
-    padding: 0
-    spacing: 0
-
 <SaveCoordsContent>:
     orientation: "vertical"
     size_hint_y: None
@@ -74,6 +70,7 @@ Builder.load_string("""
     app: app
 
     ScrollView:
+        do_scroll_x: False
         id: id_scrollview
         MDList:
             id: id_location_list

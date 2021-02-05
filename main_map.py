@@ -66,7 +66,7 @@ class MapContainer(MDBoxLayout):
             Dialogs.show_save_dialog()
 
     def on_load_coords(self):
-        pass
+        Dialogs.show_load_location_dialog()
 
     def on_loc_button_released(self):
         """

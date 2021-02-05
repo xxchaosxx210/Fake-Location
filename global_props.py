@@ -1,3 +1,8 @@
+"""
+this file can be added to other projects and modified
+loads and saves text on all platforms
+"""
+
 from kivy.utils import platform
 import os
 import json

@@ -60,7 +60,16 @@ class MapContainer(MDBoxLayout):
         self.app.root.current = "search"
     
     def on_save_coords(self):
-        pass
+        if not self.mockmapview.is_target_shown:
+            toast("No Target to save. Press on the map to place a Target")
+        else:
+            Dialogs.show_save_dialog("Save Coords")
+            settings = load_Settings()
+            lat, lng = self.mockmapview.get_target_coords()
+            coords = {"lat": lat, "lng": lng, "name": "test", "zoom_level": self.mockmapview.zoom}
+            settings["saved_coords"].append(coords)
+            save_settings(settings)
+            toast("Coordinates have been saved")
 
     def on_load_coords(self):
         pass
@@ -127,6 +136,7 @@ class MockMapView(MapView):
     def __init__(self, **kwargs):
         self._target_marker = None
         self._current_loc_marker = None
+        self.is_target_shown = False
         super().__init__(**kwargs)
     
     def on_touch_up(self, touch):
@@ -143,6 +153,12 @@ class MockMapView(MapView):
         self.update_target_marker(lat, lng)
         self.center_on(lat, lng)
     
+    def get_target_coords(self):
+        """
+        returns the target markers latitude and lontitude coords
+        """
+        return (self._target_marker.lat, self._target_marker.lon)
+    
     def update_target_marker(self, lat, lng):
         """
         update_target_locmarker(float, float)
@@ -157,6 +173,7 @@ class MockMapView(MapView):
         # add coords to root windows textfields
         self.app.root.lat_text = str(lat)
         self.app.root.lon_text = str(lng)
+        self.is_target_shown = True
 
     def update_current_locmarker(self, lat, lng, zoom):
         """
@@ -189,6 +206,7 @@ class MockMapView(MapView):
     def remove_target_marker(self):
         if self._target_marker:
             self.remove_marker(self._target_marker)
+        self.is_target_shown = False
     
     def on_zoom_button(self, zoom_value):
         """

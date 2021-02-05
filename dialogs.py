@@ -51,7 +51,7 @@ Builder.load_string("""
         size_hint_y: None
         height: "48dp"
         Widget:
-            size_hint: .5, 1
+            size_hint: .3, 1
         MDFlatButton:
             text: "Cancel"
             id: id_cancel_button
@@ -63,7 +63,7 @@ Builder.load_string("""
             text_color: app.theme_cls.primary_color
             on_release: root.on_save_button()
         Widget:
-            size_hint: .5, 1
+            size_hint: .3, 1
 
 <LoadLocationContainer>:
     orientation: "vertical"
@@ -72,7 +72,7 @@ Builder.load_string("""
     id: id_load_container
     location_list: id_location_list
     app: app
-    
+
     ScrollView:
         id: id_scrollview
         MDList:

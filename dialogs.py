@@ -20,6 +20,8 @@ from global_props import (
     load_Settings
 )
 
+from debug import Debug
+
 _LOCATION_DENIED = """Fake Location does not have the Location Privileges enabled. 
 Please enable location privileges, goto: Settings->Apps->Fake Location->Permissions"""
 
@@ -59,8 +61,8 @@ Builder.load_string("""
 
 <LoadLocationContainer>:
     orientation: "vertical"
-    size_hint_y: None
-    height: "200dp"
+    size_hint: None, None
+    size: dp(400), dp(400)
     id: id_load_container
     location_list: id_location_list
 
@@ -122,6 +124,7 @@ class LoadLocationContainer(MDBoxLayout):
             self.location_list.add_widget(widget)
     
     def on_delete_button(self, icon_button):
+        Debug.save_object_properties("location_list.txt", self.location_list)
         self.location_list.remove_widget(icon_button.listitem)
 
     def on_item_selected(self, *args):
@@ -208,7 +211,6 @@ class Dialogs:
             content_cls=SaveCoordsContent(),
             auto_dismiss=False
         )
-
         Dialogs._load_location = MDDialog(
             title="Choose Location",
             type="custom",

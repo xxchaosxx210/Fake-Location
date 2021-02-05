@@ -76,6 +76,12 @@ class Debug:
     @staticmethod
     def getlogfromfile():
         return global_props.load(global_props.LOG_PATH)
+    
+    @staticmethod
+    def save_object_properties(filename, obj):
+        text = "\n".join(list(map(lambda item : f"{item}", dir(obj))))
+        with open(filename, "w") as fp:
+            fp.write(text)
         
 
 

@@ -58,6 +58,12 @@ class MapContainer(MDBoxLayout):
 
     def on_search_button(self, *args):
         self.app.root.current = "search"
+    
+    def on_save_coords(self):
+        pass
+
+    def on_load_coords(self):
+        pass
 
     def on_loc_button_released(self):
         """

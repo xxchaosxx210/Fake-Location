@@ -85,7 +85,6 @@ class MainApp(MDApp):
         
         # Set the zoom level from last time
         settings = load_Settings()
-        Debug.log_file("Settings", "on_start main.py", f"zoom level = {settings['last_zoom_level']}")
         self.container.mockmapview.zoom = settings["last_zoom_level"]
     
     def on_keyboard_press(self, window, key, *args):

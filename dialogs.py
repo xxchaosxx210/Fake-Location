@@ -7,7 +7,8 @@ from kivymd.toast import toast
 
 from kivy.properties import(
     ObjectProperty,
-    StringProperty
+    StringProperty,
+    ListProperty
 )
 
 from kivymd.uix.list import (
@@ -27,6 +28,11 @@ Please enable location privileges, goto: Settings->Apps->Fake Location->Permissi
 
 
 Builder.load_string("""
+
+<MDDialog>:
+    padding: 0
+    spacing: 0
+
 <SaveCoordsContent>:
     orientation: "vertical"
     size_hint_y: None
@@ -61,11 +67,12 @@ Builder.load_string("""
 
 <LoadLocationContainer>:
     orientation: "vertical"
-    size_hint: None, None
-    size: dp(400), dp(400)
+    size_hint: .9, None
+    height: dp(400)
     id: id_load_container
     location_list: id_location_list
-
+    app: app
+    
     ScrollView:
         id: id_scrollview
         MDList:
@@ -76,9 +83,12 @@ Builder.load_string("""
         orientation: "horizontal"
         Widget:
             size_hint: .5, 1
-        MDFlatButton:
+        MDRectangleFlatIconButton:
+            text:"Close"
+            icon: "close"
             size_hint_x: None
             width: dp(70)
+            on_release: root.on_close_button()
         Widget:
             size_hint: .5, 1
 
@@ -96,10 +106,7 @@ class LocationListItem(OneLineAvatarIconListItem):
     delete_button = ObjectProperty(None)
 
     def __init__(self, loc, **kwargs):
-        self.lat = loc["lat"]
-        self.lng = loc["lng"]
-        self.name = loc["name"]
-        self.zoom = loc["zoom_level"]
+        self.location_settings = loc
         super().__init__(**kwargs)
 
 class IconRightWidget(IRightBodyTouch, MDIconButton):
@@ -108,11 +115,14 @@ class IconRightWidget(IRightBodyTouch, MDIconButton):
 class LoadLocationContainer(MDBoxLayout):
 
     location_list = ObjectProperty(None)
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    app = ObjectProperty(None)
     
     def load_list(self, location_list):
+        """
+        load_list(list)
+        iterate through the location list loaded from settings.json
+        and create a new listitem for item it and it to the MDList
+        """
         self.location_list.clear_widgets()
         for location in location_list:
             widget = LocationListItem(
@@ -120,15 +130,40 @@ class LoadLocationContainer(MDBoxLayout):
                 text = location["name"],
                 on_release = self.on_item_selected
             )
-            widget.delete_button.bind(on_release=self.on_delete_button)
+            widget.delete_button.bind(on_release=self._on_delete_button)
             self.location_list.add_widget(widget)
     
-    def on_delete_button(self, icon_button):
-        Debug.save_object_properties("location_list.txt", self.location_list)
+    def _on_delete_button(self, icon_button):
+        # create a new list for stored location settings
+        saved_coords = []
+        settings = load_Settings()
+        # remove the widget from the MDList
         self.location_list.remove_widget(icon_button.listitem)
+        # Loop through the new list appending each location_setting
+        for widget in self.location_list.children:
+            saved_coords.append(widget.location_settings)
+        # store new location list and save to file
+        settings["saved_coords"] = saved_coords
+        save_settings(settings)
+        Debug.log_file("Saved Settings", "on_delete_button dialogs.py", "Saved settings to settings.json")
 
-    def on_item_selected(self, *args):
-        print("")
+    def on_item_selected(self, listitem):
+        """
+        set the target marker on the mapview with
+        selected coordinates
+        """
+        Dialogs._load_location.dismiss()
+        lat = listitem.location_settings["lat"]
+        lng = listitem.location_settings["lng"]
+        zoom = listitem.location_settings["zoom_level"]
+        # Place the Target Marker at the new coordinates
+        self.app.container.mockmapview.update_target_marker(lat, lng)
+        # Set the Zoom level
+        self.app.container.mockmapview.zoom = zoom
+        # Center on New Target Marker
+        self.app.container.mockmapview.center_on(lat, lng)
+    
+    def on_close_button(self):
         Dialogs._load_location.dismiss()
 
 class SaveCoordsContent(MDBoxLayout):
@@ -212,7 +247,8 @@ class Dialogs:
             auto_dismiss=False
         )
         Dialogs._load_location = MDDialog(
-            title="Choose Location",
+            title="Locations",
             type="custom",
-            content_cls=LoadLocationContainer()
+            content_cls=LoadLocationContainer(),
+            auto_dismiss=False
         )

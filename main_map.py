@@ -63,13 +63,7 @@ class MapContainer(MDBoxLayout):
         if not self.mockmapview.is_target_shown:
             toast("No Target to save. Press on the map to place a Target")
         else:
-            Dialogs.show_save_dialog("Save Coords")
-            settings = load_Settings()
-            lat, lng = self.mockmapview.get_target_coords()
-            coords = {"lat": lat, "lng": lng, "name": "test", "zoom_level": self.mockmapview.zoom}
-            settings["saved_coords"].append(coords)
-            save_settings(settings)
-            toast("Coordinates have been saved")
+            Dialogs.show_save_dialog()
 
     def on_load_coords(self):
         pass

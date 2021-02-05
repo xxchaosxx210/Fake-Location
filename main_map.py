@@ -202,10 +202,8 @@ class MockMapView(MapView):
             self.zoom = zoom_value
         else:
             self.zoom = zoom_value
-    
-    def on_zoom(self, *args):
+        
         settings = load_Settings()
         settings["last_zoom_level"] = self.zoom
         save_settings(settings)
-        super().on_zoom(*args)
         

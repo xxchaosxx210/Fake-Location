@@ -34,7 +34,7 @@ _file_lock = Lock()
 # Settings
 # - last_zoom_level     - int
 # - saved_coords        - list
-#   - dict - {"latitude", "longitude", "name"}
+#   - dict - {"latitude", "longitude", "name", "zoom_level"}
 # - app_version         - str
 
 DEFAULT_SETTINGS = {

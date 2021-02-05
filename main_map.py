@@ -13,6 +13,8 @@ from kivy.properties import ObjectProperty
 
 from global_props import is_android
 from global_props import Globals
+from global_props import load_Settings
+from global_props import save_settings
 
 if is_android:
     from location import get_system_location
@@ -194,4 +196,10 @@ class MockMapView(MapView):
             self.zoom = zoom_value
         else:
             self.zoom = zoom_value
+    
+    def on_zoom(self, *args):
+        settings = load_Settings()
+        settings["last_zoom_level"] = self.zoom
+        save_settings(settings)
+        super().on_zoom(*args)
         

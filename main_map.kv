@@ -1,5 +1,6 @@
 #:import MapView kivy.garden.mapview.MapView
 #:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import ZOOM_LEVEL global_props.DEFAULT_ZOOM
 
 <HorizontalSpacer@Widget>:
     size_hint_x: None
@@ -18,7 +19,7 @@
 <MockMapView>:
     lat: 10
     lon: 10
-    zoom: 3
+    zoom: ZOOM_LEVEL
     on_zoom: self.zoom = 3 if self.zoom < 3 else self.zoom
 
 <MapContainer>:

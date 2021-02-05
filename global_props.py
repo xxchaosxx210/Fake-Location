@@ -12,6 +12,8 @@ is_android = platform == "android"
 
 VERSION = "0.1.3"
 
+DEFAULT_ZOOM = 10
+
 # Get settings folder path
 
 APP_NAME = "fake_location"
@@ -30,13 +32,24 @@ SETTINGS_PATH = os.path.join(PATH, "settings.json")
 _file_lock = Lock()
 
 # Settings
-# - 
+# - last_zoom_level     - int
+# - saved_coords        - list
+#   - dict - {"latitude", "longitude", "name"}
+# - app_version         - str
+
+DEFAULT_SETTINGS = {
+                        "last_zoom_level": DEFAULT_ZOOM,
+                        "saved_coords": [],
+                        "app_version": VERSION}
 
 def load_Settings():
+    """
+    returns json object stored on disk returns DEFAULT_SETTINGS if no file found
+    """
     data = load(SETTINGS_PATH)
     if data:
         return json.loads(data)
-    return data
+    return DEFAULT_SETTINGS
 
 def save_settings(data):
     save(SETTINGS_PATH, json.dumps(data))

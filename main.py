@@ -36,6 +36,8 @@ from dialogs import Dialogs
 
 from global_props import Globals
 from global_props import is_android
+from global_props import save_settings
+from global_props import load_Settings
 
 # If android then load the Android classes
 if is_android:
@@ -80,6 +82,10 @@ class MainApp(MDApp):
             # Set a random location on Windows or Linux
             Debug.randomize_latlng()
             self.container.mockmapview.update_current_locmarker(Debug.latitude, Debug.longitude, False)
+        
+        # Set the zoom level from last time
+        settings = load_Settings()
+        self.container.mockmapview.zoom = settings["last_zoom_level"]
     
     def on_keyboard_press(self, window, key, *args):
         if key == 27:

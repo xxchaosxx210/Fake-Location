@@ -222,7 +222,7 @@ class MockLocationListener(threading.Thread):
             instance     - object normally the Exception object
         providers  - tuple Will use GPS_PROVIDER and NETWORK_PROVIDER as default
         """
-        super().__init__()
+        super().__init__(daemon=True)
         self.queue = queue.Queue()
         self.location_manager = location_manager
         self._callback = callback
